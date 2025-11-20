@@ -30,7 +30,7 @@ export class EmailService {
 
     try {
       await transport.sendMail(options);
-      console.lsog('Email sent successfully');
+      console.log('Email sent successfully');
     } catch (error) {
       console.log('Error sending email: ', error);
     }
