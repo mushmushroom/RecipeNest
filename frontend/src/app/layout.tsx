@@ -1,17 +1,19 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { Nunito_Sans, Montagu_Slab } from 'next/font/google';
 import './globals.css';
 import Providers from '@/components/Providers';
 import Header from '@/components/Header';
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
+export const nunitoSans = Nunito_Sans({
   subsets: ['latin'],
+  variable: '--font-nunito',
+  display: 'swap',
 });
 
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
+export const montaguSlab = Montagu_Slab({
   subsets: ['latin'],
+  variable: '--font-montagu',
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
@@ -25,8 +27,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+    <html
+      className={`${nunitoSans.variable} ${montaguSlab.variable}`}
+      lang="en"
+      suppressHydrationWarning
+    >
+      <body>
         <Providers>
           <Header />
           {children}

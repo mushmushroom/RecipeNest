@@ -1,7 +1,7 @@
 'use client';
 import { signIn, useSession } from 'next-auth/react';
 import Link from 'next/link';
-import React from 'react';
+import { CustomButton } from './common/CustomButton';
 
 const SignInButton = () => {
   const { data: session, status } = useSession();
@@ -21,12 +21,12 @@ const SignInButton = () => {
 
   return (
     <div className="flex gap-4 justify-center items-center">
-      <button onClick={() => signIn()} className="text-green-600">
+      <CustomButton onClick={() => signIn()} variant="main">
         Sign In
-      </button>
-      <Link href={'/signup'} className="flex gap-4 ml-auto bg-green-600 text-green-200 p-2 rounded">
-        Sign Up
-      </Link>
+      </CustomButton>
+      <CustomButton asChild variant="secondary">
+        <Link href={'/signup'}>Sign Up</Link>
+      </CustomButton>
     </div>
   );
 };

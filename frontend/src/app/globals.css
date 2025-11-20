@@ -24,3 +24,16 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 } */
+
+html {
+  font-size: 62.5%;
+  scroll-behavior: smooth;
+}
+
+@media (max-width: 360px) {
+  html {
+    font-size: 50%;
+    /* Now 1rem = 8px */
+  }
+}
+
