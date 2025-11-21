@@ -8,7 +8,25 @@ const config = defineConfig({
       heading: headingRecipe,
     },
 
+    // breakpoints
+    breakpoints: {
+      xs: '0',
+      sm: '480px',
+      md: '768px',
+      lg: '1024px',
+      xl: '1200px',
+    },
+
     tokens: {
+      // sizes
+      sizes: {
+        xs: { value: '0' },
+        sm: { value: '480px' },
+        md: { value: '768px' },
+        lg: { value: '1024px' },
+        xl: { value: '1240px' },
+      },
+
       // fonts
       fonts: {
         heading: { value: 'var(--font-montagu)' },

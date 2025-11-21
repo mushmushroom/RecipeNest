@@ -2,7 +2,7 @@
 import { BACKEND_URL } from '@/lib/constants';
 import { useRef } from 'react';
 
-export default function page() {
+export default function SignUpPage() {
   const data = useRef({
     username: '',
     email: '',
