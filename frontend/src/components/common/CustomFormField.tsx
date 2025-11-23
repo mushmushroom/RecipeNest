@@ -2,15 +2,16 @@
 
 import { Field, Input, InputProps } from '@chakra-ui/react';
 import { PasswordInput } from '../ui/password-input';
+import { FieldError, UseFormRegisterReturn } from 'react-hook-form';
 
 interface CustomFormFieldProps extends InputProps {
   label: string;
   required?: boolean;
-  error?: string;
+  error?: FieldError;
   id: string;
   labelHidden?: boolean;
   passwordField?: boolean;
-  // register to ADD
+  registration: UseFormRegisterReturn;
 }
 
 export default function CustomFormField({
@@ -20,6 +21,7 @@ export default function CustomFormField({
   id,
   labelHidden = false,
   passwordField = false,
+  registration,
   ...rest
 }: CustomFormFieldProps) {
   const InputComponent = passwordField ? PasswordInput : Input;
@@ -36,20 +38,20 @@ export default function CustomFormField({
 
       <InputComponent
         id={id}
-        borderColor="gray.600"
+        borderColor={error ? 'red' : 'gray.600'}
         borderRadius="10px"
         variant="outline"
         fontSize="1.8rem"
         p="1.2rem"
         height="100%"
-        // register to ADD
+        {...registration}
         _placeholder={{ color: 'gray.400', fontSize: '1.8rem' }}
         {...rest}
       />
 
       {error && (
         <Field.ErrorText fontSize="1.4rem" color="red" paddingLeft="1.2rem" marginTop="5px">
-          {error}
+          {error.message}
         </Field.ErrorText>
       )}
     </Field.Root>

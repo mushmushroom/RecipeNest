@@ -12,10 +12,10 @@ async function bootstrap() {
     }),
   );
 
-  // app.enableCors({
-  // origin: ['http://localhost:3000'],
-  //   credentials: true,
-  // });
+  app.enableCors({
+    origin: ['http://localhost:3000'],
+    credentials: true,
+  });
   console.log('running in port 8000');
   await app.listen(process.env.PORT ?? 8000);
 }

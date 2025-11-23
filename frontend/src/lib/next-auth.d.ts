@@ -15,9 +15,12 @@ declare module 'next-auth' {
       expiresIn: number;
     };
   }
+
+  
 }
 
-import { JWT } from 'next-auth/jwt';
+
+import { JWT } from 'next-auth/jwt'
 
 declare module 'next-auth/jwt' {
   interface JWT {
@@ -34,4 +37,4 @@ declare module 'next-auth/jwt' {
       expiresIn: number;
     };
   }
-}
+};

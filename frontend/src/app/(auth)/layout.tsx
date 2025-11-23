@@ -5,9 +5,5 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-    <main>
-      <GlobalContainer>{children}</GlobalContainer>
-    </main>
-  );
+  return <main>{children}</main>;
 }

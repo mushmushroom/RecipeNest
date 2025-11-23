@@ -22,9 +22,9 @@ async function refreshToken(token: JWT): Promise<JWT> {
 export const authOptions: NextAuthOptions = {
   debug: true,
   session: { strategy: 'jwt' },
-  // pages: {
-  //   signIn: '/signup',
-  // },
+  pages: {
+    signIn: '/login',
+  },
   providers: [
     CredentialsProvider({
       name: 'Credentials',
@@ -49,22 +49,28 @@ export const authOptions: NextAuthOptions = {
             'Content-Type': 'application/json',
           },
         });
-        if (res.status == 401) {
-          console.log(res.statusText);
 
-          return null;
+        const data = await res.json();
+
+        // Wrong credentials
+        if (!data.success && data.message === 'User not found') {
+          throw new Error('INVALID_CREDENTIALS');
         }
-        const user = await res.json();
-        return user;
+
+        // Not verified
+        if (!data.success && data.verified === false) {
+          throw new Error('UNVERIFIED_USER');
+        }
+
+        return data.data;
       },
     }),
   ],
 
   callbacks: {
     async jwt({ token, user }) {
-      // console.log({ token, user });
       if (user) return { ...token, ...user };
-
+      console.log(token);
       if (new Date().getTime() < token.backendTokens.expiresIn) return token;
       return await refreshToken(token);
       // return token;

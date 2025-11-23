@@ -9,6 +9,15 @@ export const buttonRecipe = defineRecipe({
     borderRadius: '10px',
     fontSize: '2rem',
     cursor: 'pointer',
+    transition: 'opacity 0.4s',
+    '&:disabled': {
+      opacity: 0.6,
+      cursor: 'not-allowed',
+      color: 'gray.600',
+    },
+    '&:hover': {
+      opacity: 0.6,
+    },
   },
   variants: {
     variant: {

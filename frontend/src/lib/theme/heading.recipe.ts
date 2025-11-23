@@ -6,6 +6,7 @@ export const headingRecipe = defineRecipe({
       h1: {
         fontSize: '4rem',
         color: 'black',
+        fontWeight: '700',
         '& span': {
           color: 'brand.500',
         },

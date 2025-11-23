@@ -2,19 +2,29 @@
 import { Center, Container, Flex, Heading, Stack, Text } from '@chakra-ui/react';
 import { CustomButton } from '@/components/common/CustomButton';
 import CustomFormField from '@/components/common/CustomFormField';
-import { AppPathPublic } from '@/lib/constants';
 import Link from 'next/link';
+import { AppPathPublic } from '@/lib/constants';
 import { Toaster } from '@/components/ui/toaster';
-import useLogin from '@/lib/hooks/useLogin';
+import useVerify from '@/lib/hooks/useVerify';
 
-export default function SignInPage() {
-  const { handleSubmit, register, errors, onSubmit } = useLogin();
+export default function VerifyPage() {
+  const {
+    handleSubmit,
+    register,
+    errors,
+    mutationVerify,
+    mutationRequest,
+    requestOtp,
+    onSubmit,
+    cooldown,
+  } = useVerify();
+
   return (
-    <Center minH="100vh" bgImage="url(/login-img.jpg)" bgRepeat="no-repeat" bgSize="cover">
+    <Center minH="100vh" bgImage="url(/verify-img.jpg)" bgRepeat="no-repeat" bgSize="cover">
       <Container maxW="678px" py="5.3rem" px={{ base: '1.5rem', md: '4.8rem' }} bgColor="white">
         <Stack gap="2.2rem" alignItems="center">
           <Heading as="h1" size="h1">
-            <Text as="span">Log in</Text> to your account
+            <Text as="span">Verify</Text> your account
           </Heading>
           <Stack
             as="form"
@@ -33,20 +43,20 @@ export default function SignInPage() {
               required
             />
             <CustomFormField
-              registration={register('password', { required: true })}
-              error={errors.password}
-              label="Password"
-              id="password"
+              registration={register('otp', { required: true })}
+              error={errors.otp}
+              label="Code from email"
+              id="otp-code"
+              placeholder="Enter your code"
               required
-              passwordField
             />
             {errors.root && (
               <Text color="red" fontSize="1.6rem">
                 {errors.root.message}
               </Text>
             )}
-            <CustomButton variant="secondary" type="submit">
-              Log in
+            <CustomButton variant="secondary" type="submit" disabled={mutationVerify.isPending}>
+              {mutationVerify.isPending ? 'Checking...' : 'Confirm'}
             </CustomButton>
           </Stack>
         </Stack>
@@ -57,8 +67,13 @@ export default function SignInPage() {
           gap={{ base: '1.5rem', md: '0' }}
           marginTop="2.5rem"
         >
-          <CustomButton variant="link" asChild color="brand.500">
-            <Link href={AppPathPublic.Register}>Create new account</Link>
+          <CustomButton
+            variant="link"
+            color="brand.500"
+            onClick={requestOtp}
+            disabled={cooldown > 0 || mutationRequest.isPending}
+          >
+            Request new code
           </CustomButton>
           <CustomButton variant="link" asChild>
             <Link href={AppPathPublic.Recipes}>Back to all recipes</Link>
