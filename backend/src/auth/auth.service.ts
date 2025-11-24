@@ -11,10 +11,9 @@ import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from 'src/user/dto/user.dto';
 import { OtpService } from 'src/otp/otp.service';
-import { dmmfToRuntimeDataModel } from '@prisma/client/runtime/library';
 
-const ACCESS_TOKEN_EXPIRE = 20 * 1000; // 20 seconds
-const REFRESH_TOKEN_EXPIRE = 7 * 24 * 60 * 60 * 1000; // 7 days
+const ACCESS_TOKEN_EXPIRE = 15 * 60 * 1000; // 15 minutes
+const REFRESH_TOKEN_EXPIRE = 30 * 24 * 60 * 60 * 1000; // 30 days
 
 @Injectable()
 export class AuthService {
