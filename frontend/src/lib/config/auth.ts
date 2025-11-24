@@ -95,6 +95,10 @@ export const authOptions: NextAuthOptions = {
           throw new Error('UNVERIFIED_USER');
         }
 
+        if (!data.success) {
+          throw new Error(data.message || 'Something went wrong. Try again later.');
+        }
+
         return data.data;
       },
     }),
