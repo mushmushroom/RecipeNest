@@ -10,6 +10,7 @@ import {
   Portal,
   Heading,
   Stack,
+  Grid,
 } from '@chakra-ui/react';
 
 import FiltersPanel from '@/components/filters/FiltersPanel';
@@ -30,13 +31,9 @@ export default function RecipesPage() {
           All recipes
         </Heading>
         {/* GRID LAYOUT */}
-        <Box
-          display="grid"
+        <Grid
           gap="12rem"
-          gridTemplateColumns={{
-            base: '1fr',
-            md: isCollapsed ? '1fr' : '190px 1fr',
-          }}
+          templateColumns={isCollapsed ? '1fr' : '190px 1fr'}
         >
           {/* DESKTOP FILTERS */}
           {!isMobile && (
@@ -69,7 +66,7 @@ export default function RecipesPage() {
             </CustomButton>
             <Box borderTop="1px solid black">Recipes list</Box>
           </Stack>
-        </Box>
+        </Grid>
       </GlobalContainer>
 
       {/* MOBILE DRAWER */}
