@@ -1,6 +1,7 @@
 export const BACKEND_URL = 'http://localhost:8000';
 
 export enum AppPathPublic {
+  Home = '/',
   Login = '/login',
   Register = '/register',
   Verify = '/verify',

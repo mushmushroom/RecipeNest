@@ -39,6 +39,7 @@ export default function CustomFormField({
       <InputComponent
         id={id}
         borderColor={error ? 'red' : 'gray.600'}
+        bgColor="white"
         borderRadius="10px"
         variant="outline"
         fontSize="1.8rem"
