@@ -77,6 +77,7 @@ export class OtpService {
     await this.prisma.otp.updateMany({
       where: {
         userId,
+        type,
         used: false,
         expiresAt: { gt: new Date() },
       },
