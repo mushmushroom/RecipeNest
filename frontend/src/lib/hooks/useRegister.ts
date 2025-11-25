@@ -61,10 +61,15 @@ export default function useRegister() {
 
         return data;
       } catch (err) {
-        // Network error or backend down
-        throw {
-          message: err.message || 'Cannot connect to the server. Please try again later.',
-        };
+        if (err instanceof Error) {
+          throw { message: err.message };
+        }
+
+        if (typeof err === 'object' && err !== null && 'message' in err) {
+          throw { message: (err as any).message };
+        }
+
+        throw { message: 'Cannot connect to the server. Please try again later.' };
       }
     },
     onSuccess: (data) => {
