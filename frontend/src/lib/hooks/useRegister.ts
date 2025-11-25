@@ -6,12 +6,19 @@ import { useForm } from 'react-hook-form';
 import { BACKEND_URL } from '@/lib/constants';
 import { toaster } from '@/components/ui/toaster';
 
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/;
 
 const registerSchema = z
   .object({
     username: z.string().min(3, 'Username should contain at least 3 characters'),
     email: z.string().email('Invalid email address'),
-    password: z.string().min(8, 'Password should contain at least 8 characters'),
+    password: z
+      .string()
+      .regex(
+        passwordRegex,
+        'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'
+      )
+      .min(8, 'Password should contain at least 8 characters'),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -53,10 +60,10 @@ export default function useRegister() {
         }
 
         return data;
-      } catch (err: any) {
+      } catch (err) {
         // Network error or backend down
         throw {
-          message: 'Cannot connect to the server. Please try again later.',
+          message: err.message || 'Cannot connect to the server. Please try again later.',
         };
       }
     },

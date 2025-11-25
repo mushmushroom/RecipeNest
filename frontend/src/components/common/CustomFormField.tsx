@@ -51,7 +51,7 @@ export default function CustomFormField({
       />
 
       {error && (
-        <Field.ErrorText fontSize="1.4rem" color="red" paddingLeft="1.2rem" marginTop="5px">
+        <Field.ErrorText fontSize="1.4rem" color="red" paddingLeft="1.2rem" marginTop="5px" lineHeight="1.4">
           {error.message}
         </Field.ErrorText>
       )}
