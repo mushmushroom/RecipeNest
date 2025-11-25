@@ -20,6 +20,12 @@ export class EmailService {
 
   async sendEmail(dto: SendEmailDto) {
     const { recipients, subject, html } = dto;
+    const validRecipients = recipients.filter((email) =>
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email),
+    );
+    if (validRecipients.length === 0)
+      throw new Error('No valid email addresses provided');
+    
     const transport = this.emailTransport();
     const options: nodemailer.SendMailOptions = {
       from: process.env.EMAIL_USER,
