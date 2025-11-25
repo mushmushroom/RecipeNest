@@ -168,7 +168,7 @@ export class AuthService {
 
     if (!user) throw new BadRequestException('User not found');
 
-    await this.otpService.validateOtp(user.id, dto.otp);
+    await this.otpService.validateOtp(user.id, dto.otp, "REGISTER");
 
     await this.prisma.user.update({
       where: {

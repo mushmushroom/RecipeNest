@@ -14,7 +14,7 @@ export class OtpService {
     private emailService: EmailService,
   ) {}
 
-  async generateOtp(user: Omit<User, 'password'>, type: OtpType = "REGISTER") {
+  async generateOtp(user: Omit<User, 'password'>, type: OtpType = 'REGISTER') {
     // create otp
     const otp = crypto.randomInt(100000, 999999).toString();
     const hashedOTP = await bcrypt.hash(otp, 10);
@@ -52,10 +52,11 @@ export class OtpService {
     });
   }
 
-  async validateOtp(userId: number, otp: string) {
+  async validateOtp(userId: number, otp: string, type: OtpType = 'REGISTER') {
     const validToken = await this.prisma.otp.findFirst({
       where: {
         userId,
+        type,
         expiresAt: {
           gt: new Date(),
         },
