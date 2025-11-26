@@ -30,6 +30,7 @@ export default function UserAside() {
       {userDashboardLinks.map((item, index) => {
         return (
           <Box
+            key={item.href}
             color={pathname === item.href ? 'brand.500' : 'black'}
             fontWeight={pathname === item.href ? '700' : '400'}
           >
