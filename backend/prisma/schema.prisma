@@ -55,11 +55,27 @@ enum OtpType {
 }
 
 model Recipe {
-  id            Int    @id @default(autoincrement())
+  id            Int        @id @default(autoincrement())
   title         String
   instructions  String
-  author        User   @relation("WrittenRecipes", fields: [authorId], references: [id])
+  author        User       @relation("WrittenRecipes", fields: [authorId], references: [id])
   authorId      Int
-  favoritedBy   User[] @relation("FavoriteRecipes")
+  favoritedBy   User[]     @relation("FavoriteRecipes")
   favoritedById Int
+  category      Category?  @relation(fields: [categoryId], references: [id])
+  categoryId    Int?
+  difficulty    Difficulty
+}
+
+model Category {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  recipes   Recipe[]
+  createdAt DateTime @default(now())
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
 }

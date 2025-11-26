@@ -9,6 +9,8 @@ import { EmailModule } from './email/email.module';
 import { OtpModule } from './otp/otp.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { CategoryModule } from './category/category.module';
+import { DifficultyModule } from './difficulty/difficulty.module';
 
 @Module({
   imports: [
@@ -24,6 +26,8 @@ import { APP_GUARD } from '@nestjs/core';
         limit: 10, // 10 requests per minute
       },
     ]),
+    CategoryModule,
+    DifficultyModule,
   ],
   controllers: [AppController],
   providers: [
