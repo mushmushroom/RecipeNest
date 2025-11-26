@@ -35,23 +35,37 @@ export default function useLogin() {
       password: data.password,
     });
 
+    // if (result?.error) {
+    //   switch (result.error) {
+    //     case 'UNVERIFIED_USER':
+    //       toaster.create({
+    //         title: 'Account is not verified',
+    //         description: 'Please check your email for the OTP code.',
+    //       });
+    //       router.push(`/verify?email=${data.email}`);
+    //       break;
+
+    //     case 'CredentialsSignin':
+    //       setError('root', { message: 'Invalid email or password' });
+    //       break;
+
+    //     default:
+    //       setError('root', { message: result.error });
+    //       break;
+    //   }
+    //   return;
+    // }
     if (result?.error) {
-      switch (result.error) {
-        case 'UNVERIFIED_USER':
-          toaster.create({
-            title: 'Account is not verified',
-            description: 'Please check your email for the OTP code.',
-          });
+      if (result.error.includes('not verified')) {
+        toaster.create({
+          title: 'Account is not verified',
+          description: result.error,
+        });
+        setTimeout(() => {
           router.push(`/verify?email=${data.email}`);
-          break;
-
-        case 'CredentialsSignin':
-          setError('root', { message: 'Invalid email or password' });
-          break;
-
-        default:
-          setError('root', { message: result.error });
-          break;
+        }, 3000);
+      } else {
+        setError('root', { message: result.error });
       }
       return;
     }

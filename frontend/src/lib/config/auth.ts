@@ -4,6 +4,7 @@ import { JWT } from 'next-auth/jwt';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
 async function refreshToken(token: JWT): Promise<JWT> {
+  console.log('=============== CALLING REFRESH TOKEN');
   try {
     const res = await fetch(`${BACKEND_URL}/auth/refresh`, {
       method: 'POST',
@@ -12,11 +13,14 @@ async function refreshToken(token: JWT): Promise<JWT> {
       },
     });
     if (!res.ok) {
+      const response = await res.json();
+      console.log(res.status, res.statusText, response.message);
       throw new Error('Failed to refresh token');
     }
 
     const response = await res.json();
 
+    console.log('=============================REFRESHED token');
     if (response.data?.backendTokens) {
       return {
         ...token,
@@ -85,18 +89,8 @@ export const authOptions: NextAuthOptions = {
 
         const data = await res.json();
 
-        // Wrong credentials
-        if (!data.success && data.message === 'User not found') {
-          throw new Error('INVALID_CREDENTIALS');
-        }
-
-        // Not verified
-        if (!data.success && data.verified === false) {
-          throw new Error('UNVERIFIED_USER');
-        }
-
-        if (!data.success) {
-          throw new Error(data.message || 'Something went wrong. Try again later.');
+        if (!res.ok) {
+          throw new Error(data.message || 'Something went wrong');
         }
 
         return data.data;

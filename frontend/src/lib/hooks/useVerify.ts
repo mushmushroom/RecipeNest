@@ -142,9 +142,6 @@ export default function useVerify() {
          duration: 5000,
        });
 
-       // setTimeout(() => {
-       //   router.push(`${AppPathPublic.Login}`);
-       // }, 3000);
      },
 
      onError: (error: any) => {

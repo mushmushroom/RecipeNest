@@ -32,7 +32,6 @@ export class AuthService {
       await this.otpService.generateOtp(user);
 
       return {
-        success: true,
         message:
           'User was registered successfully. Check your email for OTP code.',
         data: user,
@@ -49,17 +48,13 @@ export class AuthService {
       throw new NotFoundException('User not found');
     }
 
-    if (!user.isConfirmed)
-      return {
-        success: false,
-        verified: false,
-        message:
-          'User is not verified. Please enter your OTP code to verify your account',
-      };
+    if (!user.isConfirmed) {
+      throw new BadRequestException(
+        'User is not verified. Please check your OTP.',
+      );
+    }
 
     return {
-      success: true,
-      message: 'Logged in successfully',
       data: {
         user,
         backendTokens: {
@@ -183,7 +178,6 @@ export class AuthService {
     });
 
     return {
-      success: true,
       message: 'User was verified successfully.',
     };
   }
@@ -199,7 +193,6 @@ export class AuthService {
     await this.otpService.generateOtp(user);
 
     return {
-      success: true,
       message: 'OTP sent successfully. Please check your email.',
     };
   }
