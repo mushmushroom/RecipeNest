@@ -17,6 +17,7 @@ import FiltersPanel from '@/components/filters/FiltersPanel';
 import { FaFilter, FaRegWindowClose } from 'react-icons/fa';
 import GlobalContainer from '@/components/GlobalContainer';
 import { CustomButton } from '@/components/common/CustomButton';
+import RecipeCard from '@/components/recipes/RecipeCard';
 
 export default function RecipesPage() {
   const [isDrawerOpen, setDrawerOpen] = useState(false);
@@ -31,10 +32,7 @@ export default function RecipesPage() {
           All recipes
         </Heading>
         {/* GRID LAYOUT */}
-        <Grid
-          gap="12rem"
-          templateColumns={isCollapsed ? '1fr' : '190px 1fr'}
-        >
+        <Grid gap="12rem" templateColumns={isMobile ? '1fr' : isCollapsed ? '1fr' : '190px 1fr'}>
           {/* DESKTOP FILTERS */}
           {!isMobile && (
             <Box display={isCollapsed ? 'none' : 'block'}>
@@ -64,7 +62,9 @@ export default function RecipesPage() {
               <FaFilter />
               {isMobile ? 'Show filters' : isCollapsed ? 'Show filters' : 'Hide filters'}
             </CustomButton>
-            <Box borderTop="1px solid black">Recipes list</Box>
+            <Box borderTop="1px solid black">
+              <RecipeCard difficulty="HARD" />
+            </Box>
           </Stack>
         </Grid>
       </GlobalContainer>
