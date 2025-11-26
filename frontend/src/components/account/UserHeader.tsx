@@ -1,6 +1,8 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
 import { CustomButton } from '../common/CustomButton';
 import Image from 'next/image';
+import Link from 'next/link';
+import { AppPathProtected } from '@/lib/constants';
 
 export default function UserHeader() {
   return (
@@ -22,7 +24,9 @@ export default function UserHeader() {
           </Text>
         </Box>
       </Flex>
-      <CustomButton variant="main">Add recipe</CustomButton>
+      <CustomButton variant="main" asChild>
+        <Link href={AppPathProtected.AddRecipe}>Add recipe</Link>
+      </CustomButton>
     </Flex>
   );
 }
