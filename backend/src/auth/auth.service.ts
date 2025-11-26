@@ -152,6 +152,10 @@ export class AuthService {
       secret: process.env.JWT_REFRESH_TOKEN,
     });
 
+    await this.prisma.refreshToken.deleteMany({
+      where: { userId: user.id },
+    });
+
     await this.prisma.refreshToken.create({
       data: {
         token,
