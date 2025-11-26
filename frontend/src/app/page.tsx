@@ -27,7 +27,7 @@ export default function Home() {
             Card heading
           </Heading>
           <Text>default text</Text>
-          <CustomFormField
+          {/* <CustomFormField
             label="Email"
             placeholder="Enter your email"
             required
@@ -36,7 +36,7 @@ export default function Home() {
             // labelHidden
             passwordField
             onChange={(e) => console.log(e.currentTarget.value)}
-          />
+          /> */}
         </GlobalContainer>
       </main>
     </>

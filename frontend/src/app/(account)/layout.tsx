@@ -17,7 +17,7 @@ export default function RootLayout({
       <Box as="main" paddingY="4rem">
         <GlobalContainer>
           <UserHeader />
-          <Grid gap="12rem" templateColumns="190px 1fr">
+          <Grid gap="12rem" templateColumns={isMobile ? '1fr' : '190px 1fr'}>
             {!isMobile && <UserAside />}
             {children}
           </Grid>

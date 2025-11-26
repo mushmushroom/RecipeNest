@@ -9,9 +9,9 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   const queryClient = new QueryClient();
   return (
     <SessionProvider>
-    <QueryClientProvider client={queryClient}>
-      <ChakraProvider value={system}>{children}</ChakraProvider>
-    </QueryClientProvider>
+      <QueryClientProvider client={queryClient}>
+        <ChakraProvider value={system}>{children}</ChakraProvider>
+      </QueryClientProvider>
     </SessionProvider>
   );
 }
