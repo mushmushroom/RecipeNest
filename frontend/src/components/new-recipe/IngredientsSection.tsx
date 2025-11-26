@@ -69,7 +69,7 @@ export function IngredientsSection({
   return (
     <FormSection title="Ingredients">
       {errors.ingredients?.message && (
-        <Text fontSize="1.8rem" color="red">
+        <Text fontSize="1.8rem" color="red.500">
           {errors.ingredients?.message}
         </Text>
       )}
@@ -156,7 +156,7 @@ export function IngredientsSection({
           </CustomButton>
         </Flex>
         {newIngredientError && (
-          <Text fontSize="1.4rem" color="red" paddingLeft="0.4rem" marginTop="5px">
+          <Text fontSize="1.4rem" color="red.500" paddingLeft="0.4rem" marginTop="5px">
             {newIngredientError}
           </Text>
         )}
@@ -227,7 +227,7 @@ export function IngredientsSection({
               </Flex>
 
               {ingredientError && (
-                <Field.ErrorText fontSize="1.4rem" color="red" marginTop="0.4rem">
+                <Field.ErrorText fontSize="1.4rem" color="red.500" marginTop="0.4rem">
                   {ingredientError.name?.message ||
                     ingredientError.amount?.message ||
                     ingredientError.unit?.message}

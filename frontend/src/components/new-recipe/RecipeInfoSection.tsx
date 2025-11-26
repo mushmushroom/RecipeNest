@@ -49,7 +49,7 @@ export function RecipeInfoSection({
         <Field.Root gap="6px" required flexDirection={{ base: 'column', md: 'row' }}>
           <Field.Label fontSize="1.6rem" width="13.2rem" marginBottom={{ base: '1.5rem', md: 0 }}>
             Difficulty
-            <Field.RequiredIndicator color="red" />
+            <Field.RequiredIndicator color="red.500" />
           </Field.Label>
           <chakra.select
             id="difficulty"
@@ -69,7 +69,7 @@ export function RecipeInfoSection({
             ))}
           </chakra.select>
           {errors.difficulty && (
-            <Text fontSize="1.4rem" color="red" paddingLeft="0.4rem" marginTop="5px">
+            <Text fontSize="1.4rem" color="red.500" paddingLeft="0.4rem" marginTop="5px">
               {errors.difficulty.message}
             </Text>
           )}
@@ -84,7 +84,7 @@ export function RecipeInfoSection({
             marginBottom={{ base: '1.5rem', md: 0 }}
           >
             Category
-            <Field.RequiredIndicator color="red" />
+            <Field.RequiredIndicator color="red.500" />
           </Field.Label>
           <ButtonGroup size="md" variant="outline" flexWrap="wrap">
             {categoryOptions.map((category) => (
@@ -109,7 +109,7 @@ export function RecipeInfoSection({
             ))}
           </ButtonGroup>
           {errors.category && (
-            <Text fontSize="1.4rem" color="red" paddingLeft="0.4rem" marginTop="5px">
+            <Text fontSize="1.4rem" color="red.500" paddingLeft="0.4rem" marginTop="5px">
               {errors.category.message}
             </Text>
           )}
@@ -124,7 +124,7 @@ export function RecipeInfoSection({
             marginBottom={{ base: '1.5rem', md: 0 }}
           >
             Cooking time
-            <Field.RequiredIndicator color="red" />
+            <Field.RequiredIndicator color="red.500" />
           </Field.Label>
           <SimpleGrid columns={2} gap="1rem">
             <CustomFormField

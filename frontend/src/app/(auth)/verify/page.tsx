@@ -51,7 +51,7 @@ export default function VerifyPage() {
               required
             />
             {errors.root && (
-              <Text color="red" fontSize="1.6rem">
+              <Text color="red.500" fontSize="1.6rem">
                 {errors.root.message}
               </Text>
             )}

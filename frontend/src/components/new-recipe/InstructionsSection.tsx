@@ -51,7 +51,7 @@ export function InstructionsSection({
     <FormSection title="Cooking instructions">
       <Stack gap="1rem" mb="2rem" alignItems="flex-start">
         {errors.instructions?.message && (
-          <Text fontSize="1.8rem" color="red">
+          <Text fontSize="1.8rem" color="red.500">
             {errors.instructions?.message}
           </Text>
         )}
@@ -72,7 +72,7 @@ export function InstructionsSection({
           />
         </Field.Root>
         {newInstructionError && (
-          <Text fontSize="1.4rem" color="red" paddingLeft="0.4rem">
+          <Text fontSize="1.4rem" color="red.500" paddingLeft="0.4rem">
             {newInstructionError}
           </Text>
         )}
@@ -135,7 +135,7 @@ export function InstructionsSection({
               />
 
               {instructionError?.description && (
-                <Field.ErrorText fontSize="1.4rem" color="red" marginTop="0.4rem">
+                <Field.ErrorText fontSize="1.4rem" color="red.500" marginTop="0.4rem">
                   {instructionError.description.message}
                 </Field.ErrorText>
               )}

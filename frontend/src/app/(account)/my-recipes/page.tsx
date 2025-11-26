@@ -1,3 +1,9 @@
+import RecipeCard from '@/components/recipes/RecipeCard';
+
 export default function MyRecipesPage() {
-  return <div>MyRecipesPage</div>;
+  return (
+    <div>
+      <RecipeCard difficulty="HARD" />
+    </div>
+  );
 }

@@ -43,8 +43,17 @@ const config = defineConfig({
           '400': { value: '#B8DA98' },
           '300': { value: '#DCFFC7' },
         },
-        yellow: { value: '#F6EB15' },
-        red: { value: '#F25858' },
+
+        yellow: {
+          '500': { value: '#86810C' },
+          '400': { value: '#F6EB15' },
+          '300': { value: '#FFFDCF' },
+        },
+
+        red: {
+          '500': { value: '#F25858' },
+          '400': { value: '#FFD2D2' },
+        },
         black: { value: '#1E1E1E' },
         gray: {
           '600': { value: '#32312F' },

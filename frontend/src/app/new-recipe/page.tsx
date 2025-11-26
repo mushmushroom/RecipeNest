@@ -94,7 +94,7 @@ export default function AddRecipePage() {
           <Separator borderColor="black" />
           <UploadImagesSection control={control} />
           {errors.root?.message && (
-            <Text fontSize="1.8rem" color="red" textAlign="center">
+            <Text fontSize="1.8rem" color="red.500" textAlign="center">
               {errors.root?.message}
             </Text>
           )}
