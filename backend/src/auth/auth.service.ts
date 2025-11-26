@@ -12,7 +12,8 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from 'src/user/dto/user.dto';
 import { OtpService } from 'src/otp/otp.service';
 
-const ACCESS_TOKEN_EXPIRE = 15 * 60 * 1000; // 15 minutes
+// const ACCESS_TOKEN_EXPIRE = 15 * 60 * 1000; // 15 minutes
+const ACCESS_TOKEN_EXPIRE = 20 * 1000; // 20 seconds
 const REFRESH_TOKEN_EXPIRE = 30 * 24 * 60 * 60 * 1000; // 30 days
 
 @Injectable()
@@ -90,6 +91,8 @@ export class AuthService {
       throw new UnauthorizedException('Invalid refresh token');
     }
 
+    console.log(refreshToken);
+
     const tokenRecord = await this.prisma.refreshToken.findUnique({
       where: {
         token: refreshToken,
@@ -104,15 +107,15 @@ export class AuthService {
       throw new UnauthorizedException('Refresh token is invalid or expired');
     }
 
-    await this.prisma.refreshToken.update({
-      where: { id: tokenRecord.id },
-      data: { used: true },
-    });
-
     const user = await this.userService.findById(payload.sub);
 
     const accessToken = await this.createAccessToken(user);
     const newRefreshToken = await this.createRefreshToken(user);
+
+    await this.prisma.refreshToken.update({
+      where: { token: refreshToken },
+      data: { used: true },
+    });
 
     return {
       success: true,
@@ -152,10 +155,6 @@ export class AuthService {
       secret: process.env.JWT_REFRESH_TOKEN,
     });
 
-    await this.prisma.refreshToken.deleteMany({
-      where: { userId: user.id },
-    });
-
     await this.prisma.refreshToken.create({
       data: {
         token,
@@ -172,7 +171,7 @@ export class AuthService {
 
     if (!user) throw new BadRequestException('User not found');
 
-    await this.otpService.validateOtp(user.id, dto.otp, "REGISTER");
+    await this.otpService.validateOtp(user.id, dto.otp, 'REGISTER');
 
     await this.prisma.user.update({
       where: {
