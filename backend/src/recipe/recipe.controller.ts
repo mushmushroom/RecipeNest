@@ -24,6 +24,11 @@ export class RecipeController {
     return this.recipeService.findAll(query);
   }
 
+  @Get(':id')
+  findOne(@Param('id') recipeId: number) {
+    return this.recipeService.findOne(recipeId);
+  }
+
   @UseGuards(JwtGuard)
   @Post()
   async create(@Req() req, @Body() dto: AddRecipeDto) {
@@ -39,7 +44,7 @@ export class RecipeController {
     @Body() updateRecipeDto: UpdateRecipeDto,
   ) {
     const userId = req.user.sub;
-    
+
     return this.recipeService.updateRecipe(recipeId, userId, updateRecipeDto);
   }
 

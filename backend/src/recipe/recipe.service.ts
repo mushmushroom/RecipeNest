@@ -5,7 +5,11 @@ import {
   paginate,
   paginateOutput,
 } from 'src/common/pagination/pagination.utils';
-import { AddRecipeDto, RecipeQueryDto, UpdateRecipeDto } from './dto/recipe.dto';
+import {
+  AddRecipeDto,
+  RecipeQueryDto,
+  UpdateRecipeDto,
+} from './dto/recipe.dto';
 
 @Injectable()
 export class RecipeService {
@@ -61,7 +65,15 @@ export class RecipeService {
     return paginateOutput(recipes, total, query);
   }
 
-  async findOne() {}
+  async findOne(id: number) {
+    const existingRecipe = await this.prisma.recipe.findUnique({
+      where: { id },
+    });
+    if (!existingRecipe)
+      throw new NotFoundException(`Recipe with id ${id} is not found`);
+
+    return existingRecipe;
+  }
 
   async createRecipe(userId: number, dto: AddRecipeDto) {
     console.log(userId);
