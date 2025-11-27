@@ -25,8 +25,9 @@ export default function CustomFormField({
   ...rest
 }: CustomFormFieldProps) {
   const InputComponent = passwordField ? PasswordInput : Input;
+
   return (
-    <Field.Root gap="5px" required={required} invalid={!!error}>
+    <Field.Root gap="5px" invalid={!!error}>
       <Field.Label
         htmlFor={id}
         fontSize="1.6rem"

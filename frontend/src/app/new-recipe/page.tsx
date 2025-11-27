@@ -36,7 +36,7 @@ const AddRecipeSchema = z.object({
   ingredients: z.array(ingredientSchema).min(1, 'Add at least one ingredient'),
   instructions: z.array(instructionSchema).min(1, 'Add at least one instruction'),
   difficulty: z.enum(['EASY', 'MEDIUM', 'HARD']),
-  categoryId: z.number(),
+  categoryId: z.number().positive('Category is required'),
   cookingTime: cookingTimeSchema,
 });
 
@@ -54,22 +54,23 @@ export default function AddRecipePage() {
     reset,
   } = useForm<AddRecipeFormValues>({
     resolver: zodResolver(AddRecipeSchema),
+    mode: 'onChange',
     defaultValues: {
+      title: '',
       ingredients: [],
       instructions: [],
       difficulty: 'EASY',
-      // categoryId: 1,
-      cookingTime: {
-        // amount: ,
-        unit: 'min',
-      },
+      categoryId: 0,
+      cookingTime: { amount: 0, unit: 'min' },
+
       // TO ADD
       // images: [],
     },
   });
 
   const { data: session, status } = useSession();
-  console.log('session', session, status);
+  // console.log('session', session, status);
+  // console.log('errors', errors);
   const token = session?.backendTokens.accessToken;
 
   const mutation = useMutation({
@@ -103,7 +104,7 @@ export default function AddRecipePage() {
         throw { message: 'Cannot connect to the server. Please try again later.' };
       }
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       reset();
       toaster.create({
         title: 'Success!',
@@ -155,7 +156,8 @@ export default function AddRecipePage() {
   // }
 
   const onSubmit = async (data: AddRecipeFormValues) => {
-    console.log('Add recipe form data', data);
+    console.log('form values', data);
+    console.log('errors before submit', errors);
     const cookingTimeMinutes =
       data.cookingTime.unit === 'hr' ? data.cookingTime.amount * 60 : data.cookingTime.amount;
     mutation.mutate({
@@ -177,6 +179,7 @@ export default function AddRecipePage() {
             <Text as="span">Add</Text> a recipe
           </Heading>
           <RecipeInfoSection
+            clearErrors={clearErrors}
             register={register}
             errors={errors}
             selectedCategory={watch('categoryId')}

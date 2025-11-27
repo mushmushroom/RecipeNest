@@ -10,7 +10,7 @@ import {
   useFieldArray,
 } from 'react-hook-form';
 import { AddRecipeFormValues } from '../../lib/types/new-recipe';
-import { FiPlus, FiTrash2 } from 'react-icons/fi';
+import { FiTrash2 } from 'react-icons/fi';
 import { CustomButton } from '@/components/common/CustomButton';
 import { useState } from 'react';
 
@@ -35,7 +35,7 @@ export function IngredientsSection({
   });
   const [newIngredient, setNewIngredient] = useState({
     name: '',
-    amount: '',
+    amount: 0,
     unit: unitOptions[0],
   });
   const [newIngredientError, setNewIngredientError] = useState<string | null>(null);
@@ -44,8 +44,13 @@ export function IngredientsSection({
   const canRemove = hasIngredients;
 
   const handleAddIngredient = () => {
-    if (!newIngredient.name.trim() || !newIngredient.amount.trim()) {
+    if (!newIngredient.name.trim() || !newIngredient.amount) {
       setNewIngredientError('Ingredient name and amount are required.');
+      return;
+    }
+
+    if (isNaN(newIngredient.amount) || newIngredient.amount <= 0) {
+      setNewIngredientError('Amount must be a positive number.');
       return;
     }
 
@@ -54,7 +59,7 @@ export function IngredientsSection({
       amount: Number(newIngredient.amount),
       unit: newIngredient.unit,
     });
-    setNewIngredient({ name: '', amount: '', unit: unitOptions[0] });
+    setNewIngredient({ name: '', amount: 0, unit: unitOptions[0] });
     setNewIngredientError(null);
     clearErrors('ingredients');
   };

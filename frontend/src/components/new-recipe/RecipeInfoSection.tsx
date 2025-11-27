@@ -3,7 +3,7 @@
 import { FormSection } from './FormSection';
 import { AddRecipeFormValues } from '../../lib/types/new-recipe';
 import { Button, ButtonGroup, Field, SimpleGrid, Stack, chakra, Text } from '@chakra-ui/react';
-import { FieldErrors, UseFormRegister, UseFormSetValue } from 'react-hook-form';
+import { FieldErrors, UseFormClearErrors, UseFormRegister, UseFormSetValue } from 'react-hook-form';
 import CustomFormField from '@/components/common/CustomFormField';
 import { CategoryOption, DifficultyOption, TimeUnit } from '@/lib/types/recipe';
 
@@ -23,6 +23,7 @@ interface RecipeInfoSectionProps {
   errors: FieldErrors<AddRecipeFormValues>;
   selectedCategory: number;
   setValue: UseFormSetValue<AddRecipeFormValues>;
+  clearErrors: UseFormClearErrors<AddRecipeFormValues>;
 }
 
 export function RecipeInfoSection({
@@ -30,6 +31,7 @@ export function RecipeInfoSection({
   errors,
   selectedCategory,
   setValue,
+  clearErrors,
 }: RecipeInfoSectionProps) {
   return (
     <FormSection title="Recipe info">
@@ -45,7 +47,7 @@ export function RecipeInfoSection({
         <CustomFormField
           label="Title"
           id="title"
-          registration={register('title')}
+          registration={register('title', { required: 'Title is required' })}
           required
           error={errors.title}
         />
@@ -80,44 +82,49 @@ export function RecipeInfoSection({
         </Field.Root>
 
         {/* Category */}
-        <Field.Root gap="6px" required flexDirection={{ base: 'column', md: 'row' }}>
-          <Field.Label
-            fontSize="1.6rem"
-            width="13.2rem"
-            flexShrink="0"
-            marginBottom={{ base: '1.5rem', md: 0 }}
-          >
-            Category
-            <Field.RequiredIndicator color="red.500" />
-          </Field.Label>
-          <ButtonGroup size="md" variant="outline" flexWrap="wrap">
-            {categoryOptions.map((category) => (
-              <Button
-                lineHeight="1.2"
-                height="100%"
-                fontSize="2rem"
-                paddingX="2.4rem"
-                paddingY="7px"
-                key={category.id}
-                borderRadius="10px"
-                borderColor="brand.500"
-                bg={selectedCategory === category.id ? 'brand.500' : 'white'}
-                color={selectedCategory === category.id ? 'white' : 'brand.500'}
-                transition="opacity 0.4s"
-                _hover={{ opacity: 0.5 }}
-                onClick={() => setValue('categoryId', category.id, { shouldDirty: true })}
-                type="button"
-              >
-                {category.name}
-              </Button>
-            ))}
-          </ButtonGroup>
+        <Stack>
+          <Field.Root gap="6px" required flexDirection={{ base: 'column', md: 'row' }}>
+            <Field.Label
+              fontSize="1.6rem"
+              width="13.2rem"
+              flexShrink="0"
+              marginBottom={{ base: '1.5rem', md: 0 }}
+            >
+              Category
+              <Field.RequiredIndicator color="red.500" />
+            </Field.Label>
+            <ButtonGroup size="md" variant="outline" flexWrap="wrap">
+              {categoryOptions.map((category) => (
+                <Button
+                  lineHeight="1.2"
+                  height="100%"
+                  fontSize="2rem"
+                  paddingX="2.4rem"
+                  paddingY="7px"
+                  key={category.id}
+                  borderRadius="10px"
+                  borderColor="brand.500"
+                  bg={selectedCategory === category.id ? 'brand.500' : 'white'}
+                  color={selectedCategory === category.id ? 'white' : 'brand.500'}
+                  transition="opacity 0.4s"
+                  _hover={{ opacity: 0.5 }}
+                  onClick={() => {
+                    setValue('categoryId', category.id, { shouldDirty: true });
+                    clearErrors('categoryId');
+                  }}
+                  type="button"
+                >
+                  {category.name}
+                </Button>
+              ))}
+            </ButtonGroup>
+          </Field.Root>
           {errors.categoryId && (
             <Text fontSize="1.4rem" color="red.500" paddingLeft="0.4rem" marginTop="5px">
               {errors.categoryId.message}
             </Text>
           )}
-        </Field.Root>
+        </Stack>
 
         {/* Cooking time */}
         <Field.Root gap="6px" required flexDirection={{ base: 'column', md: 'row' }}>
