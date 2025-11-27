@@ -1,8 +1,10 @@
 'use client';
 
+import {  CookingTime, DifficultyOption } from "./recipe";
+
 export type IngredientField = {
   name: string;
-  amount: string;
+  amount: number;
   unit: string;
 };
 
@@ -10,20 +12,15 @@ export type InstructionField = {
   description: string;
 };
 
-export type DifficultyOption = 'Easy' | 'Medium' | 'Hard';
 
-export type TimeUnit = 'min' | 'hr';
-
-export type CategoryOption = string;
 
 export interface AddRecipeFormValues {
+  title: string;
   ingredients: IngredientField[];
   instructions: InstructionField[];
   difficulty: DifficultyOption;
-  category: CategoryOption;
-  cookingTime: {
-    amount: string;
-    unit: TimeUnit;
-  };
-  images: File[];
+  categoryId: number;
+  cookingTime: CookingTime;
+  // TO ADD
+  // images: File[];
 }

@@ -7,7 +7,6 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { toaster } from '@/components/ui/toaster';
 import { useEffect, useState } from 'react';
 
-
 const verifySchema = z.object({
   email: z.string().email('Invalid email address'),
   otp: z.string().min(1, 'Please enter your code'),
@@ -26,151 +25,149 @@ export type requestPayload = {
 export default function useVerify() {
   const router = useRouter();
   const searchParams = useSearchParams();
-    const email = searchParams.get('email') ?? '';
-    const [cooldown, setCooldown] = useState(0);
-  
-    useEffect(() => {
-      if (cooldown <= 0) return;
-  
-      const timer = setInterval(() => {
-        setCooldown((prev) => prev - 1);
-      }, 1000);
-  
-      return () => clearInterval(timer);
-    }, [cooldown]);
-  
+  const email = searchParams.get('email') ?? '';
+  const [cooldown, setCooldown] = useState(0);
 
-   const {
-     register,
-     handleSubmit,
-     reset,
-     setError,
-     watch,
-     formState: { errors },
-   } = useForm<verifyInputs>({
-     resolver: zodResolver(verifySchema),
-     mode: 'onChange',
-     defaultValues: {
-       email,
-     },
-   });
+  useEffect(() => {
+    if (cooldown <= 0) return;
 
-   const emailValue = watch('email');
+    const timer = setInterval(() => {
+      setCooldown((prev) => prev - 1);
+    }, 1000);
 
-   const mutationVerify = useMutation({
-     mutationFn: async (verData: verifyPayload) => {
-       try {
-         const res = await fetch(`${BACKEND_URL}/auth/verify-otp`, {
-           method: 'POST',
-           headers: { 'Content-Type': 'application/json' },
-           body: JSON.stringify(verData),
-         });
+    return () => clearInterval(timer);
+  }, [cooldown]);
 
-         // Network worked, but backend returned error
-         const data = await res.json();
-         if (!res.ok) {
-           throw data;
-         }
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setError,
+    watch,
+    formState: { errors },
+  } = useForm<verifyInputs>({
+    resolver: zodResolver(verifySchema),
+    mode: 'onChange',
+    defaultValues: {
+      email,
+    },
+  });
 
-         return data;
-       } catch (err: any) {
-         // Network error or backend down
-         throw {
-           message: err.message || 'Cannot connect to the server. Please try again later.',
-         };
-       }
-     },
-     onSuccess: () => {
-       reset();
-       toaster.create({
-         title: 'Your account was verified successfully',
-         description: 'You will now be redirected to the login page.',
-         type: 'success',
-         duration: 5000,
-       });
+  const emailValue = watch('email');
 
-       setTimeout(() => {
-         router.push(`${AppPathPublic.Login}`);
-       }, 3000);
-     },
+  const mutationVerify = useMutation({
+    mutationFn: async (verData: verifyPayload) => {
+      try {
+        const res = await fetch(`${BACKEND_URL}/auth/verify-otp`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(verData),
+        });
 
-     onError: (error: any) => {
-       if (error?.message) {
-         setError('root', {
-           message: error.message,
-         });
-       }
-     },
-   });
+        // Network worked, but backend returned error
+        const data = await res.json();
+        if (!res.ok) {
+          throw data;
+        }
 
-   const onSubmit = async (data: verifyInputs) => {
-     mutationVerify.mutate({
-       email: data.email,
-       otp: data.otp,
-     });
-   };
+        return data;
+      } catch (err: any) {
+        // Network error or backend down
+        throw {
+          message: err.message || 'Cannot connect to the server. Please try again later.',
+        };
+      }
+    },
+    onSuccess: () => {
+      reset();
+      toaster.create({
+        title: 'Your account was verified successfully',
+        description: 'You will now be redirected to the login page.',
+        type: 'success',
+        duration: 5000,
+      });
 
-   const mutationRequest = useMutation({
-     mutationFn: async (reqData: requestPayload) => {
-       try {
-         const res = await fetch(`${BACKEND_URL}/auth/request-otp`, {
-           method: 'POST',
-           headers: { 'Content-Type': 'application/json' },
-           body: JSON.stringify(reqData),
-         });
+      setTimeout(() => {
+        router.push(`${AppPathPublic.Login}`);
+      }, 3000);
+    },
 
-         // Network worked, but backend returned error
-         const data = await res.json();
-         if (!res.ok) {
-           throw data;
-         }
+    onError: (error: any) => {
+      if (error?.message) {
+        setError('root', {
+          message: error.message,
+        });
+      }
+    },
+  });
 
-         return data;
-       } catch (err: any) {
-         // Network error or backend down
-         throw {
-           message: err.message || 'Cannot connect to the server. Please try again later.',
-         };
-       }
-     },
-     onSuccess: () => {
-       // reset({ otp });
-       toaster.create({
-         title: 'OTP code was resent.',
-         description: 'Please check your email.',
-         type: 'success',
-         duration: 5000,
-       });
+  const onSubmit = async (data: verifyInputs) => {
+    mutationVerify.mutate({
+      email: data.email,
+      otp: data.otp,
+    });
+  };
 
-     },
+  const mutationRequest = useMutation({
+    mutationFn: async (reqData: requestPayload) => {
+      try {
+        const res = await fetch(`${BACKEND_URL}/auth/request-otp`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(reqData),
+        });
 
-     onError: (error: any) => {
-       if (error?.message) {
-         setError('root', {
-           message: error.message,
-         });
-       }
-     },
-   });
+        // Network worked, but backend returned error
+        const data = await res.json();
+        if (!res.ok) {
+          throw data;
+        }
 
-   function requestOtp() {
-     if (!emailValue) {
-       toaster.create({
-         title: 'Email missing',
-         description: 'Enter your email to request a new OTP.',
-       });
-       return;
-     }
+        return data;
+      } catch (err: any) {
+        // Network error or backend down
+        throw {
+          message: err.message || 'Cannot connect to the server. Please try again later.',
+        };
+      }
+    },
+    onSuccess: () => {
+      // reset({ otp });
+      toaster.create({
+        title: 'OTP code was resent.',
+        description: 'Please check your email.',
+        type: 'success',
+        duration: 5000,
+      });
+    },
 
-     mutationRequest.mutate(
-       { email: emailValue },
-       {
-         onSuccess: () => {
-           setCooldown(60);
-         },
-       }
-     );
-   }
+    onError: (error: any) => {
+      if (error?.message) {
+        setError('root', {
+          message: error.message,
+        });
+      }
+    },
+  });
+
+  function requestOtp() {
+    if (!emailValue) {
+      toaster.create({
+        title: 'Email missing',
+        description: 'Enter your email to request a new OTP.',
+      });
+      return;
+    }
+
+    mutationRequest.mutate(
+      { email: emailValue },
+      {
+        onSuccess: () => {
+          setCooldown(60);
+        },
+      }
+    );
+  }
   return {
     handleSubmit,
     onSubmit,
@@ -179,6 +176,6 @@ export default function useVerify() {
     mutationVerify,
     mutationRequest,
     requestOtp,
-    cooldown
+    cooldown,
   };
 }

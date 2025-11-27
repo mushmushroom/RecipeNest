@@ -55,6 +55,7 @@ export const config = {
     '/register',
     '/verify',
     '/recipes',
+    '/new-recipe',
     '/recipes/:path*',
     '/my-recipes/:path*',
     // '/my-recipes/new',

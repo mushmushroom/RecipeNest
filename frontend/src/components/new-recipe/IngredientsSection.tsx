@@ -51,7 +51,7 @@ export function IngredientsSection({
 
     append({
       name: newIngredient.name.trim(),
-      amount: newIngredient.amount.trim(),
+      amount: Number(newIngredient.amount),
       unit: newIngredient.unit,
     });
     setNewIngredient({ name: '', amount: '', unit: unitOptions[0] });
@@ -214,6 +214,7 @@ export function IngredientsSection({
                   type="hidden"
                   {...register(`ingredients.${index}.amount` as const, {
                     required: 'Amount is required',
+                    valueAsNumber: true,
                   })}
                   defaultValue={field.amount}
                 />

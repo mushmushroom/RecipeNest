@@ -1,31 +1,27 @@
 'use client';
 
 import { FormSection } from './FormSection';
-import {
-  AddRecipeFormValues,
-  CategoryOption,
-  DifficultyOption,
-  TimeUnit,
-} from '../../lib/types/new-recipe';
+import { AddRecipeFormValues } from '../../lib/types/new-recipe';
 import { Button, ButtonGroup, Field, SimpleGrid, Stack, chakra, Text } from '@chakra-ui/react';
 import { FieldErrors, UseFormRegister, UseFormSetValue } from 'react-hook-form';
 import CustomFormField from '@/components/common/CustomFormField';
+import { CategoryOption, DifficultyOption, TimeUnit } from '@/lib/types/recipe';
 
-const difficultyOptions: DifficultyOption[] = ['Easy', 'Medium', 'Hard'];
+const difficultyOptions: DifficultyOption[] = ['EASY', 'MEDIUM', 'HARD'];
 const categoryOptions: CategoryOption[] = [
-  'Desserts',
-  'Breakfast',
-  'Pasta',
-  'Soups',
-  'Salads',
-  'Other',
+  { id: 1, name: 'Desserts' },
+  { id: 2, name: 'Breakfast' },
+  { id: 3, name: 'Pasta' },
+  { id: 4, name: 'Soups' },
+  { id: 5, name: 'Salads' },
+  { id: 6, name: 'Other' },
 ];
 const timeUnits: TimeUnit[] = ['min', 'hr'];
 
 interface RecipeInfoSectionProps {
   register: UseFormRegister<AddRecipeFormValues>;
   errors: FieldErrors<AddRecipeFormValues>;
-  selectedCategory: CategoryOption;
+  selectedCategory: number;
   setValue: UseFormSetValue<AddRecipeFormValues>;
 }
 
@@ -45,6 +41,14 @@ export function RecipeInfoSection({
         paddingY="3.6rem"
         paddingX="2rem"
       >
+        {/* Title*/}
+        <CustomFormField
+          label="Title"
+          id="title"
+          registration={register('title')}
+          required
+          error={errors.title}
+        />
         {/* Difficulty */}
         <Field.Root gap="6px" required flexDirection={{ base: 'column', md: 'row' }}>
           <Field.Label fontSize="1.6rem" width="13.2rem" marginBottom={{ base: '1.5rem', md: 0 }}>
@@ -94,23 +98,23 @@ export function RecipeInfoSection({
                 fontSize="2rem"
                 paddingX="2.4rem"
                 paddingY="7px"
-                key={category}
+                key={category.id}
                 borderRadius="10px"
                 borderColor="brand.500"
-                bg={selectedCategory === category ? 'brand.500' : 'white'}
-                color={selectedCategory === category ? 'white' : 'brand.500'}
+                bg={selectedCategory === category.id ? 'brand.500' : 'white'}
+                color={selectedCategory === category.id ? 'white' : 'brand.500'}
                 transition="opacity 0.4s"
                 _hover={{ opacity: 0.5 }}
-                onClick={() => setValue('category', category, { shouldDirty: true })}
+                onClick={() => setValue('categoryId', category.id, { shouldDirty: true })}
                 type="button"
               >
-                {category}
+                {category.name}
               </Button>
             ))}
           </ButtonGroup>
-          {errors.category && (
+          {errors.categoryId && (
             <Text fontSize="1.4rem" color="red.500" paddingLeft="0.4rem" marginTop="5px">
-              {errors.category.message}
+              {errors.categoryId.message}
             </Text>
           )}
         </Field.Root>
@@ -134,6 +138,7 @@ export function RecipeInfoSection({
               min="0"
               registration={register('cookingTime.amount', {
                 required: 'Provide the cooking time',
+                valueAsNumber: true,
               })}
               error={errors.cookingTime?.amount}
             />

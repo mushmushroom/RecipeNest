@@ -8,8 +8,40 @@ import { RecipeInfoSection } from '@/components/new-recipe/RecipeInfoSection';
 import { UploadImagesSection } from '@/components/new-recipe/UploadImagesSection';
 import { AddRecipeFormValues } from '@/lib/types/new-recipe';
 import { CustomButton } from '@/components/common/CustomButton';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useSession } from 'next-auth/react';
+import { useMutation } from '@tanstack/react-query';
+import { RecipePayload } from '@/lib/types/recipe';
+import { AppPathProtected, BACKEND_URL } from '@/lib/constants';
+import { Toaster, toaster } from '@/components/ui/toaster';
+import { useRouter } from 'next/navigation';
+
+const ingredientSchema = z.object({
+  name: z.string().min(1, 'Name is required'),
+  amount: z.number().positive('Amount must be greater than zero'),
+  unit: z.string(),
+});
+const instructionSchema = z.object({
+  description: z.string().min(1, 'Description is required'),
+});
+
+const cookingTimeSchema = z.object({
+  amount: z.number().positive('Amount must be greater than zero'),
+  unit: z.enum(['min', 'hr']),
+});
+
+const AddRecipeSchema = z.object({
+  title: z.string().min(1, 'Title is required'),
+  ingredients: z.array(ingredientSchema).min(1, 'Add at least one ingredient'),
+  instructions: z.array(instructionSchema).min(1, 'Add at least one instruction'),
+  difficulty: z.enum(['EASY', 'MEDIUM', 'HARD']),
+  categoryId: z.number(),
+  cookingTime: cookingTimeSchema,
+});
 
 export default function AddRecipePage() {
+  const router = useRouter();
   const {
     control,
     register,
@@ -19,49 +51,123 @@ export default function AddRecipePage() {
     watch,
     setError,
     clearErrors,
+    reset,
   } = useForm<AddRecipeFormValues>({
+    resolver: zodResolver(AddRecipeSchema),
     defaultValues: {
       ingredients: [],
       instructions: [],
-      difficulty: 'Easy',
-      category: '',
+      difficulty: 'EASY',
+      // categoryId: 1,
       cookingTime: {
-        amount: '',
+        // amount: ,
         unit: 'min',
       },
-      images: [],
+      // TO ADD
+      // images: [],
     },
   });
 
-  const onSubmit = (values: AddRecipeFormValues) => {
-    let hasError = false;
+  const { data: session, status } = useSession();
+  console.log('session', session, status);
+  const token = session?.backendTokens.accessToken;
 
-    if (!values.ingredients.length) {
-      setError('ingredients', {
-        type: 'manual',
-        message: 'Add at least one ingredient before submitting.',
+  const mutation = useMutation({
+    mutationFn: async (recipe: RecipePayload) => {
+      try {
+        const res = await fetch(`${BACKEND_URL}/recipe`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(recipe),
+        });
+
+        // Network worked, but backend returned error
+        const data = await res.json();
+        if (!res.ok) {
+          throw data;
+        }
+
+        return data;
+      } catch (err) {
+        if (err instanceof Error) {
+          throw { message: err.message };
+        }
+
+        if (typeof err === 'object' && err !== null && 'message' in err) {
+          throw { message: (err as any).message };
+        }
+
+        throw { message: 'Cannot connect to the server. Please try again later.' };
+      }
+    },
+    onSuccess: (data) => {
+      reset();
+      toaster.create({
+        title: 'Success!',
+        description: 'Recipe was added successfully',
+        type: 'success',
+        duration: 5000,
       });
-      hasError = true;
-    }
 
-    if (!values.instructions.length) {
-      setError('instructions', {
-        type: 'manual',
-        message: 'Add at least one instruction before submitting.',
-      });
-      hasError = true;
-    }
+      setTimeout(() => {
+        router.push(`${AppPathProtected.MyRecipes}`);
+      }, 3000);
+    },
 
-    if (hasError) {
-      setError('root', {
-        type: 'manual',
-        message: 'Check if all the required fields are filled.',
-      });
-      return;
-    }
+    onError: (error: any) => {
+      console.log(error);
+      if (error?.message) {
+        setError('root', {
+          message: error.message,
+        });
+      }
+    },
+  });
 
-    console.log('Add recipe form data', values);
+  // const onSubmit = (values: RecipePayload) => {
+  // let hasError = false;
+
+  // if (!values.ingredients.length) {
+  //   setError('ingredients', {
+  //     type: 'manual',
+  //     message: 'Add at least one ingredient before submitting.',
+  //   });
+  //   hasError = true;
+  // }
+
+  // if (!values.instructions.length) {
+  //   setError('instructions', {
+  //     type: 'manual',
+  //     message: 'Add at least one instruction before submitting.',
+  //   });
+  //   hasError = true;
+  // }
+
+  // if (hasError) {
+  //   setError('root', {
+  //     type: 'manual',
+  //     message: 'Check if all the required fields are filled.',
+  //   });
+  //   return;
+  // }
+
+  const onSubmit = async (data: AddRecipeFormValues) => {
+    console.log('Add recipe form data', data);
+    const cookingTimeMinutes =
+      data.cookingTime.unit === 'hr' ? data.cookingTime.amount * 60 : data.cookingTime.amount;
+    mutation.mutate({
+      title: data.title,
+      ingredients: data.ingredients,
+      instructions: data.instructions,
+      difficulty: data.difficulty,
+      categoryId: data.categoryId,
+      cookingTime: cookingTimeMinutes,
+    });
   };
+  // };
 
   return (
     <Box minH="100vh" py={{ base: '2rem', md: '4rem' }} px="1rem">
@@ -70,6 +176,13 @@ export default function AddRecipePage() {
           <Heading as="h1" size="h1" textAlign="center">
             <Text as="span">Add</Text> a recipe
           </Heading>
+          <RecipeInfoSection
+            register={register}
+            errors={errors}
+            selectedCategory={watch('categoryId')}
+            setValue={setValue}
+          />
+          <Separator borderColor="black" />
 
           <IngredientsSection
             control={control}
@@ -85,14 +198,9 @@ export default function AddRecipePage() {
             clearErrors={clearErrors}
           />
           <Separator borderColor="black" />
-          <RecipeInfoSection
-            register={register}
-            errors={errors}
-            selectedCategory={watch('category')}
-            setValue={setValue}
-          />
-          <Separator borderColor="black" />
-          <UploadImagesSection control={control} />
+
+          {/* TO ADD */}
+          {/* <UploadImagesSection control={control} /> */}
           {errors.root?.message && (
             <Text fontSize="1.8rem" color="red.500" textAlign="center">
               {errors.root?.message}
@@ -104,6 +212,7 @@ export default function AddRecipePage() {
           </Flex>
         </Stack>
       </Container>
+      <Toaster />
     </Box>
   );
 }
