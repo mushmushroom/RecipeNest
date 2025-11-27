@@ -3,14 +3,13 @@ import UserAside from '@/components/account/UserAside';
 import UserHeader from '@/components/account/UserHeader';
 import GlobalContainer from '@/components/GlobalContainer';
 import Header from '@/components/Header';
-import { Box, Grid, useBreakpointValue } from '@chakra-ui/react';
+import { Box, Grid, useBreakpointValue, useMediaQuery } from '@chakra-ui/react';
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const isMobile = useBreakpointValue({ base: true, md: false });
   return (
     <>
       <Header />
@@ -18,8 +17,16 @@ export default function RootLayout({
         <GlobalContainer>
           <UserHeader />
           <Box as="section">
-            <Grid gap="12rem" templateColumns={isMobile ? '1fr' : '190px 1fr'}>
-              {!isMobile && <UserAside />}
+            <Grid
+              gap="12rem"
+              templateColumns={{
+                base: '1fr',
+                md: '190px 1fr',
+              }}
+            >
+              <Box hideBelow="md">
+                <UserAside />
+              </Box>
               {children}
             </Grid>
           </Box>

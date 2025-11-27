@@ -24,7 +24,7 @@ export const buttonRecipe = defineRecipe({
       main: { bg: 'brand.500', color: 'black' },
       secondary: { bg: 'green.400', color: 'black' },
       danger: { bgColor: 'red', color: 'white' },
-      outline: { borderWidth: '1px', borderColor: 'black' },
+      outline: { borderWidth: '1px', borderColor: 'black', backgroundColor: 'white' },
       link: { fontSize: '1.8rem', gap: '8px', fontWeight: '500' },
     },
     size: {

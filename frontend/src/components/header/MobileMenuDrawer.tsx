@@ -1,20 +1,25 @@
 'use client';
 
-import { Drawer, VStack, IconButton, Portal } from '@chakra-ui/react';
+import { Drawer, VStack, IconButton, Portal, Button } from '@chakra-ui/react';
 import Link from 'next/link';
 import { IoMenu } from 'react-icons/io5';
 import { FaRegWindowClose } from 'react-icons/fa';
 import { useState } from 'react';
 import { AppPathProtected, AppPathPublic } from '@/lib/constants';
+import { useAuthData } from '@/lib/hooks/useAuth';
+import LoginButton from './LoginButton';
+import { signOut } from 'next-auth/react';
 
 const headerMobileMenuLinks = [
   { text: 'All recipes', href: AppPathPublic.Recipes },
-  { text: 'My account', href: AppPathProtected.MyRecipes },
+  { text: 'My recipes', href: AppPathProtected.MyRecipes },
   { text: 'Favorites', href: AppPathProtected.Favorites },
   { text: 'Settings', href: AppPathProtected.Settings },
+  { text: 'Logout', href: '' },
 ];
 export default function MobileMenuDrawer() {
   const [isDrawerOpen, setDrawerOpen] = useState(false);
+  const { isSessionReady } = useAuthData();
 
   return (
     <>
@@ -43,16 +48,38 @@ export default function MobileMenuDrawer() {
             </Drawer.CloseTrigger>
             <Drawer.Body paddingRight="40px" paddingLeft="4rem">
               <VStack align="start" gap="4rem" mt="4rem" minHeight="100vh">
-                {headerMobileMenuLinks.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    style={{ fontSize: '2.2rem' }}
-                    onClick={() => setDrawerOpen(false)}
-                  >
-                    {item.text}
-                  </Link>
-                ))}
+                {isSessionReady ? (
+                  headerMobileMenuLinks.map((item) =>
+                    item.text === 'Logout' ? (
+                      <Button
+                        variant="ghost"
+                        paddingLeft="0"
+                        key={item.href}
+                        fontWeight="400"
+                        style={{ fontSize: '2.2rem' }}
+                        onClick={() =>
+                          signOut({
+                            redirect: true,
+                            callbackUrl: AppPathPublic.Recipes,
+                          })
+                        }
+                      >
+                        {item.text}
+                      </Button>
+                    ) : (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        style={{ fontSize: '2.2rem' }}
+                        onClick={() => setDrawerOpen(false)}
+                      >
+                        {item.text}
+                      </Link>
+                    )
+                  )
+                ) : (
+                  <LoginButton />
+                )}
               </VStack>
             </Drawer.Body>
           </Drawer.Content>

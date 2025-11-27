@@ -16,6 +16,7 @@ import { RecipePayload } from '@/lib/types/recipe';
 import { AppPathProtected, BACKEND_URL } from '@/lib/constants';
 import { Toaster, toaster } from '@/components/ui/toaster';
 import { useRouter } from 'next/navigation';
+import { useAuthData } from '@/lib/hooks/useAuth';
 
 const ingredientSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -68,10 +69,7 @@ export default function AddRecipePage() {
     },
   });
 
-  const { data: session, status } = useSession();
-  // console.log('session', session, status);
-  // console.log('errors', errors);
-  const token = session?.backendTokens.accessToken;
+  const token = useAuthData(true);
 
   const mutation = useMutation({
     mutationFn: async (recipe: RecipePayload) => {

@@ -11,6 +11,7 @@ import {
   Heading,
   Stack,
   Grid,
+  useMediaQuery,
 } from '@chakra-ui/react';
 
 import FiltersPanel from '@/components/filters/FiltersPanel';
@@ -23,7 +24,10 @@ export default function RecipesPage() {
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const [isCollapsed, setCollapsed] = useState(false);
 
-  const isMobile = useBreakpointValue({ base: true, md: false });
+  // const [isLargerThanMd] = useMediaQuery(['(min-width: 768px)']);
+  // const isMobile = !isLargerThanMd;
+
+  // if (isMobile === undefined) return null;
 
   return (
     <Box as="main" paddingY="4rem">
@@ -32,22 +36,31 @@ export default function RecipesPage() {
           All recipes
         </Heading>
         {/* GRID LAYOUT */}
-        <Grid gap="12rem" templateColumns={isMobile ? '1fr' : isCollapsed ? '1fr' : '190px 1fr'}>
+        <Grid
+          gap="12rem"
+          templateColumns={{
+            base: '1fr',
+            md: isCollapsed ? '1fr' : '190px 1fr',
+          }}
+        >
           {/* DESKTOP FILTERS */}
-          {!isMobile && (
-            <Box display={isCollapsed ? 'none' : 'block'}>
-              <Collapsible.Root open={!isCollapsed}>
-                <Collapsible.Content>
-                  <FiltersPanel />
-                </Collapsible.Content>
-              </Collapsible.Root>
-            </Box>
-          )}
+          {/* Desktop only */}
+          <Box display={isCollapsed ? 'none' : 'block'} hideBelow="md">
+            <Collapsible.Root open={!isCollapsed}>
+              <Collapsible.Content>
+                <FiltersPanel />
+              </Collapsible.Content>
+            </Collapsible.Root>
+          </Box>
 
           {/* RECIPE LIST AND FILTERS BUTTON*/}
           <Stack gap="3rem">
             <CustomButton
-              onClick={isMobile ? () => setDrawerOpen(true) : () => setCollapsed((prev) => !prev)}
+              onClick={
+                window.innerWidth < 768
+                  ? () => setDrawerOpen(true)
+                  : () => setCollapsed((prev) => !prev)
+              }
               variant="link"
               style={{
                 cursor: 'pointer',
@@ -60,7 +73,8 @@ export default function RecipesPage() {
               }}
             >
               <FaFilter />
-              {isMobile ? 'Show filters' : isCollapsed ? 'Show filters' : 'Hide filters'}
+              <Box hideFrom="md">Show filters</Box>
+              <Box hideBelow="md">{isCollapsed ? 'Show filters' : 'Hide filters'}</Box>
             </CustomButton>
             <Box borderTop="1px solid black">
               <RecipeCard difficulty="HARD" />
@@ -70,7 +84,8 @@ export default function RecipesPage() {
       </GlobalContainer>
 
       {/* MOBILE DRAWER */}
-      {isMobile && (
+      {/* Mobile only */}
+      <Box asChild hideFrom="md">
         <Drawer.Root
           open={isDrawerOpen}
           onOpenChange={(e) => setDrawerOpen(e.open)}
@@ -95,7 +110,7 @@ export default function RecipesPage() {
             </Drawer.Content>
           </Portal>
         </Drawer.Root>
-      )}
+      </Box>
     </Box>
   );
 }
