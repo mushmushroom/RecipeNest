@@ -1,5 +1,6 @@
 import { NotFoundException } from '@nestjs/common';
 import { QueryPaginationDto } from './query-pagination.dto';
+import { RecipeQueryDto } from 'src/recipe/dto/recipe.dto';
 
 export interface PaginateOutput<T> {
   data: T[];
@@ -51,8 +52,8 @@ export const paginateOutput = <T>(
       data,
       meta: {
         total,
-        lastPage,
-        currentPage: page,
+        lastPage: 1,
+        currentPage: 1,
         totalPerPage: pageSize,
         prevPage: null,
         nextPage: null,

@@ -1,0 +1,112 @@
+import { Injectable } from '@nestjs/common';
+import { QueryPaginationDto } from 'src/common/pagination/query-pagination.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
+import {
+  paginate,
+  paginateOutput,
+} from 'src/common/pagination/pagination.utils';
+import { AddRecipeDto, RecipeQueryDto } from './dto/recipe.dto';
+
+@Injectable()
+export class RecipeService {
+  constructor(private prisma: PrismaService) {}
+
+  async findAll(query: QueryPaginationDto & RecipeQueryDto = {}) {
+    const where: any = {};
+
+    if (query.search) {
+      where.OR = [
+        { title: { contains: query.search, mode: 'insensitive' } },
+        {
+          ingredients: {
+            some: { name: { contains: query.search, mode: 'insensitive' } },
+          },
+        },
+      ];
+    }
+
+    if (query.category) {
+      where.categoryId = Number(query.category);
+    }
+
+    if (query.difficulty) {
+      where.difficulty = query.difficulty;
+    }
+
+    if (query.cookingTime) {
+      switch (query.cookingTime) {
+        case 'LESS_30':
+          where.cookingTime = { lt: 30 };
+          break;
+        case 'BETWEEN_30_60':
+          where.cookingTime = { gte: 30, lte: 60 };
+          break;
+        case 'MORE_60':
+          where.cookingTime = { gt: 60 };
+          break;
+      }
+    }
+    const [recipes, total] = await Promise.all([
+      await this.prisma.recipe.findMany({
+        ...paginate(query),
+        where,
+        include: {
+          ingredients: true,
+          instructions: true,
+        },
+      }),
+      await this.prisma.recipe.count({ where }),
+    ]);
+
+    return paginateOutput(recipes, total, query);
+  }
+
+  async findOne() {}
+
+  async createRecipe(userId: number, dto: AddRecipeDto) {
+    console.log(userId);
+    return this.prisma.recipe.create({
+      data: {
+        title: dto.title,
+        difficulty: dto.difficulty,
+        categoryId: dto.categoryId,
+        authorId: userId,
+        cookingTime: +dto.cookingTime,
+        ingredients: {
+          create: dto.ingredients.map((ing) => ({
+            name: ing.name,
+            amount: ing.amount,
+            unit: ing.unit,
+          })),
+        },
+        instructions: {
+          create: dto.instructions.map((inst, index) => ({
+            description: inst.description,
+            step: index + 1,
+          })),
+        },
+      },
+      include: {
+        ingredients: true,
+        instructions: true,
+      },
+    });
+  }
+
+  async delete(recipeId: number) {
+    // Delete ingredients
+    await this.prisma.ingredient.deleteMany({
+      where: { recipeId },
+    });
+
+    // Delete instructions
+    await this.prisma.instruction.deleteMany({
+      where: { recipeId },
+    });
+
+    // Delete recipe
+    return this.prisma.recipe.delete({
+      where: { id: recipeId },
+    });
+  }
+}

@@ -12,8 +12,8 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from 'src/user/dto/user.dto';
 import { OtpService } from 'src/otp/otp.service';
 
-// const ACCESS_TOKEN_EXPIRE = 15 * 60 * 1000; // 15 minutes
-const ACCESS_TOKEN_EXPIRE = 20 * 1000; // 20 seconds
+const ACCESS_TOKEN_EXPIRE = 15 * 60 * 1000; // 15 minutes
+// const ACCESS_TOKEN_EXPIRE = 20 * 1000; // 20 seconds
 const REFRESH_TOKEN_EXPIRE = 30 * 24 * 60 * 60 * 1000; // 30 days
 
 @Injectable()
@@ -86,8 +86,6 @@ export class AuthService {
       throw new UnauthorizedException('Invalid refresh token');
     }
 
-    console.log(refreshToken);
-
     const tokenRecord = await this.prisma.refreshToken.findUnique({
       where: {
         token: refreshToken,
@@ -106,6 +104,8 @@ export class AuthService {
 
     const accessToken = await this.createAccessToken(user);
     const newRefreshToken = await this.createRefreshToken(user);
+
+    console.log('new access token', accessToken);
 
     await this.prisma.refreshToken.update({
       where: { token: refreshToken },
@@ -134,7 +134,7 @@ export class AuthService {
     };
 
     return this.jwtService.signAsync(payload, {
-      expiresIn: '20s',
+      expiresIn: '15m',
       secret: process.env.JWT_SECRET_TOKEN,
     });
   }
@@ -146,7 +146,7 @@ export class AuthService {
       username: user.username,
     };
     const token = await this.jwtService.signAsync(payload, {
-      expiresIn: '7d',
+      expiresIn: '30d',
       secret: process.env.JWT_REFRESH_TOKEN,
     });
 

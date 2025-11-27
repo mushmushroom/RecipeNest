@@ -11,6 +11,7 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { CategoryModule } from './category/category.module';
 import { DifficultyModule } from './difficulty/difficulty.module';
+import { RecipeModule } from './recipe/recipe.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { DifficultyModule } from './difficulty/difficulty.module';
     ]),
     CategoryModule,
     DifficultyModule,
+    RecipeModule,
   ],
   controllers: [AppController],
   providers: [
