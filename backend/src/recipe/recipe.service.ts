@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { QueryPaginationDto } from 'src/common/pagination/query-pagination.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import {
   paginate,
   paginateOutput,
 } from 'src/common/pagination/pagination.utils';
-import { AddRecipeDto, RecipeQueryDto } from './dto/recipe.dto';
+import { AddRecipeDto, RecipeQueryDto, UpdateRecipeDto } from './dto/recipe.dto';
 
 @Injectable()
 export class RecipeService {
@@ -93,20 +93,58 @@ export class RecipeService {
     });
   }
 
-  async delete(recipeId: number) {
-    // Delete ingredients
+  async updateRecipe(recipeId: number, authorId: number, dto: UpdateRecipeDto) {
+    const existingRecipe = await this.prisma.recipe.findUnique({
+      where: { id: recipeId, authorId },
+    });
+    if (!existingRecipe)
+      throw new NotFoundException(`Recipe with id ${recipeId} not found`);
+
+    return this.prisma.recipe.update({
+      where: { id: recipeId, authorId },
+      data: {
+        title: dto.title,
+        difficulty: dto.difficulty,
+        categoryId: dto.categoryId,
+        cookingTime: dto.cookingTime,
+        ingredients: dto.ingredients
+          ? {
+              deleteMany: {},
+              create: dto.ingredients.map((ing) => ({
+                name: ing.name,
+                amount: ing.amount,
+                unit: ing.unit,
+              })),
+            }
+          : undefined,
+        instructions: dto.instructions
+          ? {
+              deleteMany: {},
+              create: dto.instructions.map((inst, index) => ({
+                description: inst.description,
+                step: index + 1,
+              })),
+            }
+          : undefined,
+      },
+      include: {
+        ingredients: true,
+        instructions: true,
+      },
+    });
+  }
+
+  async delete(recipeId: number, authorId: number) {
     await this.prisma.ingredient.deleteMany({
       where: { recipeId },
     });
 
-    // Delete instructions
     await this.prisma.instruction.deleteMany({
       where: { recipeId },
     });
 
-    // Delete recipe
     return this.prisma.recipe.delete({
-      where: { id: recipeId },
+      where: { id: recipeId, authorId },
     });
   }
 }

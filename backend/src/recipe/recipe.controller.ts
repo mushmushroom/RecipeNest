@@ -4,13 +4,14 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
 import { RecipeService } from './recipe.service';
-import { AddRecipeDto, RecipeQueryDto } from './dto/recipe.dto';
+import { AddRecipeDto, RecipeQueryDto, UpdateRecipeDto } from './dto/recipe.dto';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { QueryPaginationDto } from 'src/common/pagination/query-pagination.dto';
 
@@ -26,11 +27,25 @@ export class RecipeController {
   @UseGuards(JwtGuard)
   @Post()
   async create(@Req() req, @Body() dto: AddRecipeDto) {
-    return this.recipeService.createRecipe(req.user.sub, dto);
+    const userId = req.user.sub;
+    return this.recipeService.createRecipe(userId, dto);
   }
 
+  @UseGuards(JwtGuard)
+  @Patch(':id')
+  async updateRecipe(
+    @Param('id') recipeId: number,
+    @Req() req,
+    @Body() updateRecipeDto: UpdateRecipeDto,
+  ) {
+    const userId = req.user.sub;
+    
+    return this.recipeService.updateRecipe(recipeId, userId, updateRecipeDto);
+  }
+
+  @UseGuards(JwtGuard)
   @Delete(':id')
-  async delete(@Param('id') id: number) {
-    return this.recipeService.delete(id);
+  async delete(@Param('id') id: number, @Req() req) {
+    return this.recipeService.delete(id, req.user.sub);
   }
 }

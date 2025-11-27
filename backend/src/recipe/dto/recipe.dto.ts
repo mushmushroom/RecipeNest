@@ -12,6 +12,7 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { Difficulty } from '@prisma/client';
+import { PartialType } from '@nestjs/mapped-types';
 
 export class IngredientDto {
   @IsString()
@@ -67,6 +68,8 @@ export class AddRecipeDto {
   @IsInt()
   cookingTime: number;
 }
+
+export class UpdateRecipeDto extends PartialType(AddRecipeDto) {}
 
 export class RecipeQueryDto {
   @IsOptional()
