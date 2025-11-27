@@ -17,10 +17,12 @@ export default function RootLayout({
       <Box as="main" paddingY="4rem">
         <GlobalContainer>
           <UserHeader />
-          <Grid gap="12rem" templateColumns={isMobile ? '1fr' : '190px 1fr'}>
-            {!isMobile && <UserAside />}
-            {children}
-          </Grid>
+          <Box as="section">
+            <Grid gap="12rem" templateColumns={isMobile ? '1fr' : '190px 1fr'}>
+              {!isMobile && <UserAside />}
+              {children}
+            </Grid>
+          </Box>
         </GlobalContainer>
       </Box>
     </>
