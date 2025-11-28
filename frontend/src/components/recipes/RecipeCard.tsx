@@ -26,7 +26,6 @@ export default function RecipeCard({ difficulty }: RecipeCardProps) {
       as="article"
       borderRadius="10px"
       overflow="hidden"
-      maxW="320px"
       borderColor="gray.300"
       borderWidth="1px"
     >

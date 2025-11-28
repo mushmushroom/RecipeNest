@@ -15,3 +15,18 @@ export enum AppPathProtected {
   Favorites = '/favorites',
   Settings = '/settings',
 }
+
+export const categoriesHome = [
+  {
+    text: 'Salads',
+    img: '/categories/salads.jpg',
+  },
+  {
+    text: 'Pasta',
+    img: '/categories/pasta.jpg',
+  },
+  {
+    text: 'Desserts',
+    img: '/categories/desserts.jpg',
+  },
+];

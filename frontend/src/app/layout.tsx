@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Nunito_Sans, Montagu_Slab } from 'next/font/google';
 import './globals.css';
 import Providers from '@/components/Providers';
-import Header from '@/components/Header';
+import Header from '@/components/header/Header';
 
 export const nunitoSans = Nunito_Sans({
   subsets: ['latin'],

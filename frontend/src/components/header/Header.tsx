@@ -1,15 +1,15 @@
 'use client';
 // import { useSession } from 'next-auth/react';
 import { Box, Flex, useBreakpointValue, useMediaQuery } from '@chakra-ui/react';
-import GlobalContainer from './GlobalContainer';
+import GlobalContainer from '../GlobalContainer';
 import Image from 'next/image';
 import Link from 'next/link';
 import { AppPathPublic } from '@/lib/constants';
 
-import SearchInput from './header/SearchInput';
-import HeaderMenu from './header/HeaderMenu';
-import MobileSearch from './header/MobileSearch';
-import MobileMenuDrawer from './header/MobileMenuDrawer';
+import SearchInput from './SearchInput';
+import HeaderMenu from './HeaderMenu';
+import MobileSearch from './MobileSearch';
+import MobileMenuDrawer from './MobileMenuDrawer';
 
 export default function Header() {
   // const { data: session, status } = useSession();

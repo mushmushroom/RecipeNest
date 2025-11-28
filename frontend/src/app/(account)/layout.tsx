@@ -2,7 +2,7 @@
 import UserAside from '@/components/account/UserAside';
 import UserHeader from '@/components/account/UserHeader';
 import GlobalContainer from '@/components/GlobalContainer';
-import Header from '@/components/Header';
+import Header from '@/components/header/Header';
 import { Box, Grid, useBreakpointValue, useMediaQuery } from '@chakra-ui/react';
 
 export default function RootLayout({
