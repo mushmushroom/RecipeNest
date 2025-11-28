@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import { toaster } from '@/components/ui/toaster';
 
@@ -19,6 +19,8 @@ export type loginPayload = {
 
 export default function useLogin() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const email = searchParams.get('email') ?? '';
 
   const {
     register,
@@ -26,7 +28,11 @@ export default function useLogin() {
     reset,
     setError,
     formState: { errors },
-  } = useForm<LoginInputs>({ resolver: zodResolver(loginSchema), mode: 'onChange' });
+  } = useForm<LoginInputs>({
+    resolver: zodResolver(loginSchema),
+    mode: 'onChange',
+    defaultValues: { email },
+  });
 
   const onSubmit = async (data: LoginInputs) => {
     const result = await signIn('credentials', {
@@ -35,26 +41,6 @@ export default function useLogin() {
       password: data.password,
     });
 
-    // if (result?.error) {
-    //   switch (result.error) {
-    //     case 'UNVERIFIED_USER':
-    //       toaster.create({
-    //         title: 'Account is not verified',
-    //         description: 'Please check your email for the OTP code.',
-    //       });
-    //       router.push(`/verify?email=${data.email}`);
-    //       break;
-
-    //     case 'CredentialsSignin':
-    //       setError('root', { message: 'Invalid email or password' });
-    //       break;
-
-    //     default:
-    //       setError('root', { message: result.error });
-    //       break;
-    //   }
-    //   return;
-    // }
     if (result?.error) {
       if (result.error.includes('not verified')) {
         toaster.create({

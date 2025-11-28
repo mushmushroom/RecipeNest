@@ -66,6 +66,7 @@ export function InstructionsSection({
             p="1.2rem"
             borderRadius="12px"
             borderColor="gray.600"
+            backgroundColor="white"
             _placeholder={{ color: 'gray.500' }}
             value={newInstruction}
             onChange={(event) => setNewInstruction(event.target.value)}

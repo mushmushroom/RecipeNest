@@ -37,11 +37,13 @@ export function RecipeInfoSection({
     <FormSection title="Recipe info">
       <Stack
         gap="4rem"
-        borderColor="brand.400"
+        borderColor="brand.500"
         borderRadius="10px"
-        borderWidth="1px"
+        borderWidth="2px"
+        borderBottomWidth="1.5rem"
         paddingY="3.6rem"
         paddingX="2rem"
+        backgroundColor="white"
       >
         {/* Title*/}
         <CustomFormField

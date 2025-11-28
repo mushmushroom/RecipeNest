@@ -3,7 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
-import { BACKEND_URL } from '@/lib/constants';
+import { AppPathPublic, BACKEND_URL } from '@/lib/constants';
 import { toaster } from '@/components/ui/toaster';
 
 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/;
@@ -82,7 +82,7 @@ export default function useRegister() {
       });
 
       setTimeout(() => {
-        router.push(`/verify?email=${encodeURIComponent(data.data.email)}`);
+        router.push(`${AppPathPublic.Verify}?email=${encodeURIComponent(data.data.email)}`);
       }, 3000);
     },
 

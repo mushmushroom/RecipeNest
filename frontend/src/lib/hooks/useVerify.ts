@@ -78,7 +78,7 @@ export default function useVerify() {
         };
       }
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       reset();
       toaster.create({
         title: 'Your account was verified successfully',
@@ -88,7 +88,7 @@ export default function useVerify() {
       });
 
       setTimeout(() => {
-        router.push(`${AppPathPublic.Login}`);
+        router.push(`${AppPathPublic.Login}?email=${encodeURIComponent(data.email ?? emailValue)}`);
       }, 3000);
     },
 

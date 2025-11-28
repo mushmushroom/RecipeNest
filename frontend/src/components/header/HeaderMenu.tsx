@@ -4,7 +4,7 @@ import { HStack, Box, Spinner } from '@chakra-ui/react';
 import Link from 'next/link';
 import { CustomButton } from '../common/CustomButton';
 import { AppPathProtected, AppPathPublic } from '@/lib/constants';
-import { useAuthData } from '@/lib/hooks/useAuth';
+import { useAuth } from '@/lib/hooks/useAuth';
 import LoginButton from './LoginButton';
 
 const headerMenuLinks = [
@@ -14,9 +14,10 @@ const headerMenuLinks = [
 ];
 
 export default function HeaderMenu() {
-  const { isSessionReady } = useAuthData();
+  const { isSessionReady, loading } = useAuth();
 
-  if (!isSessionReady) return <Spinner />;
+  if (loading) return null;
+
   return (
     <Box as="nav">
       <HStack gap="1rem">

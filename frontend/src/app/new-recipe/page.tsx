@@ -16,7 +16,7 @@ import { RecipePayload } from '@/lib/types/recipe';
 import { AppPathProtected, BACKEND_URL } from '@/lib/constants';
 import { Toaster, toaster } from '@/components/ui/toaster';
 import { useRouter } from 'next/navigation';
-import { useAuthData } from '@/lib/hooks/useAuth';
+import { useAuth } from '@/lib/hooks/useAuth';
 
 const ingredientSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -28,7 +28,7 @@ const instructionSchema = z.object({
 });
 
 const cookingTimeSchema = z.object({
-  amount: z.number().positive('Amount must be greater than zero'),
+  amount: z.number('Amount is required').positive('Must be greater than zero'),
   unit: z.enum(['min', 'hr']),
 });
 
@@ -69,7 +69,7 @@ export default function AddRecipePage() {
     },
   });
 
-  const token = useAuthData(true);
+  const token = useAuth(true);
 
   const mutation = useMutation({
     mutationFn: async (recipe: RecipePayload) => {

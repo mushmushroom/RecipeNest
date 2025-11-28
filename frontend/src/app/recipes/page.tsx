@@ -55,27 +55,45 @@ export default function RecipesPage() {
 
           {/* RECIPE LIST AND FILTERS BUTTON*/}
           <Stack gap="3rem">
-            <CustomButton
-              onClick={
-                window.innerWidth < 768
-                  ? () => setDrawerOpen(true)
-                  : () => setCollapsed((prev) => !prev)
-              }
-              variant="link"
-              style={{
-                cursor: 'pointer',
-                fontSize: '1.8rem',
-                marginBottom: '1rem',
-                alignSelf: 'flex-end',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px',
-              }}
-            >
-              <FaFilter />
-              <Box hideFrom="md">Show filters</Box>
-              <Box hideBelow="md">{isCollapsed ? 'Show filters' : 'Hide filters'}</Box>
-            </CustomButton>
+            {/* Mobile only button*/}
+            <Box hideFrom="md">
+              <CustomButton
+                onClick={() => setDrawerOpen(true)}
+                variant="link"
+                style={{
+                  cursor: 'pointer',
+                  fontSize: '1.8rem',
+                  marginBottom: '1rem',
+                  alignSelf: 'flex-end',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                }}
+              >
+                <FaFilter />
+                Show filters
+              </CustomButton>
+            </Box>
+
+            {/* Desktop only button*/}
+            <Box hideBelow="md">
+              <CustomButton
+                onClick={() => setCollapsed((prev) => !prev)}
+                variant="link"
+                style={{
+                  cursor: 'pointer',
+                  fontSize: '1.8rem',
+                  marginBottom: '1rem',
+                  alignSelf: 'flex-end',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                }}
+              >
+                <FaFilter />
+                {isCollapsed ? 'Show filters' : 'Hide filters'}
+              </CustomButton>
+            </Box>
             <Box borderTop="1px solid black">
               <RecipeCard difficulty="HARD" />
             </Box>
