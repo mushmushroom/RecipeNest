@@ -5,7 +5,7 @@ import CustomFormField from '@/components/common/CustomFormField';
 import Link from 'next/link';
 import { AppPathPublic } from '@/lib/constants';
 import { Toaster } from '@/components/ui/toaster';
-import useVerify from '@/lib/hooks/useVerify';
+import useVerify from '@/lib/hooks/auth/useVerify';
 
 export default function VerifyPage() {
   const {

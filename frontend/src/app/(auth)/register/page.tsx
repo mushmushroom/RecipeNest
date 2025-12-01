@@ -3,7 +3,7 @@ import { CustomButton } from '@/components/common/CustomButton';
 import CustomFormField from '@/components/common/CustomFormField';
 import { Toaster } from '@/components/ui/toaster';
 import { AppPathPublic } from '@/lib/constants';
-import useRegister from '@/lib/hooks/useRegister';
+import useRegister from '@/lib/hooks/auth/useRegister';
 import { Center, Container, Flex, Heading, Stack, Text } from '@chakra-ui/react';
 import Link from 'next/link';
 

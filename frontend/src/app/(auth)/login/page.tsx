@@ -5,7 +5,7 @@ import CustomFormField from '@/components/common/CustomFormField';
 import { AppPathPublic } from '@/lib/constants';
 import Link from 'next/link';
 import { Toaster } from '@/components/ui/toaster';
-import useLogin from '@/lib/hooks/useLogin';
+import useLogin from '@/lib/hooks/auth/useLogin';
 
 export default function SignInPage() {
   const { handleSubmit, register, errors, onSubmit } = useLogin();

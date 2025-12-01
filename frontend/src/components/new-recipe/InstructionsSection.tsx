@@ -1,32 +1,15 @@
 'use client';
 
 import { FormSection } from './FormSection';
-import {
-  Control,
-  FieldErrors,
-  UseFormClearErrors,
-  UseFormRegister,
-  useFieldArray,
-} from 'react-hook-form';
-import { AddRecipeFormValues } from '../../lib/types/new-recipe';
+import { useFieldArray } from 'react-hook-form';
 import { Field, Stack, Textarea, Text, Flex } from '@chakra-ui/react';
 import { FiTrash2 } from 'react-icons/fi';
 import { CustomButton } from '@/components/common/CustomButton';
 import { useState } from 'react';
+import useAddRecipe from '@/lib/hooks/recipes/useAddRecipe';
 
-interface InstructionsSectionProps {
-  control: Control<AddRecipeFormValues>;
-  register: UseFormRegister<AddRecipeFormValues>;
-  errors: FieldErrors<AddRecipeFormValues>;
-  clearErrors: UseFormClearErrors<AddRecipeFormValues>;
-}
-
-export function InstructionsSection({
-  control,
-  register,
-  errors,
-  clearErrors,
-}: InstructionsSectionProps) {
+export function InstructionsSection() {
+  const { clearErrors, control, register, errors } = useAddRecipe();
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'instructions',
@@ -121,7 +104,7 @@ export function InstructionsSection({
                   variant="danger"
                   size="md"
                   onClick={() => remove(index)}
-                  disabled={!canRemove}
+                  // disabled={!canRemove}
                 >
                   <FiTrash2 color="black" />
                 </CustomButton>

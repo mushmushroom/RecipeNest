@@ -30,3 +30,5 @@ export const categoriesHome = [
     img: '/categories/desserts.jpg',
   },
 ];
+
+export const MAX_FILE_SIZE = 2 * 1024 * 1024;

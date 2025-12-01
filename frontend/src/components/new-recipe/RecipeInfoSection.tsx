@@ -1,38 +1,23 @@
 'use client';
 
 import { FormSection } from './FormSection';
-import { AddRecipeFormValues } from '../../lib/types/new-recipe';
 import { Button, ButtonGroup, Field, SimpleGrid, Stack, chakra, Text } from '@chakra-ui/react';
-import { FieldErrors, UseFormClearErrors, UseFormRegister, UseFormSetValue } from 'react-hook-form';
 import CustomFormField from '@/components/common/CustomFormField';
 import { CategoryOption, DifficultyOption, TimeUnit } from '@/lib/types/recipe';
+import useAddRecipe from '@/lib/hooks/recipes/useAddRecipe';
 
-const difficultyOptions: DifficultyOption[] = ['EASY', 'MEDIUM', 'HARD'];
-const categoryOptions: CategoryOption[] = [
-  { id: 1, name: 'Desserts' },
-  { id: 2, name: 'Breakfast' },
-  { id: 3, name: 'Pasta' },
-  { id: 4, name: 'Soups' },
-  { id: 5, name: 'Salads' },
-  { id: 6, name: 'Other' },
-];
 const timeUnits: TimeUnit[] = ['min', 'hr'];
 
 interface RecipeInfoSectionProps {
-  register: UseFormRegister<AddRecipeFormValues>;
-  errors: FieldErrors<AddRecipeFormValues>;
-  selectedCategory: number;
-  setValue: UseFormSetValue<AddRecipeFormValues>;
-  clearErrors: UseFormClearErrors<AddRecipeFormValues>;
+  options: {
+    categories: CategoryOption[];
+    difficulty: DifficultyOption[];
+  };
 }
 
-export function RecipeInfoSection({
-  register,
-  errors,
-  selectedCategory,
-  setValue,
-  clearErrors,
-}: RecipeInfoSectionProps) {
+export function RecipeInfoSection({ options }: RecipeInfoSectionProps) {
+  const { clearErrors, setValue, register, errors, watch } = useAddRecipe();
+  const selectedCategory = watch('categoryId');
   return (
     <FormSection title="Recipe info">
       <Stack
@@ -70,7 +55,7 @@ export function RecipeInfoSection({
             required
             {...register('difficulty', { required: 'Select a difficulty' })}
           >
-            {difficultyOptions.map((option) => (
+            {options.difficulty.map((option) => (
               <option key={option} value={option}>
                 {option}
               </option>
@@ -96,7 +81,7 @@ export function RecipeInfoSection({
               <Field.RequiredIndicator color="red.500" />
             </Field.Label>
             <ButtonGroup size="md" variant="outline" flexWrap="wrap">
-              {categoryOptions.map((category) => (
+              {options.categories.map((category) => (
                 <Button
                   lineHeight="1.2"
                   height="100%"
