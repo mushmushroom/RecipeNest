@@ -12,6 +12,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { CategoryModule } from './category/category.module';
 import { DifficultyModule } from './difficulty/difficulty.module';
 import { RecipeModule } from './recipe/recipe.module';
+import { ImageModule } from './image/image.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { RecipeModule } from './recipe/recipe.module';
     CategoryModule,
     DifficultyModule,
     RecipeModule,
+    ImageModule,
   ],
   controllers: [AppController],
   providers: [

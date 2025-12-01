@@ -57,6 +57,8 @@ export class RecipeService {
         include: {
           ingredients: true,
           instructions: true,
+          images: true,
+          author: true,
         },
       }),
       await this.prisma.recipe.count({ where }),
@@ -68,6 +70,12 @@ export class RecipeService {
   async findOne(id: number) {
     const existingRecipe = await this.prisma.recipe.findUnique({
       where: { id },
+      include: {
+        ingredients: true,
+        instructions: true,
+        images: true,
+        author: true,
+      },
     });
     if (!existingRecipe)
       throw new NotFoundException(`Recipe with id ${id} is not found`);
@@ -76,7 +84,6 @@ export class RecipeService {
   }
 
   async createRecipe(userId: number, dto: AddRecipeDto) {
-    console.log(userId);
     return this.prisma.recipe.create({
       data: {
         title: dto.title,

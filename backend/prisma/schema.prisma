@@ -25,6 +25,7 @@ model User {
   favoriteRecipes Recipe[]       @relation("FavoriteRecipes")
   refreshToken    RefreshToken[]
   otps            Otp[]
+  avatar          Image[]
 }
 
 model RefreshToken {
@@ -66,6 +67,8 @@ model Recipe {
   category     Category?     @relation(fields: [categoryId], references: [id])
   categoryId   Int?
   difficulty   Difficulty
+  images       Image[]
+  createdAt    DateTime      @default(now())
 }
 
 model Ingredient {
@@ -96,4 +99,15 @@ enum Difficulty {
   EASY
   MEDIUM
   HARD
+}
+
+model Image {
+  id         Int      @id @default(autoincrement())
+  url        String
+  publicId   String   @unique
+  createdAt  DateTime @default(now())
+  userAvatar User?    @relation(fields: [userId], references: [id])
+  userId     Int?
+  recipe     Recipe?  @relation(fields: [recipeId], references: [id])
+  recipeId   Int?
 }
