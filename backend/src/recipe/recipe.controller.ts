@@ -11,7 +11,11 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { RecipeService } from './recipe.service';
-import { AddRecipeDto, RecipeQueryDto, UpdateRecipeDto } from './dto/recipe.dto';
+import {
+  AddRecipeDto,
+  RecipeQueryDto,
+  UpdateRecipeDto,
+} from './dto/recipe.dto';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { QueryPaginationDto } from 'src/common/pagination/query-pagination.dto';
 
@@ -22,6 +26,13 @@ export class RecipeController {
   @Get()
   findAll(@Query() query?: QueryPaginationDto & RecipeQueryDto) {
     return this.recipeService.findAll(query);
+  }
+
+  @UseGuards(JwtGuard)
+  @Get('my')
+  async findMyRecipes(@Req() req) {
+    const userId = req.user.sub;
+    return this.recipeService.findMyRecipes(userId);
   }
 
   @Get(':id')

@@ -10,10 +10,14 @@ import {
   RecipeQueryDto,
   UpdateRecipeDto,
 } from './dto/recipe.dto';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class RecipeService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private userService: UserService,
+  ) {}
 
   async findAll(query: QueryPaginationDto & RecipeQueryDto = {}) {
     const where: any = {};
@@ -164,6 +168,18 @@ export class RecipeService {
 
     return this.prisma.recipe.delete({
       where: { id: recipeId, authorId },
+    });
+  }
+
+  async findMyRecipes(userId: number) {
+    const user = this.userService.findById(userId);
+    if (!user) throw new NotFoundException('User does not exist');
+
+    return await this.prisma.recipe.findMany({
+      where: { authorId: userId },
+      include: {
+        images: true,
+      },
     });
   }
 }

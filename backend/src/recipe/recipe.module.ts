@@ -3,9 +3,10 @@ import { RecipeController } from './recipe.controller';
 import { RecipeService } from './recipe.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
+import { UserService } from 'src/user/user.service';
 
 @Module({
   controllers: [RecipeController],
-  providers: [RecipeService, PrismaService, JwtService],
+  providers: [RecipeService, PrismaService, JwtService, UserService],
 })
 export class RecipeModule {}
