@@ -1,3 +1,5 @@
+import { PaginationData } from "./pagination";
+
 interface Ingredient {
   name: string;
   amount: number;
@@ -85,4 +87,10 @@ export interface RecipeFull extends RecipeShort {
   instructions: InstructionData[];
   createdAt: string;
   author: { username: string };
+}
+
+
+export interface MyRecipesResponse {
+  data: RecipeShort[];
+  meta: PaginationData;
 }

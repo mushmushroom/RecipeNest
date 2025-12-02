@@ -171,15 +171,21 @@ export class RecipeService {
     });
   }
 
-  async findMyRecipes(userId: number) {
+  async findMyRecipes(userId: number, query: QueryPaginationDto = {}) {
     const user = this.userService.findById(userId);
     if (!user) throw new NotFoundException('User does not exist');
 
-    return await this.prisma.recipe.findMany({
-      where: { authorId: userId },
-      include: {
-        images: true,
-      },
-    });
+    const [myRecipes, total] = await Promise.all([
+      await this.prisma.recipe.findMany({
+        where: { authorId: userId },
+        ...paginate(query),
+        include: {
+          images: true,
+        },
+      }),
+      await this.prisma.recipe.count(),
+    ]);
+
+    return paginateOutput(myRecipes, total, query);
   }
 }

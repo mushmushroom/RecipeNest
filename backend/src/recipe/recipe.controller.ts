@@ -30,9 +30,9 @@ export class RecipeController {
 
   @UseGuards(JwtGuard)
   @Get('my')
-  async findMyRecipes(@Req() req) {
+  async findMyRecipes(@Req() req, query?: QueryPaginationDto) {
     const userId = req.user.sub;
-    return this.recipeService.findMyRecipes(userId);
+    return this.recipeService.findMyRecipes(userId, query);
   }
 
   @Get(':id')
