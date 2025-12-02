@@ -29,9 +29,9 @@ export default function FeaturedRecipes() {
         justifyContent="space-between"
         gap="2rem"
       >
-        {[1, 2, 3, 4].map((i) => (
+        {/* {[1, 2, 3, 4].map((i) => (
           <RecipeCard key={i} difficulty="EASY" />
-        ))}
+        ))} */}
       </Grid>
       <CustomButton asChild variant="secondary">
         <Link href={AppPathPublic.Recipes}>Browse all</Link>

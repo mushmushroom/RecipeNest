@@ -29,6 +29,7 @@ export const headingRecipe = defineRecipe({
         fontFamily: 'body',
         fontSize: '2.2rem',
         color: 'black',
+        lineHeight: '1.2'
       },
     },
   },

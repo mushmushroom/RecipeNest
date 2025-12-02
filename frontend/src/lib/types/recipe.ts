@@ -59,6 +59,7 @@ export interface RecipeShort {
   title: string;
   cookingTime: number;
   difficulty: DifficultyOption;
+  images: ImageData[];
 }
 
 export interface IngredientData {
@@ -82,7 +83,6 @@ export interface ImageData {
 export interface RecipeFull extends RecipeShort {
   ingredients: IngredientData[];
   instructions: InstructionData[];
-  images: ImageData[];
   createdAt: string;
   author: { username: string };
 }

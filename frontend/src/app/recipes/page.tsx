@@ -95,7 +95,7 @@ export default function RecipesPage() {
               </CustomButton>
             </Box>
             <Box borderTop="1px solid black">
-              <RecipeCard difficulty="HARD" />
+              {/* <RecipeCard difficulty="HARD" /> */}
             </Box>
           </Stack>
         </Grid>

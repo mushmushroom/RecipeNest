@@ -1,6 +1,7 @@
 'use client';
 
 import { AppPathProtected, AppPathPublic } from '@/lib/constants';
+import { RecipeShort } from '@/lib/types/recipe';
 
 import { Box, Heading, Flex, Text, Badge } from '@chakra-ui/react';
 import Image from 'next/image';
@@ -15,12 +16,25 @@ const difficultyColors = {
 } as const;
 
 interface RecipeCardProps {
-  difficulty: 'EASY' | 'MEDIUM' | 'HARD';
+  recipe: RecipeShort;
 }
-export default function RecipeCard({ difficulty }: RecipeCardProps) {
+
+function formatCookingTime(totalMinutes: number): string {
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+
+  if (hours > 0) {
+    return `${hours} hr`;
+  }
+
+  return `${minutes} min`;
+}
+
+export default function RecipeCard({ recipe }: RecipeCardProps) {
   const pathname = usePathname();
   const isLink = pathname !== AppPathProtected.MyRecipes;
-
+  const imageUrl = recipe.images.length > 0 ? recipe.images[0].url : null;
+  const cookingTime = formatCookingTime(recipe.cookingTime);
   const CardContent = (
     <Box
       as="article"
@@ -28,30 +42,53 @@ export default function RecipeCard({ difficulty }: RecipeCardProps) {
       overflow="hidden"
       borderColor="gray.300"
       borderWidth="1px"
+      display="flex"
+      flexDirection="column"
+      height="100%"
     >
-      <Box position="relative" width="100%" height={{ base: '150px', md: '130px' }}>
-        <Image src="/verify-img.jpg" alt="Image" fill style={{ objectFit: 'cover' }} />
+      <Box position="relative" width="100%" height={{ base: '130px', md: '150px' }} flexShrink="0">
+        {imageUrl ? (
+          <Image src={imageUrl} alt={recipe.title} fill style={{ objectFit: 'cover' }} />
+        ) : (
+          <Box
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              height: '100%',
+            }}
+            backgroundColor="gray.300"
+          >
+            <Text>No image</Text>
+          </Box>
+        )}
       </Box>
-      <Box p="1.5rem">
+      <Box
+        p="1.5rem"
+        display="flex"
+        flexDirection="column"
+        justifyContent="space-between"
+        height="100%"
+      >
         <Heading as="h3" size="cardTitle">
-          Cheese spread
+          {recipe.title}
         </Heading>
         <Flex alignItems="center" justifyContent="space-between" mt="5px">
           <Flex alignItems="center" gap="5px">
             <IoTimeOutline color="gray.500" size={14} />
             <Text color="gray.500" fontSize="13px" lineHeight="1">
-              25 min
+              {cookingTime}
             </Text>
           </Flex>
           <Badge
-            backgroundColor={difficultyColors[difficulty].bg}
-            color={difficultyColors[difficulty].text}
+            backgroundColor={difficultyColors[recipe.difficulty].bg}
+            color={difficultyColors[recipe.difficulty].text}
             fontSize="13px"
             paddingX="1rem"
             paddingY="5px"
             borderRadius="6px"
           >
-            {difficulty.toLowerCase()}
+            {recipe.difficulty.toLowerCase()}
           </Badge>
         </Flex>
       </Box>
@@ -61,7 +98,7 @@ export default function RecipeCard({ difficulty }: RecipeCardProps) {
   if (!isLink) return CardContent;
 
   return (
-    <Link href={`${AppPathPublic.Recipes}/1 `} style={{ textDecoration: 'none' }}>
+    <Link href={`${AppPathPublic.Recipes}/${recipe.id} `} style={{ textDecoration: 'none' }}>
       {CardContent}
     </Link>
   );
