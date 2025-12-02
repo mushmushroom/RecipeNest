@@ -1,8 +1,9 @@
 'use client';
 import RecipeCard from '@/components/recipes/RecipeCard';
+import RecipeList from '@/components/recipes/RecipeList';
 import { useMyRecipes } from '@/lib/hooks/recipes/useGetRecipes';
 import { RecipeShort } from '@/lib/types/recipe';
-import { Grid } from '@chakra-ui/react';
+import { Box, Grid, Heading } from '@chakra-ui/react';
 
 export default function MyRecipesPage() {
   const { data, isLoading } = useMyRecipes();
@@ -32,21 +33,16 @@ export default function MyRecipesPage() {
   };
 
   return (
-    <div>
-      <Grid
-        templateColumns={{
-          base: '1fr',
-          sm: 'repeat(2, 1fr)',
-          lg: 'repeat(4, 1fr)',
-        }}
-        width="100%"
-        justifyContent="space-between"
-        gap="2rem"
-      >
-        {data?.map((recipe) => (
-          <RecipeCard recipe={recipe} />
-        ))}
-      </Grid>
-    </div>
+    <Box>
+      <Heading as="h1" size="h2" marginBottom="2rem" textAlign="center">
+        My recipes
+      </Heading>
+      {data && (
+        <RecipeList
+          recipes={data}
+          columns={{ base: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' }}
+        />
+      )}
+    </Box>
   );
 }
