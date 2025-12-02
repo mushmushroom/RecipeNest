@@ -1,3 +1,5 @@
+import SingleRecipeContainer from "@/components/recipes/SingleRecipeContainer";
+
 export default function SingleRecipePage() {
-  return <div>SingleRecipePage</div>;
+  return <SingleRecipeContainer />;
 }

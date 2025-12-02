@@ -14,7 +14,7 @@ export const CustomButton = ({ children, asChild, variant, size, ...restProps }:
   const styles = recipe({ variant, size });
   const Component = asChild ? chakra.span : chakra.button;
   return (
-    <Component css={styles} {...restProps}>
+    <Component css={styles} {...restProps} alignItems="center">
       {children}
     </Component>
   );
