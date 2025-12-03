@@ -12,7 +12,7 @@ import 'swiper/css/thumbs';
 
 import Image from 'next/image';
 import { Box, Button } from '@chakra-ui/react';
-import { CustomButton } from '../common/CustomButton';
+import { CustomButton } from '../../common/CustomButton';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import NextButton from './NextButton';
 import PrevButton from './PrevButton';

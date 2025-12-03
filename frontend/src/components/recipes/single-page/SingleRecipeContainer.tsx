@@ -1,9 +1,10 @@
 import { Box, Flex, Heading, Text, Separator, Stack, List } from '@chakra-ui/react';
-import GlobalContainer from '../GlobalContainer';
-import { CustomButton } from '../common/CustomButton';
+import GlobalContainer from '../../GlobalContainer';
+import { CustomButton } from '../../common/CustomButton';
 import { FaPrint, FaRegBookmark } from 'react-icons/fa';
 import RecipeImageSlider from './RecipeImageSlider';
-import { ImageData } from '@/lib/types/recipe';
+import { ImageData, RecipeFull } from '@/lib/types/recipe';
+import Image from 'next/image';
 
 const testImages: ImageData[] = [
   {
@@ -20,7 +21,26 @@ const testImages: ImageData[] = [
   },
 ];
 
-export default function SingleRecipeContainer() {
+function formatPublishedDate(date: string) {
+  return new Date(date).toLocaleDateString('en-US', {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+  });
+}
+
+function formatMinutesToHours(min: number) {
+  return min / 60 > 1 ? `${min / 60} h` : `${min} min`;
+}
+interface SingleRecipeContainerProps {
+  recipe: RecipeFull;
+}
+
+export default function SingleRecipeContainer({ recipe }: SingleRecipeContainerProps) {
+  const date = formatPublishedDate(recipe.createdAt);
+  const difficulty = recipe.difficulty.charAt(0).toUpperCase() + recipe.difficulty.slice(1);
+  const cookingTime = formatMinutesToHours(recipe.cookingTime);
+  const instructions = recipe.instructions.sort((a, b) => a.step - b.step);
   return (
     <Box as="section" paddingTop="2rem" paddingBottom="4rem">
       <GlobalContainer>
@@ -31,7 +51,7 @@ export default function SingleRecipeContainer() {
         >
           <Box flex="1">
             <Heading as="h1" size="h1" marginBottom="2rem">
-              Orange Cranberry Ricotta Cookies
+              {recipe.title}
             </Heading>
             {/* User & date */}
             <Flex
@@ -44,11 +64,11 @@ export default function SingleRecipeContainer() {
               <Text>
                 By{' '}
                 <Text as="span" fontStyle="italic" fontWeight="600">
-                  username123
+                  {recipe.author.username}
                 </Text>
               </Text>
               <Separator orientation="vertical" height="10" borderColor="gray.400" hideBelow="lg" />
-              <Text color="gray.400">Published on November 7, 2025</Text>
+              <Text color="gray.400">Published on {date}</Text>
             </Flex>
             {/* Buttons */}
             <Flex marginBottom="3rem" gap="2.5rem">
@@ -77,28 +97,34 @@ export default function SingleRecipeContainer() {
                 <Text width="15rem" color="gray.500">
                   Difficulty
                 </Text>
-                <Text>Easy</Text>
+                <Text>{difficulty}</Text>
               </Flex>
               <Flex>
                 <Text width="15rem" color="gray.500">
                   Cooking time
                 </Text>
-                <Text>22 min</Text>
+                <Text>{cookingTime}</Text>
               </Flex>
             </Stack>
           </Box>
-          {/* Slider */}
           <Box flex="1" maxW={{ base: '100%', md: '45%' }}>
-            {testImages.length > 0 ? (
-              <RecipeImageSlider images={testImages} />
+            {recipe.images.length > 1 ? (
+              <RecipeImageSlider images={recipe.images} />
+            ) : recipe.images.length === 1 ? (
+              <Box position="relative" width="100%" height={{ base: '300px', md: '340px' }}>
+                <Image
+                  src={recipe.images[0].url}
+                  alt="Recipe image"
+                  fill
+                  style={{ objectFit: 'cover' }}
+                />
+              </Box>
             ) : (
               <Box
                 display={{ base: 'none', md: 'flex' }}
-                style={{
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  height: '100%',
-                }}
+                justifyContent="center"
+                alignItems="center"
+                height="100%"
                 backgroundColor="gray.300"
               >
                 <Text>No image</Text>
@@ -112,37 +138,39 @@ export default function SingleRecipeContainer() {
             Ingredients
           </Heading>
           <List.Root gap="2" variant="plain" align="center" paddingLeft="1rem">
-            <List.Item alignItems="center" gap="1.5rem">
-              <List.Indicator
-                flexShrink={0}
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                position="relative"
-              >
-                <Box
-                  width="12px"
-                  height="12px"
-                  borderRadius="50%"
-                  backgroundColor="brand.400"
-                  position="absolute"
-                  top="50%"
-                  left="50%"
-                  transform="translate(-50%, -50%)"
-                />
-                <Box
-                  width="8px"
-                  height="8px"
-                  borderRadius="50%"
-                  backgroundColor="brand.500"
-                  position="absolute"
-                  top="50%"
-                  left="50%"
-                  transform="translate(-50%, -50%)"
-                />
-              </List.Indicator>
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit
-            </List.Item>
+            {recipe.ingredients.map((ingredient) => (
+              <List.Item alignItems="center" gap="1.5rem" key={ingredient.id}>
+                <List.Indicator
+                  flexShrink={0}
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                  position="relative"
+                >
+                  <Box
+                    width="12px"
+                    height="12px"
+                    borderRadius="50%"
+                    backgroundColor="brand.400"
+                    position="absolute"
+                    top="50%"
+                    left="50%"
+                    transform="translate(-50%, -50%)"
+                  />
+                  <Box
+                    width="8px"
+                    height="8px"
+                    borderRadius="50%"
+                    backgroundColor="brand.500"
+                    position="absolute"
+                    top="50%"
+                    left="50%"
+                    transform="translate(-50%, -50%)"
+                  />
+                </List.Indicator>
+                {ingredient.name} - {ingredient.amount} {ingredient.unit}
+              </List.Item>
+            ))}
           </List.Root>
         </Box>
 
@@ -152,18 +180,20 @@ export default function SingleRecipeContainer() {
             Cooking instructions
           </Heading>
           <List.Root gap="2" variant="plain">
-            <List.Item alignItems="center" display="block">
-              <List.Indicator
-                display="block"
-                color="brand.500"
-                fontSize="2.2rem"
-                fontWeight="600"
-                fontFamily="heading"
-              >
-                Step 1
-              </List.Indicator>
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit
-            </List.Item>
+            {instructions.map((instruction) => (
+              <List.Item alignItems="center" display="block" key={instruction.id}>
+                <List.Indicator
+                  display="block"
+                  color="brand.500"
+                  fontSize="2.2rem"
+                  fontWeight="600"
+                  fontFamily="heading"
+                >
+                  Step {instruction.step}
+                </List.Indicator>
+                {instruction.description}
+              </List.Item>
+            ))}
           </List.Root>
         </Box>
 
