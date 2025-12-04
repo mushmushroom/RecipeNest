@@ -9,6 +9,7 @@ import { AppPathProtected, AppPathPublic } from '@/lib/constants';
 import { useAuth } from '@/lib/hooks/useAuth';
 import LoginButton from './LoginButton';
 import { signOut } from 'next-auth/react';
+import { Session } from 'next-auth';
 
 const headerMobileMenuLinks = [
   { text: 'All recipes', href: AppPathPublic.Recipes },
@@ -17,9 +18,13 @@ const headerMobileMenuLinks = [
   { text: 'Settings', href: AppPathProtected.Settings },
   { text: 'Logout', href: '' },
 ];
-export default function MobileMenuDrawer() {
+
+interface MobileMenuDrawerProps {
+  session: Session | null;
+}
+export default function MobileMenuDrawer({ session }: MobileMenuDrawerProps) {
   const [isDrawerOpen, setDrawerOpen] = useState(false);
-  const { isSessionReady } = useAuth();
+  // const { isSessionReady } = useAuth();
 
   return (
     <>
@@ -48,7 +53,7 @@ export default function MobileMenuDrawer() {
             </Drawer.CloseTrigger>
             <Drawer.Body paddingRight="40px" paddingLeft="4rem">
               <VStack align="start" gap="4rem" mt="4rem" minHeight="100vh">
-                {isSessionReady ? (
+                {session?.user ? (
                   headerMobileMenuLinks.map((item) =>
                     item.text === 'Logout' ? (
                       <Button

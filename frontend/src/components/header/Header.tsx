@@ -10,15 +10,12 @@ import SearchInput from './SearchInput';
 import HeaderMenu from './HeaderMenu';
 import MobileSearch from './MobileSearch';
 import MobileMenuDrawer from './MobileMenuDrawer';
+import { Session } from 'next-auth';
 
-export default function Header() {
-  // const { data: session, status } = useSession();
-  // const isMobile = useBreakpointValue({ base: true, lg: false });
-
-  // const [isLargerThanLg] = useMediaQuery(['(min-width: 1024px)']);
-  // const isMobile = !isLargerThanLg;
-
-  // if (isMobile === undefined) return null;
+interface HeaderProps {
+  session: Session | null;
+}
+export default function Header({ session }: HeaderProps) {
 
   return (
     <Box as="header" bgColor="brand.500" paddingY="3.5rem">
@@ -38,12 +35,12 @@ export default function Header() {
           {/* Mobile only */}
           <Flex alignItems="center" gap="20px" hideFrom="lg">
             <MobileSearch />
-            <MobileMenuDrawer />
+            <MobileMenuDrawer session={session} />
           </Flex>
 
           {/* Desktop menu only */}
           <Box hideBelow="lg">
-            <HeaderMenu />
+            <HeaderMenu session={session} />
           </Box>
         </Flex>
       </GlobalContainer>

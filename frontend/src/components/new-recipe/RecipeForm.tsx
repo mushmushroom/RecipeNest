@@ -19,7 +19,7 @@ interface RecipeFormProps {
 export default function RecipeForm({ options }: RecipeFormProps) {
   const { handleSubmit, onSubmit, errors, watch, control } = useAddRecipe();
   return (
-    <Box minH="100vh" py={{ base: '2rem', md: '4rem' }} px="1rem">
+    <Box minH="100vh"  px="1rem">
       <Container maxW="960px" w="100%">
         <Stack gap="2.4rem" as="form" onSubmit={handleSubmit(onSubmit)}>
           <Heading as="h1" size="h1" textAlign="center">

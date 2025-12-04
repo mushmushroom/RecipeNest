@@ -18,7 +18,6 @@ import FiltersPanel from '@/components/filters/FiltersPanel';
 import { FaFilter, FaRegWindowClose } from 'react-icons/fa';
 import GlobalContainer from '@/components/GlobalContainer';
 import { CustomButton } from '@/components/common/CustomButton';
-import RecipeCard from '@/components/recipes/RecipeCard';
 
 export default function RecipesPage() {
   const [isDrawerOpen, setDrawerOpen] = useState(false);
@@ -30,7 +29,8 @@ export default function RecipesPage() {
   // if (isMobile === undefined) return null;
 
   return (
-    <Box as="main" paddingY="4rem">
+    <>
+    {/* // <Box as="main" paddingY="4rem"> */}
       <GlobalContainer>
         <Heading size="h1" as="h1" textAlign="center" marginBottom="3.2rem">
           All recipes
@@ -129,6 +129,6 @@ export default function RecipesPage() {
           </Portal>
         </Drawer.Root>
       </Box>
-    </Box>
+  </>
   );
 }
