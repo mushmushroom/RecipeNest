@@ -1,9 +1,9 @@
 'use client';
 
 import { Box, Container, Flex, Heading, Separator, Stack, Text } from '@chakra-ui/react';
-import { IngredientsSection } from '@/components/new-recipe/IngredientsSection';
-import { InstructionsSection } from '@/components/new-recipe/InstructionsSection';
-import { RecipeInfoSection } from '@/components/new-recipe/RecipeInfoSection';
+import { IngredientsFormSection } from '@/components/new-recipe/IngredientsFormSection';
+import { InstructionsFormSection } from '@/components/new-recipe/InstructionsFormSection';
+import { RecipeInfoFormSection } from '@/components/new-recipe/RecipeInfoFormSection';
 import { UploadImagesSection } from '@/components/new-recipe/UploadImagesSection';
 import { CustomButton } from '@/components/common/CustomButton';
 import { CategoryOption, DifficultyOption } from '@/lib/types/recipe';
@@ -25,12 +25,12 @@ export default function RecipeForm({ options }: RecipeFormProps) {
           <Heading as="h1" size="h1" textAlign="center">
             <Text as="span">Add</Text> a recipe
           </Heading>
-          <RecipeInfoSection options={options} />
+          <RecipeInfoFormSection options={options} />
           <Separator borderColor="black" />
 
-          <IngredientsSection />
+          <IngredientsFormSection />
           <Separator borderColor="black" />
-          <InstructionsSection />
+          <InstructionsFormSection />
           <Separator borderColor="black" />
 
           <UploadImagesSection />

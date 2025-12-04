@@ -15,7 +15,7 @@ interface RecipeInfoSectionProps {
   };
 }
 
-export function RecipeInfoSection({ options }: RecipeInfoSectionProps) {
+export function RecipeInfoFormSection({ options }: RecipeInfoSectionProps) {
   const { clearErrors, setValue, register, errors, watch } = useAddRecipe();
   const selectedCategory = watch('categoryId');
   return (

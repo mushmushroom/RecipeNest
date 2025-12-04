@@ -8,7 +8,7 @@ import { CustomButton } from '@/components/common/CustomButton';
 import { useState } from 'react';
 import useAddRecipe from '@/lib/hooks/recipes/useAddRecipe';
 
-export function InstructionsSection() {
+export function InstructionsFormSection() {
   const { clearErrors, control, register, errors } = useAddRecipe();
   const { fields, append, remove } = useFieldArray({
     control,

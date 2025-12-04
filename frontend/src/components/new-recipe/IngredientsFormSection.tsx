@@ -11,7 +11,7 @@ import { UnitOption } from '@/lib/types/recipe';
 
 const unitOptions: UnitOption[] = ['g', 'kg', 'ml', 'l', 'cup', 'tbsp', 'tsp', 'pcs'];
 
-export function IngredientsSection() {
+export function IngredientsFormSection() {
   const { clearErrors, control, register, errors } = useAddRecipe();
   const { fields, append, remove } = useFieldArray({
     control,

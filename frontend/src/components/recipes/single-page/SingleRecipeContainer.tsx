@@ -5,6 +5,9 @@ import { FaPrint, FaRegBookmark } from 'react-icons/fa';
 import RecipeImageSlider from './RecipeImageSlider';
 import { ImageData, RecipeFull } from '@/lib/types/recipe';
 import Image from 'next/image';
+import RecipeInfoSingleSection from './RecipeInfoSingleSection';
+import IngredientsSingleSection from './IngredientsSingleSection';
+import InstructionsSingleSection from './InstructionsSingleSection';
 
 const testImages: ImageData[] = [
   {
@@ -29,17 +32,13 @@ function formatPublishedDate(date: string) {
   });
 }
 
-function formatMinutesToHours(min: number) {
-  return min / 60 > 1 ? `${min / 60} h` : `${min} min`;
-}
 interface SingleRecipeContainerProps {
   recipe: RecipeFull;
 }
 
 export default function SingleRecipeContainer({ recipe }: SingleRecipeContainerProps) {
   const date = formatPublishedDate(recipe.createdAt);
-  const difficulty = recipe.difficulty.charAt(0).toUpperCase() + recipe.difficulty.slice(1);
-  const cookingTime = formatMinutesToHours(recipe.cookingTime);
+
   const instructions = recipe.instructions.sort((a, b) => a.step - b.step);
   return (
     <Box as="section" paddingTop="2rem" paddingBottom="4rem">
@@ -82,31 +81,12 @@ export default function SingleRecipeContainer({ recipe }: SingleRecipeContainerP
               </CustomButton>
             </Flex>
             {/* Recipe general info */}
-            <Stack
-              gap="2rem"
-              borderColor="brand.500"
-              borderRadius="10px"
-              borderWidth="2px"
-              borderBottomWidth="1.5rem"
-              paddingY="2.6rem"
-              paddingX="2.5rem"
-              backgroundColor="white"
-              width="fit-content"
-            >
-              <Flex>
-                <Text width="15rem" color="gray.500">
-                  Difficulty
-                </Text>
-                <Text>{difficulty}</Text>
-              </Flex>
-              <Flex>
-                <Text width="15rem" color="gray.500">
-                  Cooking time
-                </Text>
-                <Text>{cookingTime}</Text>
-              </Flex>
-            </Stack>
+            <RecipeInfoSingleSection
+              difficulty={recipe.difficulty}
+              cookingTime={recipe.cookingTime}
+            />
           </Box>
+          { /* Slider or image placeholder */ }
           <Box flex="1" maxW={{ base: '100%', md: '45%' }}>
             {recipe.images.length > 1 ? (
               <RecipeImageSlider images={recipe.images} />
@@ -134,67 +114,12 @@ export default function SingleRecipeContainer({ recipe }: SingleRecipeContainerP
         </Flex>
         {/* Ingredients */}
         <Box marginBottom="5rem">
-          <Heading size="h2" as="h2" marginBottom="1.5rem">
-            Ingredients
-          </Heading>
-          <List.Root gap="2" variant="plain" align="center" paddingLeft="1rem">
-            {recipe.ingredients.map((ingredient) => (
-              <List.Item alignItems="center" gap="1.5rem" key={ingredient.id}>
-                <List.Indicator
-                  flexShrink={0}
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
-                  position="relative"
-                >
-                  <Box
-                    width="12px"
-                    height="12px"
-                    borderRadius="50%"
-                    backgroundColor="brand.400"
-                    position="absolute"
-                    top="50%"
-                    left="50%"
-                    transform="translate(-50%, -50%)"
-                  />
-                  <Box
-                    width="8px"
-                    height="8px"
-                    borderRadius="50%"
-                    backgroundColor="brand.500"
-                    position="absolute"
-                    top="50%"
-                    left="50%"
-                    transform="translate(-50%, -50%)"
-                  />
-                </List.Indicator>
-                {ingredient.name} - {ingredient.amount} {ingredient.unit}
-              </List.Item>
-            ))}
-          </List.Root>
+          <IngredientsSingleSection ingredients={recipe.ingredients} />
         </Box>
 
         {/* Cooking instructions */}
         <Box marginBottom="6rem">
-          <Heading size="h2" as="h2" marginBottom="1.5rem">
-            Cooking instructions
-          </Heading>
-          <List.Root gap="2" variant="plain">
-            {instructions.map((instruction) => (
-              <List.Item alignItems="center" display="block" key={instruction.id}>
-                <List.Indicator
-                  display="block"
-                  color="brand.500"
-                  fontSize="2.2rem"
-                  fontWeight="600"
-                  fontFamily="heading"
-                >
-                  Step {instruction.step}
-                </List.Indicator>
-                {instruction.description}
-              </List.Item>
-            ))}
-          </List.Root>
+          <InstructionsSingleSection instructions={ recipe.instructions} />
         </Box>
 
         {/* That't it */}
