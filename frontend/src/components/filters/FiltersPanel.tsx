@@ -1,18 +1,39 @@
-import { Box, CheckboxGroup, Heading, Text, Checkbox, Stack, Separator } from '@chakra-ui/react';
+import { Box, Separator } from '@chakra-ui/react';
 import FilterGroup from './FilterGroup';
+import { CategoryOption, DifficultyOption } from '@/lib/types/recipe';
 
-const categories = ['Desserts', 'Pasta', 'Breakfast'];
-const difficulty = ['Easy', 'Medium', 'Hard'];
 const cookingTime = ['< 30 min', '30 min - 1 h', '> 1 h'];
 
-export default function FiltersPanel() {
+interface FiltersPanelProps {
+  options: {
+    categories: CategoryOption[];
+    difficulty: DifficultyOption[];
+  };
+}
+
+export default function FiltersPanel({ options }: FiltersPanelProps) {
   return (
     <Box minHeight="100vh">
-      <FilterGroup title="Category" options={categories} />
+      <FilterGroup<CategoryOption>
+        title="Category"
+        options={options.categories}
+        getValue={(o) => String(o.id)}
+        getLabel={(o) => o.name}
+      />
       <Separator borderColor="black" />
-      <FilterGroup title="Difficulty" options={difficulty} />
+      <FilterGroup<DifficultyOption>
+        title="Difficulty"
+        options={options.difficulty}
+        getValue={(o) => o}
+        getLabel={(o) => o}
+      />
       <Separator borderColor="black" />
-      <FilterGroup title="Cooking time" options={cookingTime} />
+      <FilterGroup<string>
+        title="Cooking time"
+        options={cookingTime}
+        getValue={(o) => o}
+        getLabel={(o) => o}
+      />
     </Box>
   );
 }
