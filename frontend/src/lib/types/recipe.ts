@@ -94,3 +94,8 @@ export interface MyRecipesResponse {
   data: RecipeShort[];
   meta: PaginationData;
 }
+
+export interface AllRecipesResponse {
+  data: RecipeShort[];
+  meta: PaginationData;
+}

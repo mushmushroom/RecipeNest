@@ -3,8 +3,14 @@
 import { FormSection } from './FormSection';
 import { Button, ButtonGroup, Field, SimpleGrid, Stack, chakra, Text } from '@chakra-ui/react';
 import CustomFormField from '@/components/common/CustomFormField';
-import { CategoryOption, DifficultyOption, TimeUnit } from '@/lib/types/recipe';
-import useAddRecipe from '@/lib/hooks/recipes/useAddRecipe';
+import { AddRecipeFormValues, CategoryOption, DifficultyOption, TimeUnit } from '@/lib/types/recipe';
+import {
+  FieldErrors,
+  UseFormRegister,
+  UseFormWatch,
+  UseFormSetValue,
+  UseFormClearErrors,
+} from 'react-hook-form';
 
 const timeUnits: TimeUnit[] = ['min', 'hr'];
 
@@ -13,10 +19,21 @@ interface RecipeInfoSectionProps {
     categories: CategoryOption[];
     difficulty: DifficultyOption[];
   };
+  clearErrors: UseFormClearErrors<AddRecipeFormValues>;
+  setValue: UseFormSetValue<AddRecipeFormValues>;
+  register: UseFormRegister<AddRecipeFormValues>;
+  watch: UseFormWatch<AddRecipeFormValues>;
+  errors: FieldErrors<AddRecipeFormValues>;
 }
 
-export function RecipeInfoFormSection({ options }: RecipeInfoSectionProps) {
-  const { clearErrors, setValue, register, errors, watch } = useAddRecipe();
+export function RecipeInfoFormSection({
+  options,
+  clearErrors,
+  setValue,
+  register,
+  errors,
+  watch,
+}: RecipeInfoSectionProps) {
   const selectedCategory = watch('categoryId');
   return (
     <FormSection title="Recipe info">

@@ -1,13 +1,10 @@
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
-import {
-  RecipePayload,
-  AddRecipeFormValues,
-} from '@/lib/types/recipe';
+import { RecipePayload, AddRecipeFormValues } from '@/lib/types/recipe';
 import { AppPathProtected, BACKEND_URL } from '@/lib/constants';
-import {  toaster } from '@/components/ui/toaster';
+import { toaster } from '@/components/ui/toaster';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/hooks/useAuth';
 
@@ -36,6 +33,7 @@ const AddRecipeSchema = z.object({
 
 export default function useAddRecipe() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const {
     control,
     register,
@@ -94,13 +92,16 @@ export default function useAddRecipe() {
       }
     },
     onSuccess: async (data) => {
+      // console.log(data)
       const images = watch('images') ?? [];
 
       try {
         if (images.length > 0) {
           const form = new FormData();
           images.forEach((file) => form.append('file', file));
-
+          for (const entry of form.entries()) {
+            console.log(entry);
+          }
           const uploadRes = await fetch(
             `${BACKEND_URL}/image/upload?type=RECIPE&recipeId=${data.id}`,
             {
@@ -112,6 +113,8 @@ export default function useAddRecipe() {
             }
           );
 
+          // console.log(uploadRes);
+
           if (!uploadRes.ok) {
             throw new Error('Image upload failed');
           }
@@ -119,6 +122,9 @@ export default function useAddRecipe() {
 
         // SUCCESS path
         reset();
+        queryClient.invalidateQueries({ queryKey: ['my-recipes'] });
+        queryClient.invalidateQueries({ queryKey: ['all-recipes'] });
+
         toaster.create({
           title: 'Success!',
           description: 'Recipe was added successfully',
@@ -176,7 +182,8 @@ export default function useAddRecipe() {
     errors,
     clearErrors,
     register,
-    watch, setValue,
-  control
+    watch,
+    setValue,
+    control,
   };
 }

@@ -183,7 +183,9 @@ export class RecipeService {
           images: true,
         },
       }),
-      await this.prisma.recipe.count(),
+      await this.prisma.recipe.count({
+        where: { authorId: userId },
+      }),
     ]);
 
     return paginateOutput(myRecipes, total, query);

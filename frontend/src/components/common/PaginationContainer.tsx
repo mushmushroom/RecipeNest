@@ -1,19 +1,36 @@
 'use client';
 
+import { usePagination } from '@/lib/hooks/usePagination';
 import { ButtonGroup, Center, IconButton, Pagination } from '@chakra-ui/react';
 import { LuChevronLeft, LuChevronRight } from 'react-icons/lu';
 
 interface PaginationContainerProps {
   pageSize: number;
   count: number;
+  currentPage: number;
+  goToPage: (page: number) => void;
+  nextPage: () => void;
+  prevPage: () => void;
 }
-export default function PaginationContainer({ pageSize, count }: PaginationContainerProps) {
+export default function PaginationContainer({
+  pageSize,
+  count,
+  currentPage,
+  goToPage,
+  prevPage,
+  nextPage,
+}: PaginationContainerProps) {
   return (
     <Center>
-      <Pagination.Root count={count} pageSize={pageSize} defaultPage={1}>
+      <Pagination.Root
+        count={count}
+        pageSize={pageSize}
+        page={currentPage}
+        onPageChange={(details) => goToPage(details.page)}
+      >
         <ButtonGroup variant="ghost">
           <Pagination.PrevTrigger asChild>
-            <IconButton>
+            <IconButton onClick={prevPage}>
               <LuChevronLeft />
             </IconButton>
           </Pagination.PrevTrigger>
@@ -31,7 +48,7 @@ export default function PaginationContainer({ pageSize, count }: PaginationConta
           />
 
           <Pagination.NextTrigger asChild>
-            <IconButton>
+            <IconButton onClick={nextPage}>
               <LuChevronRight />
             </IconButton>
           </Pagination.NextTrigger>

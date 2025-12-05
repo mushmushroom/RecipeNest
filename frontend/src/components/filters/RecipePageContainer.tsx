@@ -19,12 +19,13 @@ import { FaFilter, FaRegWindowClose } from 'react-icons/fa';
 import GlobalContainer from '@/components/GlobalContainer';
 import { CustomButton } from '@/components/common/CustomButton';
 import { CategoryOption, DifficultyOption } from '@/lib/types/recipe';
+import FiltersRecipeList from '../recipes/FiltersRecipeList';
 
 interface RecipePageContainerProps {
   options: {
-      categories: CategoryOption[];
-      difficulty: DifficultyOption[];
-    };
+    categories: CategoryOption[];
+    difficulty: DifficultyOption[];
+  };
 }
 export default function RecipePageContainer({ options }: RecipePageContainerProps) {
   const [isDrawerOpen, setDrawerOpen] = useState(false);
@@ -95,7 +96,9 @@ export default function RecipePageContainer({ options }: RecipePageContainerProp
                 {isCollapsed ? 'Show filters' : 'Hide filters'}
               </CustomButton>
             </Box>
-            <Box borderTop="1px solid black"></Box>
+            <Box>
+              <FiltersRecipeList />
+            </Box>
           </Stack>
         </Grid>
       </GlobalContainer>
@@ -122,7 +125,7 @@ export default function RecipePageContainer({ options }: RecipePageContainerProp
                 <FaRegWindowClose size="20px" />
               </Drawer.CloseTrigger>
               <Drawer.Body paddingRight="40px">
-                <FiltersPanel options={options}  />
+                <FiltersPanel options={options} />
               </Drawer.Body>
             </Drawer.Content>
           </Portal>

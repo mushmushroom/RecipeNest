@@ -19,9 +19,10 @@ import Image from 'next/image';
 import { MAX_FILE_SIZE } from '@/lib/constants';
 import { AddRecipeFormValues } from '@/lib/types/recipe';
 import useAddRecipe from '@/lib/hooks/recipes/useAddRecipe';
-
-export function UploadImagesSection() {
-  const { control } = useAddRecipe();
+interface UploadImagesSectionProps {
+  control: Control<AddRecipeFormValues>
+}
+export function UploadImagesSection({ control }: UploadImagesSectionProps) {
   const { field } = useController({
     control,
     name: 'images',

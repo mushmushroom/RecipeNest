@@ -1,15 +1,27 @@
 'use client';
 
 import { FormSection } from './FormSection';
-import { useFieldArray } from 'react-hook-form';
 import { Field, Stack, Textarea, Text, Flex } from '@chakra-ui/react';
 import { FiTrash2 } from 'react-icons/fi';
 import { CustomButton } from '@/components/common/CustomButton';
 import { useState } from 'react';
-import useAddRecipe from '@/lib/hooks/recipes/useAddRecipe';
+import { Control, FieldErrors, useFieldArray, UseFormClearErrors, UseFormRegister } from 'react-hook-form';
+import { AddRecipeFormValues } from '@/lib/types/recipe';
 
-export function InstructionsFormSection() {
-  const { clearErrors, control, register, errors } = useAddRecipe();
+
+interface InstructionsFormSectionProps {
+  clearErrors:UseFormClearErrors<AddRecipeFormValues>;
+    control: Control<AddRecipeFormValues>;
+    register: UseFormRegister<AddRecipeFormValues>;
+    errors:FieldErrors<AddRecipeFormValues>;
+}
+export function InstructionsFormSection({
+  clearErrors,
+  control,
+  register,
+  errors,
+}: InstructionsFormSectionProps) {
+  // const { clearErrors, control, register, errors } = useAddRecipe();
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'instructions',

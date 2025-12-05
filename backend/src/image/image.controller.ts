@@ -28,7 +28,7 @@ export class ImageController {
     @Query('userId') userId?: string,
     @Query('recipeId') recipeId?: string,
   ) {
-    console.log(file);
+    // console.log(file);
     const params =
       type === 'AVATAR'
         ? { type, userId: Number(userId) }

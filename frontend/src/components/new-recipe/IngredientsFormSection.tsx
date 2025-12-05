@@ -2,17 +2,27 @@
 
 import { FormSection } from './FormSection';
 import { Box, Field, Flex, Input, Stack, Text, chakra } from '@chakra-ui/react';
-import { useFieldArray } from 'react-hook-form';
+import { Control, FieldErrors, useFieldArray, UseFormClearErrors, UseFormRegister } from 'react-hook-form';
 import { FiTrash2 } from 'react-icons/fi';
 import { CustomButton } from '@/components/common/CustomButton';
 import { useState } from 'react';
-import useAddRecipe from '@/lib/hooks/recipes/useAddRecipe';
-import { UnitOption } from '@/lib/types/recipe';
+import { AddRecipeFormValues, UnitOption } from '@/lib/types/recipe';
 
 const unitOptions: UnitOption[] = ['g', 'kg', 'ml', 'l', 'cup', 'tbsp', 'tsp', 'pcs'];
 
-export function IngredientsFormSection() {
-  const { clearErrors, control, register, errors } = useAddRecipe();
+interface IngredientsFormSectionProps {
+  clearErrors:UseFormClearErrors<AddRecipeFormValues>;
+  control: Control<AddRecipeFormValues>;
+  register: UseFormRegister<AddRecipeFormValues>;
+  errors:FieldErrors<AddRecipeFormValues>;
+}
+export function IngredientsFormSection({
+  clearErrors,
+  control,
+  register,
+  errors,
+}: IngredientsFormSectionProps) {
+  // const { clearErrors, control, register, errors } = useAddRecipe();
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'ingredients',

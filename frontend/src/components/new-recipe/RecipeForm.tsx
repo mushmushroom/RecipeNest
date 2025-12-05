@@ -17,23 +17,40 @@ interface RecipeFormProps {
   };
 }
 export default function RecipeForm({ options }: RecipeFormProps) {
-  const { handleSubmit, onSubmit, errors, watch, control } = useAddRecipe();
+  const { handleSubmit, onSubmit, errors, clearErrors, setValue, register, watch, control } = useAddRecipe();
   return (
-    <Box minH="100vh"  px="1rem">
+    <Box minH="100vh" px="1rem">
       <Container maxW="960px" w="100%">
         <Stack gap="2.4rem" as="form" onSubmit={handleSubmit(onSubmit)}>
           <Heading as="h1" size="h1" textAlign="center">
             <Text as="span">Add</Text> a recipe
           </Heading>
-          <RecipeInfoFormSection options={options} />
+          <RecipeInfoFormSection
+            options={options}
+            errors={errors}
+            clearErrors={clearErrors}
+            setValue={setValue}
+            register={register}
+            watch={watch}
+          />
           <Separator borderColor="black" />
 
-          <IngredientsFormSection />
+          <IngredientsFormSection
+            clearErrors={clearErrors}
+            control={control}
+            register={register}
+            errors={errors}
+          />
           <Separator borderColor="black" />
-          <InstructionsFormSection />
+          <InstructionsFormSection
+            clearErrors={clearErrors}
+            control={control}
+            register={register}
+            errors={errors}
+          />
           <Separator borderColor="black" />
 
-          <UploadImagesSection />
+          <UploadImagesSection control={control} />
           {errors.root?.message && (
             <Text fontSize="1.8rem" color="red.500" textAlign="center">
               {errors.root?.message}
