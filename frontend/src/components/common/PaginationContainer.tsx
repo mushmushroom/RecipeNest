@@ -40,7 +40,8 @@ export default function PaginationContainer({
               <IconButton
                 variant={{ base: 'ghost', _selected: 'outline' }}
                 fontSize="2rem"
-                padding="1.5rem"
+                padding="1.5rem 1rem"
+                borderColor={{ _selected: 'brand.500' }}
               >
                 {page.value}
               </IconButton>
