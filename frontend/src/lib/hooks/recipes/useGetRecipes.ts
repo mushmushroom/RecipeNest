@@ -2,6 +2,7 @@ import { getRecipeItemAuth, getRecipesPage } from '@/lib/helpers/server-utils';
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '../useAuth';
 import { AllRecipesResponse, MyRecipesResponse } from '@/lib/types/recipe';
+import useFilters from '../useFilters';
 
 export function useMyRecipes(currentPage: number, pageSize: number = 10) {
   console.log('Fetching recipes');
@@ -17,8 +18,9 @@ export function useMyRecipes(currentPage: number, pageSize: number = 10) {
 export function useFavoriteRecipes() {}
 
 export function useAllRecipes(currentPage: number, pageSize: number = 10) {
+  const { filters } = useFilters();
   return useQuery({
-    queryKey: ['all-recipes', currentPage],
+    queryKey: ['all-recipes', currentPage, filters],
     queryFn: () => getRecipesPage<AllRecipesResponse>(currentPage, pageSize),
     staleTime: 1000 * 60 * 5,
     gcTime: 1000 * 60 * 30,

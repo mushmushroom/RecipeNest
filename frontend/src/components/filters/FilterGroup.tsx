@@ -4,6 +4,8 @@ interface FilterGroupProps<T> {
   options: T[];
   getValue: (item: T) => string;
   getLabel: (item: T) => string;
+  selected: string[];
+  onToggle: (value: string) => void;
 }
 
 export default function FilterGroup<T>({
@@ -11,13 +13,15 @@ export default function FilterGroup<T>({
   options,
   getValue,
   getLabel,
+  onToggle,
+  selected,
 }: FilterGroupProps<T>) {
   return (
     <Box paddingY="3.2rem">
       <Heading size="h3" as="h3" marginBottom="2.3rem">
         {title}
       </Heading>
-      <CheckboxGroup>
+      <CheckboxGroup value={selected}>
         <Stack gap="13px">
           {options.map((item) => {
             const value = getValue(item);
@@ -28,6 +32,7 @@ export default function FilterGroup<T>({
                 colorPalette="brand.500"
                 gap="12px"
                 cursor="pointer"
+                onCheckedChange={() => onToggle(value)}
               >
                 <Checkbox.HiddenInput />
                 <Checkbox.Control

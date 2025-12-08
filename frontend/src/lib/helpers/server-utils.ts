@@ -47,7 +47,7 @@ export async function getRecipeItemNoAuth<T>(item: string | number = '') {
 
 // get recipes
 export async function getRecipesPage<T>(page = 1, pageSize = 10) {
-  console.log(page, pageSize);
+  // console.log(page, pageSize);
   const res = await fetch(`${BACKEND_URL}/recipe?page=${page}&pageSize=${pageSize}`);
   if (res.status === 404) return notFound();
   if (!res.ok) throw new Error(`Failed to fetch recipes page ${page}`);
