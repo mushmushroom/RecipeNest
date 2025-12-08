@@ -71,20 +71,21 @@ export class AddRecipeDto {
 
 export class UpdateRecipeDto extends PartialType(AddRecipeDto) {}
 
+export type CookingTime = 'LESS_30' | 'BETWEEN_30_60' | 'MORE_60'
 export class RecipeQueryDto {
   @IsOptional()
   @IsString()
   search?: string;
 
   @IsOptional()
-  @IsInt()
+  // @IsInt()
   @Min(1)
-  category?: number;
+  category?: number | number[];
 
   @IsOptional()
   @IsEnum(Difficulty)
-  difficulty?: Difficulty;
+  difficulty?: Difficulty | Difficulty[];
 
   @IsOptional()
-  cookingTime?: 'LESS_30' | 'BETWEEN_30_60' | 'MORE_60';
+  cookingTime?: CookingTime | CookingTime[];
 }

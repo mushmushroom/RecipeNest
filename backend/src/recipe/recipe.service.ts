@@ -12,6 +12,11 @@ import {
 } from './dto/recipe.dto';
 import { UserService } from 'src/user/user.service';
 
+function toArray<T>(value: T | T[] | undefined): T[] {
+  if (!value) return [];
+  return Array.isArray(value) ? value : [value];
+}
+
 @Injectable()
 export class RecipeService {
   constructor(
@@ -33,27 +38,32 @@ export class RecipeService {
       ];
     }
 
-    if (query.category) {
-      where.categoryId = Number(query.category);
+    const categories = toArray(query.category).map(Number);
+    if (categories.length > 0) {
+      where.categoryId = { in: categories };
     }
 
-    if (query.difficulty) {
-      where.difficulty = query.difficulty;
+    const difficulties = toArray(query.difficulty);
+    if (difficulties.length > 0) {
+      where.difficulty = { in: difficulties };
     }
 
-    if (query.cookingTime) {
-      switch (query.cookingTime) {
-        case 'LESS_30':
-          where.cookingTime = { lt: 30 };
-          break;
-        case 'BETWEEN_30_60':
-          where.cookingTime = { gte: 30, lte: 60 };
-          break;
-        case 'MORE_60':
-          where.cookingTime = { gt: 60 };
-          break;
-      }
+    const cookingTime = toArray(query.cookingTime);
+    if (cookingTime.length > 0) {
+      where.AND = cookingTime.map((option) => {
+        switch (option) {
+          case 'LESS_30':
+            return { cookingTime: { lt: 30 } };
+          case 'BETWEEN_30_60':
+            return { cookingTime: { gte: 30, lte: 60 } };
+          case 'MORE_60':
+            return { cookingTime: { gt: 60 } };
+          default:
+            return {};
+        }
+      });
     }
+
     const [recipes, total] = await Promise.all([
       await this.prisma.recipe.findMany({
         ...paginate(query),

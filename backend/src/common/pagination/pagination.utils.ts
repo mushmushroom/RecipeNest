@@ -39,26 +39,12 @@ export const paginateOutput = <T>(
     Math.abs(parseInt(query.pageSize ?? '')) || DEFAULT_PAGE_SIZE;
   const page = Math.abs(parseInt(query.page ?? '')) || DEFAULT_PAGE_NUMBER;
 
-  const lastPage = Math.ceil(total / pageSize);
+  const lastPage = Math.max(Math.ceil(total / pageSize), 1);
 
   if (page > lastPage) {
     throw new NotFoundException(
       `Page ${page} not found. Last page is ${lastPage}`,
     );
-  }
-
-  if (!data.length) {
-    return {
-      data,
-      meta: {
-        total,
-        lastPage: 1,
-        currentPage: 1,
-        totalPerPage: pageSize,
-        prevPage: null,
-        nextPage: null,
-      },
-    };
   }
 
   return {
