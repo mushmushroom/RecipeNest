@@ -22,7 +22,6 @@ export function IngredientsFormSection({
   register,
   errors,
 }: IngredientsFormSectionProps) {
-  // const { clearErrors, control, register, errors } = useAddRecipe();
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'ingredients',

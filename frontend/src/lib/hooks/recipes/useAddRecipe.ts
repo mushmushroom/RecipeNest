@@ -113,8 +113,6 @@ export default function useAddRecipe() {
             }
           );
 
-          // console.log(uploadRes);
-
           if (!uploadRes.ok) {
             throw new Error('Image upload failed');
           }

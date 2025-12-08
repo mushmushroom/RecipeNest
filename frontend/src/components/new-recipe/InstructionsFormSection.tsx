@@ -52,7 +52,7 @@ export function InstructionsFormSection({
         )}
         <Field.Root gap="8px">
           <Field.Label fontSize="1.6rem" paddingLeft="0.4rem" fontWeight="600" color="gray.700">
-            Add instruction
+            Add a step
           </Field.Label>
           <Textarea
             placeholder="Add cooking instructions here"
@@ -62,6 +62,7 @@ export function InstructionsFormSection({
             borderRadius="12px"
             borderColor="gray.600"
             backgroundColor="white"
+            lineHeight="1.2"
             _placeholder={{ color: 'gray.500' }}
             value={newInstruction}
             onChange={(event) => setNewInstruction(event.target.value)}
@@ -83,7 +84,7 @@ export function InstructionsFormSection({
         </CustomButton>
       </Stack>
 
-      <Stack gap="1.6rem">
+      <Stack gap="1.6rem" width="100%">
         {fields.length === 0 && (
           <Text fontSize="1.6rem" color="gray.500">
             No instructions added yet. Use the form above to get started.
@@ -101,9 +102,9 @@ export function InstructionsFormSection({
                 borderRadius="12px"
                 p="1.2rem"
                 gap="1rem"
-                wrap="wrap"
+                width="100%"
               >
-                <Stack gap="0" flex="1" minW="200px">
+                <Stack gap="0" flex="1" width="100%" >
                   <Text fontSize="1.6rem" fontWeight="600">
                     Step {index + 1}
                   </Text>
@@ -116,7 +117,6 @@ export function InstructionsFormSection({
                   variant="danger"
                   size="md"
                   onClick={() => remove(index)}
-                  // disabled={!canRemove}
                 >
                   <FiTrash2 color="black" />
                 </CustomButton>
