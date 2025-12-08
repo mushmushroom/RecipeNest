@@ -18,9 +18,9 @@ import { FormSection } from './FormSection';
 import Image from 'next/image';
 import { MAX_FILE_SIZE } from '@/lib/constants';
 import { AddRecipeFormValues } from '@/lib/types/recipe';
-import useAddRecipe from '@/lib/hooks/recipes/useAddRecipe';
+
 interface UploadImagesSectionProps {
-  control: Control<AddRecipeFormValues>
+  control: Control<AddRecipeFormValues>;
 }
 export function UploadImagesSection({ control }: UploadImagesSectionProps) {
   const { field } = useController({
@@ -30,12 +30,18 @@ export function UploadImagesSection({ control }: UploadImagesSectionProps) {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
   const [errors, setErrors] = useState<string>('');
+  const maxReached = (field.value?.length ?? 0) >= 10;
 
   const handleFiles = (files: FileList | null) => {
     if (!files) return;
 
     const incoming = Array.from(files);
     const current = field.value || [];
+
+    if (current.length + incoming.length > 10) {
+      setErrors(`You can upload up to 10 images only.`);
+      return;
+    }
 
     const validFiles: File[] = [];
     let errorMessage = '';
@@ -89,7 +95,7 @@ export function UploadImagesSection({ control }: UploadImagesSectionProps) {
           event.preventDefault();
           handleFiles(event.dataTransfer.files);
         }}
-        cursor="pointer"
+        cursor={maxReached ? 'not-allowed' : 'pointer'}
         onClick={() => inputRef.current?.click()}
       >
         <Stack gap="1.2rem" alignItems="center">
@@ -104,11 +110,15 @@ export function UploadImagesSection({ control }: UploadImagesSectionProps) {
               e.stopPropagation();
               inputRef.current?.click();
             }}
+            disabled={maxReached}
           >
             Click to browse
           </Button>
           <Text color="green.500" fontWeight="500" fontSize="1.4rem">
             Max image size: {MAX_FILE_SIZE / 1024 / 1024} MB
+          </Text>
+          <Text color="brand.500" fontWeight="600" fontSize="1.4rem">
+            Max 10 images
           </Text>
         </Stack>
 

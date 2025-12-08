@@ -1,3 +1,3 @@
 export function formatMinutesToHours(min: number) {
-  return min / 60 > 1 ? `${min / 60} h` : `${min} min`;
+  return min / 60 > 1 ? `${Math.round(min / 60 * 100) / 100} h` : `${min} min`;
 }

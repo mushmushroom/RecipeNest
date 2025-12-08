@@ -98,7 +98,7 @@ export default function useAddRecipe() {
       try {
         if (images.length > 0) {
           const form = new FormData();
-          images.forEach((file) => form.append('file', file));
+          images.forEach((file) => form.append('files', file));
           for (const entry of form.entries()) {
             console.log(entry);
           }
