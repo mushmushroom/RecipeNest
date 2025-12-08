@@ -73,6 +73,7 @@ export default function RecipeImageSlider({ images }: RecipeImageSliderProps) {
               height={120}
               style={{
                 objectFit: 'cover',
+                height: '100%',
               }}
             />
           </SwiperSlide>
