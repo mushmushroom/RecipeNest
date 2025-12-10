@@ -11,7 +11,7 @@ interface CategoryCardProps {
 
 export default function CategoryCard({ category }: CategoryCardProps) {
   return (
-    <Link href={`${AppPathPublic.Recipes}?category=${category.text.toLowerCase()}`}>
+    <Link href={`${AppPathPublic.Recipes}?category=${category.text}`}>
       <Center
         as="article"
         bgImage={`url(${category.img})`}
@@ -29,7 +29,7 @@ export default function CategoryCard({ category }: CategoryCardProps) {
           left="0"
           width="100%"
           height="100%"
-          bg="rgba(0, 0, 0, 0.5)" 
+          bg="rgba(0, 0, 0, 0.5)"
           display="flex"
           alignItems="center"
           justifyContent="center"

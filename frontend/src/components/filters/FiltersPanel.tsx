@@ -2,9 +2,10 @@ import { Box, Separator } from '@chakra-ui/react';
 import FilterGroup from './FilterGroup';
 import { CategoryOption, DifficultyOption } from '@/lib/types/recipe';
 import { CustomButton } from '../common/CustomButton';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import useFilters from '@/lib/hooks/useFilters';
 import { CookingTimeOption, FiltersState } from '@/lib/types/filters';
+import { usePathname, useSearchParams } from 'next/navigation';
 
 const cookingTime = [
   { value: 'LESS_30', label: '< 30 min' },
@@ -22,6 +23,7 @@ interface FiltersPanelProps {
 export default function FiltersPanel({ options }: FiltersPanelProps) {
   const { filters, setFilters } = useFilters();
   const [localFilters, setLocalFilters] = useState<FiltersState>(filters);
+  console.log('filters on page', filters);
 
   function handleCheckbox(key: keyof FiltersState, value: string) {
     setLocalFilters((prev) => {

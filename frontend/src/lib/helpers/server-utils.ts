@@ -45,12 +45,29 @@ export async function getRecipeItemNoAuth<T>(item: string | number = '') {
   return (await res.json()) as T;
 }
 
+function buildQueryString(query: Record<string, any>) {
+  const params: string[] = [];
+
+  Object.entries(query).forEach(([key, value]) => {
+    if (Array.isArray(value)) {
+      value.forEach((v) => {
+        params.push(`${encodeURIComponent(key)}=${encodeURIComponent(v)}`);
+      });
+    } else if (value !== undefined && value !== null) {
+      params.push(`${encodeURIComponent(key)}=${encodeURIComponent(value)}`);
+    }
+  });
+
+  return params.join('&');
+}
+
 // get recipes
-export async function getRecipesPage<T>(page = 1, pageSize = 10) {
-  // console.log(page, pageSize);
-  const res = await fetch(`${BACKEND_URL}/recipe?page=${page}&pageSize=${pageSize}`);
+export async function getRecipesPage<T>(query: Record<string, any>) {
+  const queryString = buildQueryString(query);
+
+  const res = await fetch(`${BACKEND_URL}/recipe?${queryString}`);
   if (res.status === 404) return notFound();
-  if (!res.ok) throw new Error(`Failed to fetch recipes page ${page}`);
+  if (!res.ok) throw new Error(`Failed to fetch recipes`);
 
   return (await res.json()) as T;
 }

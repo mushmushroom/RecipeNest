@@ -1,12 +1,12 @@
 'use client';
 
-import { HStack, Box } from '@chakra-ui/react';
-import Link from 'next/link';
+import { HStack, Box, Link } from '@chakra-ui/react';
+// import Link from 'next/link';
 import { CustomButton } from '../common/CustomButton';
 import { AppPathProtected, AppPathPublic } from '@/lib/constants';
-import { useAuth } from '@/lib/hooks/useAuth';
 import LoginButton from './LoginButton';
 import { Session } from 'next-auth';
+import { useRouter } from 'next/navigation';
 
 const headerMenuLinks = [
   { text: 'All recipes', href: AppPathPublic.Recipes },
@@ -18,7 +18,7 @@ interface HeaderMenuProps {
 }
 export default function HeaderMenu({ session }: HeaderMenuProps) {
   // const { isSessionReady, loading } = useAuth();
-
+const router = useRouter();
   // if (loading) return null;
 
   return (

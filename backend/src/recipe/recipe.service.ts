@@ -50,7 +50,7 @@ export class RecipeService {
 
     const cookingTime = toArray(query.cookingTime);
     if (cookingTime.length > 0) {
-      where.AND = cookingTime.map((option) => {
+      where.OR = cookingTime.map((option) => {
         switch (option) {
           case 'LESS_30':
             return { cookingTime: { lt: 30 } };

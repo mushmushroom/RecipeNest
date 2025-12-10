@@ -1,4 +1,3 @@
-'use client';
 import GlobalContainer from '@/components/GlobalContainer';
 import Header from '@/components/header/Header';
 import CategoriesHome from '@/components/home-page/CategoriesHome';

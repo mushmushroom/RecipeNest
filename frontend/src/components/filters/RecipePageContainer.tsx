@@ -97,7 +97,7 @@ export default function RecipePageContainer({ options }: RecipePageContainerProp
               </CustomButton>
             </Box>
             <Box>
-              <FiltersRecipeList />
+              <FiltersRecipeList categoryOptions={ options.categories} />
             </Box>
           </Stack>
         </Grid>

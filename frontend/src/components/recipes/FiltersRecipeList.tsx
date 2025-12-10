@@ -4,14 +4,18 @@ import RecipeList from './RecipeList';
 import PaginationContainer from '../common/PaginationContainer';
 import { usePagination } from '@/lib/hooks/usePagination';
 import { useEffect } from 'react';
+import { CategoryOption } from '@/lib/types/recipe';
 
-export default function FiltersRecipeList() {
+interface FiltersRecipeListProps {
+  categoryOptions: CategoryOption[];
+}
+export default function FiltersRecipeList({ categoryOptions }: FiltersRecipeListProps) {
   const { currentPage, setCurrentPage, goToPage, nextPage, prevPage } = usePagination();
 
-  const { data, isLoading } = useAllRecipes(currentPage, 9);
+  const { data, isLoading } = useAllRecipes({currentPage, pageSize: 9, categoriesOptions: categoryOptions});
   useEffect(() => {
-      setCurrentPage(1); // reset page when visiting this page
-    }, [setCurrentPage]);
+    setCurrentPage(1); // reset page when visiting this page
+  }, [setCurrentPage]);
 
   if (isLoading) return 'loading...';
   return (
