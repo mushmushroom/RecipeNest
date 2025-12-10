@@ -18,6 +18,7 @@ import {
 } from './dto/recipe.dto';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { QueryPaginationDto } from 'src/common/pagination/query-pagination.dto';
+import { OptionalJwtGuard } from 'src/auth/guards/optional-jwt.guard';
 
 @Controller('recipe')
 export class RecipeController {
@@ -35,9 +36,32 @@ export class RecipeController {
     return this.recipeService.findMyRecipes(userId, query);
   }
 
+  @UseGuards(JwtGuard)
+  @Get('favorites')
+  async getFavoriteRecipes(@Req() req) {
+    const userId = req.user.sub;
+    return this.recipeService.getFavoriteRecipes(userId);
+  }
+
+  @UseGuards(JwtGuard)
+  @Post('favorites/:id')
+  async addFavoriteRecipe(@Req() req, @Param('id') recipeId: number) {
+    const userId = req.user.sub;
+    return this.recipeService.addToFavorite(userId, recipeId);
+  }
+
+  @UseGuards(JwtGuard)
+  @Delete('favorites/:id')
+  async removeFavoriteRecipe(@Req() req, @Param('id') recipeId: number) {
+    const userId = req.user.sub;
+    return this.recipeService.removeFromFavorite(userId, recipeId);
+  }
+
+  @UseGuards(OptionalJwtGuard)
   @Get(':id')
-  findOne(@Param('id') recipeId: number) {
-    return this.recipeService.findOne(recipeId);
+  findOne(@Req() req, @Param('id') recipeId: number) {
+    const userId = req.user?.sub ?? null;
+    return this.recipeService.findOne(recipeId, userId);
   }
 
   @UseGuards(JwtGuard)

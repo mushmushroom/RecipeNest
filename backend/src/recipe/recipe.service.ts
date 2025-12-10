@@ -81,7 +81,7 @@ export class RecipeService {
     return paginateOutput(recipes, total, query);
   }
 
-  async findOne(id: number) {
+  async findOne(id: number, userId: number | null) {
     const existingRecipe = await this.prisma.recipe.findUnique({
       where: { id },
       include: {
@@ -89,12 +89,27 @@ export class RecipeService {
         instructions: true,
         images: true,
         author: true,
+        favoritedBy: userId
+          ? {
+              where: { id: userId },
+              select: { id: true },
+            }
+          : false,
       },
     });
     if (!existingRecipe)
       throw new NotFoundException(`Recipe with id ${id} is not found`);
 
-    return existingRecipe;
+    const isFavorite = userId
+      ? existingRecipe.favoritedBy.length > 0
+      : false;
+    
+    const { favoritedBy, ...rest } = existingRecipe;
+
+    return {
+      ...rest,
+      isFavorite
+    };
   }
 
   async createRecipe(userId: number, dto: AddRecipeDto) {
@@ -199,5 +214,64 @@ export class RecipeService {
     ]);
 
     return paginateOutput(myRecipes, total, query);
+  }
+
+  async getFavoriteRecipes(userId: number) {
+    const recipes = await this.prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        favoriteRecipes: {
+          include: {
+            images: true,
+          },
+        },
+      },
+    });
+
+    return recipes?.favoriteRecipes;
+  }
+
+  async addToFavorite(userId: number, recipeId: number) {
+    const recipe = this.prisma.recipe.findUnique({
+      where: {
+        id: recipeId,
+      },
+    });
+    if (!recipe)
+      return new NotFoundException(`Recipe with id ${recipeId} not found`);
+
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        favoriteRecipes: {
+          connect: { id: recipeId },
+        },
+      },
+      include: { favoriteRecipes: true },
+    });
+
+    return { message: `Recipe ${recipeId} was added to favorites` };
+  }
+
+  async removeFromFavorite(userId: number, recipeId: number) {
+    const recipe = this.prisma.recipe.findUnique({
+      where: {
+        id: recipeId,
+      },
+    });
+    if (!recipe)
+      return new NotFoundException(`Recipe with id ${recipeId} not found`);
+
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        favoriteRecipes: {
+          disconnect: { id: recipeId },
+        },
+      },
+      include: { favoriteRecipes: true },
+    });
+
+    return { message: `Recipe ${recipeId} was removed from favorites` };
   }
 }
