@@ -226,7 +226,7 @@ export class RecipeService {
       },
     });
 
-    return user?.favoriteRecipes;
+    return { data: user?.favoriteRecipes || [] };
   }
 
   async addToFavorite(userId: number, recipeId: number) {
