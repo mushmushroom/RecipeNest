@@ -40,3 +40,7 @@ html {
 body {
   font-size: 1.8rem;
 }
+
+.swiper-slide {
+  height: auto !important;
+}

@@ -1,28 +1,15 @@
 import { Box, Flex, Heading, Text, Separator, Stack, List } from '@chakra-ui/react';
 import GlobalContainer from '../../GlobalContainer';
 import { CustomButton } from '../../common/CustomButton';
-import { FaPrint, FaRegBookmark } from 'react-icons/fa';
+import { FaBookmark, FaPrint, FaRegBookmark } from 'react-icons/fa';
 import RecipeImageSlider from './RecipeImageSlider';
 import { ImageData, RecipeFull } from '@/lib/types/recipe';
 import Image from 'next/image';
 import RecipeInfoSingleSection from './RecipeInfoSingleSection';
 import IngredientsSingleSection from './IngredientsSingleSection';
 import InstructionsSingleSection from './InstructionsSingleSection';
-
-const testImages: ImageData[] = [
-  {
-    id: 1,
-    url: 'https://res.cloudinary.com/djkvuz5sc/image/upload/v1764337170/recipes/8/d704e075-08e2-4955-86f3-6cc7f739eff2.jpg',
-  },
-  {
-    id: 2,
-    url: 'https://res.cloudinary.com/djkvuz5sc/image/upload/v1764337179/recipes/8/8fd1fc55-aa38-4288-bcad-9d1521b99a19.jpg',
-  },
-  {
-    id: 3,
-    url: 'https://res.cloudinary.com/djkvuz5sc/image/upload/v1764502356/recipes/8/15cdd94f-116c-4e5d-9733-bc4b9ffdd4f7.jpg',
-  },
-];
+import { Session } from 'next-auth';
+import SingleFavoriteButton from './SingleFavoriteButton';
 
 function formatPublishedDate(date: string) {
   return new Date(date).toLocaleDateString('en-US', {
@@ -34,10 +21,12 @@ function formatPublishedDate(date: string) {
 
 interface SingleRecipeContainerProps {
   recipe: RecipeFull;
+  session: Session | null;
 }
 
-export default function SingleRecipeContainer({ recipe }: SingleRecipeContainerProps) {
+export default function SingleRecipeContainer({ recipe, session }: SingleRecipeContainerProps) {
   const date = formatPublishedDate(recipe.createdAt);
+  console.log(recipe);
 
   const instructions = recipe.instructions.sort((a, b) => a.step - b.step);
   return (
@@ -71,10 +60,15 @@ export default function SingleRecipeContainer({ recipe }: SingleRecipeContainerP
             </Flex>
             {/* Buttons */}
             <Flex marginBottom="3rem" gap="2.5rem">
-              <CustomButton variant="secondary">
-                <FaRegBookmark />
+              {/* <CustomButton variant="secondary">
+                {recipe?.isFavorite ? <FaBookmark /> : <FaRegBookmark />}
                 Save
-              </CustomButton>
+              </CustomButton> */}
+              <SingleFavoriteButton
+                recipeId={recipe.id}
+                token={session?.backendTokens.accessToken}
+                // initialIsFavorite={recipe.isFavorite}
+               />
               <CustomButton variant="outline">
                 <FaPrint />
                 Print
@@ -86,7 +80,7 @@ export default function SingleRecipeContainer({ recipe }: SingleRecipeContainerP
               cookingTime={recipe.cookingTime}
             />
           </Box>
-          { /* Slider or image placeholder */ }
+          {/* Slider or image placeholder */}
           <Box flex="1" maxW={{ base: '100%', md: '45%' }}>
             {recipe.images.length > 1 ? (
               <RecipeImageSlider images={recipe.images} />
@@ -119,7 +113,7 @@ export default function SingleRecipeContainer({ recipe }: SingleRecipeContainerP
 
         {/* Cooking instructions */}
         <Box marginBottom="6rem">
-          <InstructionsSingleSection instructions={ recipe.instructions} />
+          <InstructionsSingleSection instructions={instructions} />
         </Box>
 
         {/* That't it */}

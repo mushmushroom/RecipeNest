@@ -87,6 +87,7 @@ export interface RecipeFull extends RecipeShort {
   instructions: InstructionData[];
   createdAt: string;
   author: { username: string };
+  isFavorite?: boolean;
 }
 
 
