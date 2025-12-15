@@ -14,7 +14,7 @@ export default function SingleFavoriteButton({ recipeId, token }: SingleFavorite
   return (
     <CustomButton variant="secondary" onClick={() => toggleFavorite(recipeId)} disabled={!token}>
       {isFavorite(recipeId) ? <FaBookmark /> : <FaRegBookmark />}
-      Save
+      {isFavorite(recipeId) ? "Remove from favorites " : "Add to favorites"}
     </CustomButton>
   );
 }
