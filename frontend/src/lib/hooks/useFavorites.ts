@@ -1,58 +1,60 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { addFavorite, getUserFavorites, removeFavorite } from '../helpers/server-utils';
-import { RecipeFull } from '../types/recipe';
+import { FavoriteRecipesResponse, RecipeShort } from '../types/recipe';
 
 export default function useFavorites(token?: string) {
   const queryClient = useQueryClient();
 
-  const favoritesQuery = useQuery<RecipeFull[]>({
+  const favoritesQuery = useQuery<FavoriteRecipesResponse>({
     queryKey: ['favorites', token],
     queryFn: () => getUserFavorites(token!),
     enabled: !!token,
     staleTime: 1000 * 60 * 5,
   });
 
-  const favoritesIds = favoritesQuery.data?.map((recipe) => recipe.id) ?? [];
+  const favorites = favoritesQuery.data?.data ?? [];
+  const favoriteIds = favorites.map((r) => r.id);
 
   const toggleMutation = useMutation({
-    mutationFn: async ({ recipeId, isFavorite }: { recipeId: number; isFavorite: boolean }) => {
+    mutationFn: async (recipeId: number) => {
       if (!token) return;
 
-      console.log('mutationFn - isFavorite:', isFavorite, 'recipeId:', recipeId);
+      const isFavorite = favoriteIds.includes(recipeId);
 
       if (isFavorite) {
-        console.log('removing from fav');
         await removeFavorite(recipeId, token);
-        return { action: 'remove', recipeId };
+        return { recipeId, isFavorite: true };
       } else {
-        console.log('adding to fav');
         await addFavorite(recipeId, token);
-        return { action: 'add', recipeId };
+        return { recipeId, isFavorite: false };
       }
     },
 
-    onMutate: async ({ recipeId, isFavorite }) => {
+    onMutate: async (recipeId) => {
       if (!token) return;
 
       await queryClient.cancelQueries({ queryKey: ['favorites', token] });
 
-      const previousFavorites = queryClient.getQueryData<RecipeFull[]>(['favorites', token]);
+      const previous = queryClient.getQueryData<FavoriteRecipesResponse>(['favorites', token]);
 
-      queryClient.setQueryData<RecipeFull[]>(['favorites', token], (old = []) => {
-        if (isFavorite) {
-          return old.filter((r) => r.id !== recipeId);
-        } else {
-          return old;
-        }
+      queryClient.setQueryData<FavoriteRecipesResponse>(['favorites', token], (old) => {
+        if (!old) return old;
+
+        const isFavorite = old.data.some((r) => r.id === recipeId);
+
+        return {
+          data: isFavorite
+            ? old.data.filter((r) => r.id !== recipeId)
+            : [...old.data, { id: recipeId } as RecipeShort],
+        };
       });
 
-      return { previousFavorites };
+      return { previous };
     },
 
-    onError: (err, variables, context) => {
-      console.error('Toggle favorite error:', err);
-      if (context?.previousFavorites && token) {
-        queryClient.setQueryData(['favorites', token], context.previousFavorites);
+    onError: (_err, _recipeId, context) => {
+      if (context?.previous && token) {
+        queryClient.setQueryData(['favorites', token], context.previous);
       }
     },
 
@@ -63,15 +65,10 @@ export default function useFavorites(token?: string) {
     },
   });
 
-  const favorites = favoritesQuery.data ?? [];
-
   return {
     favorites,
-    isFavorite: (id: number) => favoritesIds.includes(id),
-    toggleFavorite: (recipeId: number) => {
-      const isFavorite = favoritesIds.includes(recipeId);
-      toggleMutation.mutate({ recipeId, isFavorite });
-    },
+    isFavorite: (id: number) => favoriteIds.includes(id),
+    toggleFavorite: (recipeId: number) => toggleMutation.mutate(recipeId),
     isLoading: favoritesQuery.isLoading,
     isToggling: toggleMutation.isPending,
     isError: favoritesQuery.isError,

@@ -1,5 +1,5 @@
 import { BACKEND_URL } from '@/lib/constants';
-import { CategoryOption, DifficultyOption } from '../types/recipe';
+import { CategoryOption, DifficultyOption, FavoriteRecipesResponse } from '../types/recipe';
 import { notFound } from 'next/navigation';
 
 // revalidate
@@ -91,15 +91,20 @@ export async function getRecipesPage<T>(query: Record<string, any>) {
 }
 
 // get favorites
-export async function getUserFavorites(token: string) {
+export async function getUserFavorites(token: string): Promise<FavoriteRecipesResponse> {
+  if (!token) {
+    return { data: [] };
+  }
+
   const res = await fetch(`${BACKEND_URL}/user/me/favorites`, {
     headers: { Authorization: `Bearer ${token}` },
   });
 
-  if (!res.ok) return [];
+  if (!res.ok) {
+    return { data: [] };
+  }
 
-  const data = await res.json();
-  return data;
+  return res.json();
 }
 
 // add favorites

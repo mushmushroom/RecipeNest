@@ -1,6 +1,5 @@
 'use client';
 import PaginationContainer from '@/components/common/PaginationContainer';
-import RecipeCard from '@/components/recipes/RecipeCard';
 import RecipeList from '@/components/recipes/RecipeList';
 import { useMyRecipes } from '@/lib/hooks/recipes/useGetRecipes';
 import { usePagination } from '@/lib/hooks/usePagination';

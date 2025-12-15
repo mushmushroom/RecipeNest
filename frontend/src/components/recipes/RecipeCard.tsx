@@ -3,11 +3,12 @@
 import { AppPathProtected, AppPathPublic } from '@/lib/constants';
 import { RecipeShort } from '@/lib/types/recipe';
 
-import { Box, Heading, Flex, Text, Badge } from '@chakra-ui/react';
+import { Box, Heading, Flex, Text, Badge, Button } from '@chakra-ui/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { IoTimeOutline } from 'react-icons/io5';
+import CardFavoriteButton from './favorites/CardFavoriteButton';
 
 const difficultyColors = {
   EASY: { bg: 'green.300', text: 'green.500' },
@@ -45,6 +46,7 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
       display="flex"
       flexDirection="column"
       height="100%"
+      position="relative"
     >
       <Box position="relative" width="100%" height={{ base: '130px', md: '150px' }} flexShrink="0">
         {imageUrl ? (
@@ -63,6 +65,7 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
           </Box>
         )}
       </Box>
+      {pathname === AppPathProtected.Favorites && <CardFavoriteButton recipeId={recipe.id} />}
       <Box
         p="1.5rem"
         display="flex"
