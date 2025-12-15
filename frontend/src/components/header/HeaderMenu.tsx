@@ -1,6 +1,6 @@
 'use client';
 
-import { HStack, Box, Link } from '@chakra-ui/react';
+import { HStack, Box, Link, Flex } from '@chakra-ui/react';
 // import Link from 'next/link';
 import { CustomButton } from '../common/CustomButton';
 import { AppPathProtected, AppPathPublic } from '@/lib/constants';
@@ -18,7 +18,7 @@ interface HeaderMenuProps {
 }
 export default function HeaderMenu({ session }: HeaderMenuProps) {
   // const { isSessionReady, loading } = useAuth();
-const router = useRouter();
+  const router = useRouter();
   // if (loading) return null;
 
   return (
@@ -31,7 +31,12 @@ const router = useRouter();
             </CustomButton>
           ))
         ) : (
-          <LoginButton />
+          <Flex gap="4rem">
+            <Link href={AppPathPublic.Recipes} style={{ fontSize: '2.2rem' }}>
+              All recipes
+            </Link>
+            <LoginButton />
+          </Flex>
         )}
       </HStack>
     </Box>

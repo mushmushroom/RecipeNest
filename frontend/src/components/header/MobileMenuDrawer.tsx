@@ -1,6 +1,6 @@
 'use client';
 
-import { Drawer, VStack, IconButton, Portal, Button } from '@chakra-ui/react';
+import { Drawer, VStack, IconButton, Portal, Button, Flex, Stack } from '@chakra-ui/react';
 import Link from 'next/link';
 import { IoMenu } from 'react-icons/io5';
 import { FaRegWindowClose } from 'react-icons/fa';
@@ -83,7 +83,12 @@ export default function MobileMenuDrawer({ session }: MobileMenuDrawerProps) {
                     )
                   )
                 ) : (
-                  <LoginButton />
+                  <Stack gap="4rem">
+                    <Link href={AppPathPublic.Recipes} style={{ fontSize: '2.2rem' }}>
+                      All recipes
+                    </Link>
+                    <LoginButton />
+                  </Stack>
                 )}
               </VStack>
             </Drawer.Body>
