@@ -100,15 +100,13 @@ export class RecipeService {
     if (!existingRecipe)
       throw new NotFoundException(`Recipe with id ${id} is not found`);
 
-    const isFavorite = userId
-      ? existingRecipe.favoritedBy.length > 0
-      : false;
-    
+    const isFavorite = userId ? existingRecipe.favoritedBy.length > 0 : false;
+
     const { favoritedBy, ...rest } = existingRecipe;
 
     return {
       ...rest,
-      isFavorite
+      isFavorite,
     };
   }
 
@@ -217,7 +215,7 @@ export class RecipeService {
   }
 
   async getFavoriteRecipes(userId: number) {
-    const recipes = await this.prisma.user.findUnique({
+    const user = await this.prisma.user.findUnique({
       where: { id: userId },
       include: {
         favoriteRecipes: {
@@ -228,7 +226,7 @@ export class RecipeService {
       },
     });
 
-    return recipes?.favoriteRecipes;
+    return user?.favoriteRecipes;
   }
 
   async addToFavorite(userId: number, recipeId: number) {

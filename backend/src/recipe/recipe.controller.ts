@@ -37,13 +37,6 @@ export class RecipeController {
   }
 
   @UseGuards(JwtGuard)
-  @Get('favorites')
-  async getFavoriteRecipes(@Req() req) {
-    const userId = req.user.sub;
-    return this.recipeService.getFavoriteRecipes(userId);
-  }
-
-  @UseGuards(JwtGuard)
   @Post('favorites/:id')
   async addFavoriteRecipe(@Req() req, @Param('id') recipeId: number) {
     const userId = req.user.sub;

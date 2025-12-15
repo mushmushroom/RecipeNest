@@ -25,7 +25,7 @@ import { ImageModule } from './image/image.module';
     ThrottlerModule.forRoot([
       {
         ttl: 60000, // 1 minute
-        limit: 10, // 10 requests per minute
+        limit: 50, // 10 requests per minute
       },
     ]),
     CategoryModule,
