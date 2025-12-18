@@ -20,7 +20,7 @@ export default function Header({ session }: HeaderProps) {
   return (
     <Box as="header" bgColor="brand.500" paddingY="3.5rem">
       <GlobalContainer>
-        <Flex justifyContent="space-between" alignItems="center">
+        <Flex justifyContent="space-between" alignItems="flex-end">
           <Flex alignItems="center" gap="4rem">
             {/* Logo */}
             <Link href={AppPathPublic.Home}>
