@@ -2,8 +2,7 @@
 
 import { AppPathProtected, AppPathPublic } from '@/lib/constants';
 import { RecipeShort } from '@/lib/types/recipe';
-
-import { Box, Heading, Flex, Text, Badge, Button } from '@chakra-ui/react';
+import { Box, Heading, Flex, Text, Badge } from '@chakra-ui/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -11,8 +10,8 @@ import { IoTimeOutline } from 'react-icons/io5';
 import CardFavoriteButton from './favorites/CardFavoriteButton';
 import { CustomButton } from '../common/CustomButton';
 import { FaEye } from 'react-icons/fa';
-import { FiTrash2 } from 'react-icons/fi';
 import { MdEdit } from 'react-icons/md';
+import DeleteDialog from './DeleteDialog';
 
 const difficultyColors = {
   EASY: { bg: 'green.300', text: 'green.500' },
@@ -40,7 +39,6 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
   const isMyRecipesPage = pathname === AppPathProtected.MyRecipes;
   const imageUrl = recipe.images.length > 0 ? recipe.images[0].url : null;
   const cookingTime = formatCookingTime(recipe.cookingTime);
-  console.log(isMyRecipesPage);
   const CardContent = (
     <Box
       as="article"
@@ -122,13 +120,7 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
               <MdEdit color="black" />
             </Link>
           </CustomButton>
-          <CustomButton
-            aria-label={`Delete recipe ${recipe.title}`}
-            variant="danger"
-            style={{ padding: '1rem' }}
-          >
-            <FiTrash2 color="black" />
-          </CustomButton>
+          <DeleteDialog recipeTitle={recipe.title} onClickDelete={() => console.log('delete')} />
         </Flex>
       )}
     </Box>
