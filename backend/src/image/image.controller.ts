@@ -5,6 +5,8 @@ import {
   UploadedFiles,
   UseInterceptors,
   UseGuards,
+  Delete,
+  Param,
 } from '@nestjs/common';
 import { ImageService } from './image.service';
 import type { UploadType } from './image.service';
@@ -28,7 +30,6 @@ export class ImageController {
     @Query('userId') userId?: string,
     @Query('recipeId') recipeId?: string,
   ) {
-    // console.log(file);
     const params =
       type === 'AVATAR'
         ? { type, userId: Number(userId) }
@@ -37,5 +38,11 @@ export class ImageController {
     return Promise.all(
       files.map((file) => this.imageService.uploadFile(file, params)),
     );
+  }
+
+  @UseGuards(JwtGuard)
+  @Delete(':publicId')
+  async deleteFile(@Param('publicId') publicId: string) {
+    return this.imageService.deleteFile(publicId);
   }
 }

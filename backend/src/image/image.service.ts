@@ -85,4 +85,12 @@ export class ImageService {
 
     return this.saveToDatabase(uploaded, params);
   }
+
+  async deleteFile(publicId: string) {
+    await cloudinary.uploader.destroy(publicId);
+
+    return this.prisma.image.delete({
+      where: { publicId },
+    });
+  }
 }
