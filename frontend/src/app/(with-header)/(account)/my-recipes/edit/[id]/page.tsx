@@ -1,3 +1,4 @@
-export default function EditRecipePage() {
-  return <div>EditRecipePage</div>;
+export default async function EditRecipePage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  return <div>EditRecipePage = {id}</div>;
 }

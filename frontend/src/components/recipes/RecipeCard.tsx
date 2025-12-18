@@ -9,6 +9,10 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { IoTimeOutline } from 'react-icons/io5';
 import CardFavoriteButton from './favorites/CardFavoriteButton';
+import { CustomButton } from '../common/CustomButton';
+import { FaEye } from 'react-icons/fa';
+import { FiTrash2 } from 'react-icons/fi';
+import { MdEdit } from 'react-icons/md';
 
 const difficultyColors = {
   EASY: { bg: 'green.300', text: 'green.500' },
@@ -33,9 +37,10 @@ function formatCookingTime(totalMinutes: number): string {
 
 export default function RecipeCard({ recipe }: RecipeCardProps) {
   const pathname = usePathname();
-  const isLink = pathname !== AppPathProtected.MyRecipes;
+  const isMyRecipesPage = pathname === AppPathProtected.MyRecipes;
   const imageUrl = recipe.images.length > 0 ? recipe.images[0].url : null;
   const cookingTime = formatCookingTime(recipe.cookingTime);
+  console.log(isMyRecipesPage);
   const CardContent = (
     <Box
       as="article"
@@ -95,10 +100,41 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
           </Badge>
         </Flex>
       </Box>
+      {/* View/Edit/Delete buttons on MyRecipes page */}
+      {isMyRecipesPage && (
+        <Flex justifyContent="flex-end" gap="0.8rem" p="1rem">
+          <CustomButton
+            aria-label={`View recipe ${recipe.title}`}
+            style={{ padding: '1rem' }}
+            variant="outline"
+          >
+            <Link href={`${AppPathPublic.Recipes}/${recipe.id}`}>
+              <FaEye color="black" />
+            </Link>
+          </CustomButton>
+          <CustomButton
+            asChild
+            aria-label={`Edit recipe ${recipe.title}`}
+            variant="main"
+            style={{ padding: '1rem' }}
+          >
+            <Link href={`${AppPathProtected.EditRecipe}/${recipe.id}`}>
+              <MdEdit color="black" />
+            </Link>
+          </CustomButton>
+          <CustomButton
+            aria-label={`Delete recipe ${recipe.title}`}
+            variant="danger"
+            style={{ padding: '1rem' }}
+          >
+            <FiTrash2 color="black" />
+          </CustomButton>
+        </Flex>
+      )}
     </Box>
   );
 
-  if (!isLink) return CardContent;
+  if (isMyRecipesPage) return CardContent;
 
   return (
     <Link href={`${AppPathPublic.Recipes}/${recipe.id} `} style={{ textDecoration: 'none' }}>
