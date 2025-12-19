@@ -4,6 +4,7 @@ import { RecipeService } from './recipe.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/user/user.service';
+import { ImageService } from 'src/image/image.service';
 
 @Module({
   controllers: [RecipeController],
@@ -13,6 +14,7 @@ import { UserService } from 'src/user/user.service';
     JwtService,
     UserService,
     RecipeService,
+    ImageService
   ],
 })
 export class RecipeModule {}

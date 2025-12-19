@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -8,7 +9,9 @@ import {
   Post,
   Query,
   Req,
+  UploadedFiles,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { RecipeService } from './recipe.service';
 import {
@@ -19,6 +22,10 @@ import {
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { QueryPaginationDto } from 'src/common/pagination/query-pagination.dto';
 import { OptionalJwtGuard } from 'src/auth/guards/optional-jwt.guard';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import { validate } from 'class-validator';
+import { plainToInstance } from 'class-transformer';
+import { transformRecipeBody } from 'src/helpers/transform-recipe';
 
 @Controller('recipe')
 export class RecipeController {
@@ -59,21 +66,51 @@ export class RecipeController {
 
   @UseGuards(JwtGuard)
   @Post()
-  async create(@Req() req, @Body() dto: AddRecipeDto) {
+  @UseInterceptors(
+    FilesInterceptor('files', 10, {
+      limits: { fileSize: 2 * 1024 * 1024 }, // 2MB
+    }),
+  )
+  async create(
+    @Req() req,
+    @Body() body: any,
+    @UploadedFiles() files?: Express.Multer.File[],
+  ) {
     const userId = req.user.sub;
-    return this.recipeService.createRecipe(userId, dto);
+
+    const { dto } = await transformRecipeBody(AddRecipeDto, body);
+
+    return this.recipeService.createRecipe(userId, dto, files ?? []);
   }
 
   @UseGuards(JwtGuard)
   @Patch(':id')
+  @UseInterceptors(
+    FilesInterceptor('files', 10, {
+      limits: { fileSize: 2 * 1024 * 1024 },
+    }),
+  )
   async updateRecipe(
     @Param('id') recipeId: number,
     @Req() req,
-    @Body() updateRecipeDto: UpdateRecipeDto,
+    @Body() body: any,
+    @UploadedFiles() files?: Express.Multer.File[],
   ) {
     const userId = req.user.sub;
 
-    return this.recipeService.updateRecipe(recipeId, userId, updateRecipeDto);
+    const { dto, removedImageIds } = await transformRecipeBody(
+      UpdateRecipeDto,
+      body,
+      true,
+    );
+
+    return this.recipeService.updateRecipe(
+      recipeId,
+      userId,
+      dto,
+      files ?? [],
+      removedImageIds,
+    );
   }
 
   @UseGuards(JwtGuard)

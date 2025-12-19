@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { QueryPaginationDto } from 'src/common/pagination/query-pagination.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import {
@@ -11,6 +15,7 @@ import {
   UpdateRecipeDto,
 } from './dto/recipe.dto';
 import { UserService } from 'src/user/user.service';
+import { ImageService } from 'src/image/image.service';
 
 function toArray<T>(value: T | T[] | undefined): T[] {
   if (!value) return [];
@@ -22,6 +27,7 @@ export class RecipeService {
   constructor(
     private prisma: PrismaService,
     private userService: UserService,
+    private imageService: ImageService,
   ) {}
 
   async findAll(query: QueryPaginationDto & RecipeQueryDto = {}) {
@@ -110,8 +116,12 @@ export class RecipeService {
     };
   }
 
-  async createRecipe(userId: number, dto: AddRecipeDto) {
-    return this.prisma.recipe.create({
+  async createRecipe(
+    userId: number,
+    dto: AddRecipeDto,
+    files: Express.Multer.File[],
+  ) {
+    const recipe = await this.prisma.recipe.create({
       data: {
         title: dto.title,
         difficulty: dto.difficulty,
@@ -137,45 +147,117 @@ export class RecipeService {
         instructions: true,
       },
     });
+
+    try {
+      // Upload images
+      for (const file of files) {
+        await this.imageService.uploadFile(file, {
+          type: 'RECIPE',
+          recipeId: recipe.id,
+        });
+      }
+
+      return this.prisma.recipe.findUnique({
+        where: { id: recipe.id },
+        include: {
+          ingredients: true,
+          instructions: true,
+          images: true,
+        },
+      });
+    } catch (err) {
+      await this.prisma.recipe.delete({
+        where: { id: recipe.id },
+      });
+
+      throw new InternalServerErrorException(
+        'Recipe creation failed during image upload',
+      );
+    }
   }
 
-  async updateRecipe(recipeId: number, authorId: number, dto: UpdateRecipeDto) {
-    const existingRecipe = await this.prisma.recipe.findUnique({
-      where: { id: recipeId, authorId },
-    });
-    if (!existingRecipe)
-      throw new NotFoundException(`Recipe with id ${recipeId} not found`);
+  async updateRecipe(
+    recipeId: number,
+    userId: number,
+    dto: UpdateRecipeDto,
+    files?: Express.Multer.File[],
+    removedImageIds?: number[],
+  ) {
 
-    return this.prisma.recipe.update({
-      where: { id: recipeId, authorId },
+    // Verify ownership
+    const recipe = await this.prisma.recipe.findFirst({
+      where: { id: recipeId, authorId: userId },
+    });
+
+    if (!recipe) {
+      throw new NotFoundException('Recipe not found or unauthorized');
+    }
+
+    // Remove images if specified
+    if (removedImageIds && removedImageIds.length > 0) {
+      const imagesToDelete = await this.prisma.image.findMany({
+        where: {
+          id: { in: removedImageIds },
+          recipeId: recipeId,
+        },
+      });
+      imagesToDelete.forEach(async (image) => {
+        await this.imageService.deleteFile(image.publicId);
+      });
+    }
+
+    // Update recipe
+    const updatedRecipe = await this.prisma.recipe.update({
+      where: { id: recipeId },
       data: {
-        title: dto.title,
-        difficulty: dto.difficulty,
-        categoryId: dto.categoryId,
-        cookingTime: dto.cookingTime,
-        ingredients: dto.ingredients
-          ? {
-              deleteMany: {},
-              create: dto.ingredients.map((ing) => ({
-                name: ing.name,
-                amount: ing.amount,
-                unit: ing.unit,
-              })),
-            }
-          : undefined,
-        instructions: dto.instructions
-          ? {
-              deleteMany: {},
-              create: dto.instructions.map((inst, index) => ({
-                description: inst.description,
-                step: index + 1,
-              })),
-            }
-          : undefined,
+        ...(dto.title && { title: dto.title }),
+        ...(dto.difficulty && { difficulty: dto.difficulty }),
+        ...(dto.categoryId && { categoryId: dto.categoryId }),
+        ...(dto.cookingTime && { cookingTime: dto.cookingTime }),
+        ...(dto.ingredients && {
+          ingredients: {
+            deleteMany: {},
+            create: dto.ingredients.map((ing) => ({
+              name: ing.name,
+              amount: ing.amount,
+              unit: ing.unit,
+            })),
+          },
+        }),
+        ...(dto.instructions && {
+          instructions: {
+            deleteMany: {},
+            create: dto.instructions.map((inst, index) => ({
+              description: inst.description,
+              step: index + 1,
+            })),
+          },
+        }),
       },
       include: {
         ingredients: true,
         instructions: true,
+        images: true,
+      },
+    });
+
+    // Upload new images if provided
+    if (files && files.length > 0) {
+      for (const file of files) {
+        await this.imageService.uploadFile(file, {
+          type: 'RECIPE',
+          recipeId: updatedRecipe.id,
+        });
+      }
+    }
+
+    // Return updated recipe with all images
+    return this.prisma.recipe.findUnique({
+      where: { id: recipeId },
+      include: {
+        ingredients: true,
+        instructions: true,
+        images: true,
       },
     });
   }

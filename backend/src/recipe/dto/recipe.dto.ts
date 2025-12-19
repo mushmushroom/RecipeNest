@@ -1,4 +1,5 @@
 import {
+  isArray,
   IsArray,
   IsEnum,
   IsInt,
@@ -10,9 +11,10 @@ import {
   Min,
   ValidateNested,
 } from 'class-validator';
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import { Difficulty } from '@prisma/client';
 import { PartialType } from '@nestjs/mapped-types';
+import { BadRequestException } from '@nestjs/common';
 
 export class IngredientDto {
   @IsString()
@@ -48,30 +50,57 @@ export class AddRecipeDto {
   @IsNotEmpty()
   title: string;
 
+  @Transform(
+    ({ value }) => {
+      if (typeof value === 'string') {
+        try {
+          return JSON.parse(value);
+        } catch {
+          throw new BadRequestException('Invalid JSON format for ingredients');
+        }
+      }
+      return value;
+    },
+    { toClassOnly: true },
+  )
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => IngredientDto)
   ingredients: IngredientDto[];
 
+  @Transform(
+    ({ value }) => {
+      if (typeof value === 'string') {
+        try {
+          return JSON.parse(value);
+        } catch {
+          throw new BadRequestException('Invalid JSON format for instructions');
+        }
+      }
+      return value;
+    },
+    { toClassOnly: true },
+  )
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => InstructionDto)
   instructions: InstructionDto[];
-
   @IsEnum(Difficulty)
   difficulty: Difficulty;
 
+  @Transform(({ value }) => Number(value))
   @IsNumber()
   @IsNotEmpty()
   categoryId: number;
 
+  @Transform(({ value }) => Number(value))
   @IsInt()
   cookingTime: number;
 }
 
 export class UpdateRecipeDto extends PartialType(AddRecipeDto) {}
 
-export type CookingTime = 'LESS_30' | 'BETWEEN_30_60' | 'MORE_60'
+export type CookingTime = 'LESS_30' | 'BETWEEN_30_60' | 'MORE_60';
 export class RecipeQueryDto {
   @IsOptional()
   @IsString()
