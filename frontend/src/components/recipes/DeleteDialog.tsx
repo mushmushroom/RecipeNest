@@ -1,12 +1,15 @@
-import { Dialog,  Text } from '@chakra-ui/react';
+import { Dialog, Text } from '@chakra-ui/react';
 import { CustomButton } from '../common/CustomButton';
 import { FiTrash2 } from 'react-icons/fi';
+import useDeleteRecipe from '@/lib/hooks/recipes/useDeleteRecipe';
 
 interface DeleteDialogProps {
   recipeTitle: string;
-  onClickDelete: () => void;
+  recipeId: number;
 }
-export default function DeleteDialog({ recipeTitle, onClickDelete }: DeleteDialogProps) {
+export default function DeleteDialog({ recipeId, recipeTitle }: DeleteDialogProps) {
+  const { deleteRecipe } = useDeleteRecipe();
+
   return (
     <Dialog.Root placement="center" role="alertdialog">
       <Dialog.Trigger>
@@ -40,7 +43,7 @@ export default function DeleteDialog({ recipeTitle, onClickDelete }: DeleteDialo
             <Dialog.ActionTrigger asChild>
               <CustomButton variant="outline">Cancel</CustomButton>
             </Dialog.ActionTrigger>
-            <CustomButton onClick={onClickDelete} variant="danger">
+            <CustomButton onClick={() => deleteRecipe(recipeId)} variant="danger">
               Delete
             </CustomButton>
           </Dialog.Footer>

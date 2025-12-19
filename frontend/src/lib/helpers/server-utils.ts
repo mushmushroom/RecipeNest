@@ -126,3 +126,13 @@ export async function removeFavorite(recipeId: number, token: string) {
     },
   });
 }
+
+// delete recipe
+export async function deleteRecipe(recipeId: number, token: string) {
+  return fetch(`${BACKEND_URL}/recipe/${recipeId}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}

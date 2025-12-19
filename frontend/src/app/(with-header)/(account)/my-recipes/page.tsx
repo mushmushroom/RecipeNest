@@ -1,6 +1,7 @@
 'use client';
 import PaginationContainer from '@/components/common/PaginationContainer';
 import RecipeList from '@/components/recipes/RecipeList';
+import { Toaster } from '@/components/ui/toaster';
 import { useMyRecipes } from '@/lib/hooks/recipes/useGetRecipes';
 import { usePagination } from '@/lib/hooks/usePagination';
 import { Heading, Stack } from '@chakra-ui/react';
@@ -38,6 +39,7 @@ export default function MyRecipesPage() {
           prevPage={prevPage}
         />
       )}
+      <Toaster />
     </Stack>
   );
 }
