@@ -181,6 +181,12 @@ export class RecipeService {
   }
 
   async delete(recipeId: number, authorId: number) {
+    const recipe = await this.prisma.recipe.findUnique({
+      where: { id: recipeId, authorId },
+    });
+    if (!recipe)
+      return new NotFoundException(`Recipe with id ${recipeId} not found`);
+
     await this.prisma.ingredient.deleteMany({
       where: { recipeId },
     });
