@@ -12,7 +12,7 @@ export default function DeleteDialog({ recipeId, recipeTitle }: DeleteDialogProp
 
   return (
     <Dialog.Root placement="center" role="alertdialog">
-      <Dialog.Trigger>
+      <Dialog.Trigger asChild>
         <CustomButton
           aria-label={`Delete recipe ${recipeTitle}`}
           variant="danger"

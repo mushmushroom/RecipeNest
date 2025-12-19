@@ -11,7 +11,7 @@ export enum AppPathPublic {
 export enum AppPathProtected {
   AddRecipe = '/new-recipe',
   MyRecipes = '/my-recipes',
-  EditRecipe = '/my-recipes/edit',
+  EditRecipe = '/edit',
   Favorites = '/favorites',
   Settings = '/settings',
 }

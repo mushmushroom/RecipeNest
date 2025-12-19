@@ -46,7 +46,7 @@ export type InstructionField = {
   description: string;
 };
 
-export interface AddRecipeFormValues {
+export interface RecipeFormValues {
   title: string;
   ingredients: IngredientField[];
   instructions: InstructionField[];
@@ -83,6 +83,8 @@ export interface ImageData {
 }
 
 export interface RecipeFull extends RecipeShort {
+  // category: CategoryOption;
+  categoryId: number;
   ingredients: IngredientData[];
   instructions: InstructionData[];
   createdAt: string;
@@ -103,3 +105,5 @@ export interface AllRecipesResponse {
   data: RecipeShort[];
   meta: PaginationData;
 }
+
+export type RecipeFormMode = 'create' | 'edit';

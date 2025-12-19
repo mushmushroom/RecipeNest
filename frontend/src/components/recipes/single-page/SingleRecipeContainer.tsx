@@ -60,10 +60,6 @@ export default function SingleRecipeContainer({ recipe, session }: SingleRecipeC
             </Flex>
             {/* Buttons */}
             <Flex marginBottom="3rem" gap="2.5rem">
-              {/* <CustomButton variant="secondary">
-                {recipe?.isFavorite ? <FaBookmark /> : <FaRegBookmark />}
-                Save
-              </CustomButton> */}
               <SingleFavoriteButton
                 recipeId={recipe.id}
                 token={session?.backendTokens.accessToken}

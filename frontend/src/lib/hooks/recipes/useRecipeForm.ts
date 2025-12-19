@@ -2,11 +2,12 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
-import { RecipePayload, AddRecipeFormValues } from '@/lib/types/recipe';
+import { RecipePayload, RecipeFormValues, RecipeFull } from '@/lib/types/recipe';
 import { AppPathProtected, BACKEND_URL } from '@/lib/constants';
 import { toaster } from '@/components/ui/toaster';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/hooks/useAuth';
+import { mapRecipeToFormValues } from '@/lib/helpers/utils';
 
 const ingredientSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -31,7 +32,8 @@ const AddRecipeSchema = z.object({
   cookingTime: cookingTimeSchema,
 });
 
-export default function useAddRecipe() {
+export default function useRecipeForm(mode: 'create' | 'edit', initialRecipe?: RecipeFull) {
+  console.log(initialRecipe);
   const router = useRouter();
   const queryClient = useQueryClient();
   const {
@@ -44,18 +46,20 @@ export default function useAddRecipe() {
     setError,
     clearErrors,
     reset,
-  } = useForm<AddRecipeFormValues>({
+  } = useForm<RecipeFormValues>({
     resolver: zodResolver(AddRecipeSchema),
     mode: 'onChange',
-    defaultValues: {
-      title: '',
-      ingredients: [],
-      instructions: [],
-      difficulty: 'EASY',
-      categoryId: 0,
-      cookingTime: { amount: 0, unit: 'min' },
-      images: [],
-    },
+    defaultValues: initialRecipe
+      ? mapRecipeToFormValues(initialRecipe)
+      : {
+          title: '',
+          ingredients: [],
+          instructions: [],
+          difficulty: 'EASY',
+          categoryId: 0,
+          cookingTime: { amount: 0, unit: 'min' },
+          images: [],
+        },
   });
 
   const { token } = useAuth(true);
@@ -63,14 +67,19 @@ export default function useAddRecipe() {
   const mutation = useMutation({
     mutationFn: async (recipe: RecipePayload) => {
       try {
-        const res = await fetch(`${BACKEND_URL}/recipe`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(recipe),
-        });
+        const res = await fetch(
+          mode === 'create'
+            ? `${BACKEND_URL}/recipe`
+            : `${BACKEND_URL}/recipe/${initialRecipe!.id}`,
+          {
+            method: mode === 'create' ? 'POST' : 'PATCH',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(recipe),
+          }
+        );
 
         // Network worked, but backend returned error
         const data = await res.json();
@@ -125,7 +134,7 @@ export default function useAddRecipe() {
 
         toaster.create({
           title: 'Success!',
-          description: 'Recipe was added successfully',
+          description: 'Recipe was saved successfully',
           type: 'success',
           duration: 5000,
         });
@@ -158,7 +167,7 @@ export default function useAddRecipe() {
     },
   });
 
-  const onSubmit = async (data: AddRecipeFormValues) => {
+  const onSubmit = async (data: RecipeFormValues) => {
     console.log('form values', data);
     console.log('errors before submit', errors);
     const cookingTimeMinutes =

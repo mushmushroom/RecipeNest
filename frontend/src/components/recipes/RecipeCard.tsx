@@ -120,7 +120,7 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
               <MdEdit color="black" />
             </Link>
           </CustomButton>
-          <DeleteDialog recipeId={ recipe.id}  recipeTitle={recipe.title}  />
+          <DeleteDialog recipeId={recipe.id} recipeTitle={recipe.title} />
         </Flex>
       )}
     </Box>
