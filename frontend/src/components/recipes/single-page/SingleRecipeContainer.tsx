@@ -63,7 +63,6 @@ export default function SingleRecipeContainer({ recipe, session }: SingleRecipeC
               <SingleFavoriteButton
                 recipeId={recipe.id}
                 token={session?.backendTokens.accessToken}
-                // initialIsFavorite={recipe.isFavorite}
                />
               <CustomButton variant="outline">
                 <FaPrint />

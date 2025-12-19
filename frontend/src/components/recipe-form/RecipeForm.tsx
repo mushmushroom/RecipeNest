@@ -19,8 +19,17 @@ interface RecipeFormProps {
   initialRecipe?: RecipeFull;
 }
 export default function RecipeForm({ mode, options, initialRecipe }: RecipeFormProps) {
-  const { handleSubmit, onSubmit, errors, clearErrors, setValue, register, watch, control } =
-    useRecipeForm(mode, initialRecipe);
+  const {
+    handleSubmit,
+    onSubmit,
+    errors,
+    clearErrors,
+    setValue,
+    register,
+    watch,
+    control,
+    setRemovedImages,
+  } = useRecipeForm(mode, initialRecipe);
   return (
     <Box minH="100vh" px="1rem">
       <Container maxW="960px" w="100%">
@@ -53,7 +62,13 @@ export default function RecipeForm({ mode, options, initialRecipe }: RecipeFormP
           />
           <Separator borderColor="black" />
 
-          <UploadImagesSection control={control} />
+          <UploadImagesSection
+            control={control}
+            watch={watch}
+            setValue={setValue}
+            // removedImages={removedImages}
+            setRemovedImages={setRemovedImages}
+          />
           {errors.root?.message && (
             <Text fontSize="1.8rem" color="red.500" textAlign="center">
               {errors.root?.message}

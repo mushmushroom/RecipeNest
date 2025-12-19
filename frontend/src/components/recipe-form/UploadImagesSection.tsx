@@ -1,79 +1,58 @@
 'use client';
 
-import {
-  Box,
-  Button,
-  CloseButton,
-  Icon,
-  Input,
-  SimpleGrid,
-  Stack,
-  Text,
-  useToken,
-} from '@chakra-ui/react';
-import { Control, useController } from 'react-hook-form';
-import { useEffect, useRef, useState } from 'react';
+import { Box, Button, CloseButton, Icon, Input, SimpleGrid, Stack, Text } from '@chakra-ui/react';
+import { Control, useController, UseFormSetValue, UseFormWatch } from 'react-hook-form';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { FiImage } from 'react-icons/fi';
 import { FormSection } from './FormSection';
 import Image from 'next/image';
 import { MAX_FILE_SIZE } from '@/lib/constants';
-import { AddRecipeFormValues } from '@/lib/types/recipe';
+import { RecipeFormValues } from '@/lib/types/recipe';
 
 interface UploadImagesSectionProps {
-  control: Control<AddRecipeFormValues>;
+  control: Control<RecipeFormValues>;
+  watch: UseFormWatch<RecipeFormValues>;
+  setValue: UseFormSetValue<RecipeFormValues>;
+  setRemovedImages: React.Dispatch<React.SetStateAction<{ id: number; url: string }[]>>;
 }
-export function UploadImagesSection({ control }: UploadImagesSectionProps) {
+export function UploadImagesSection({
+  control,
+  watch,
+  setValue,
+  setRemovedImages,
+}: UploadImagesSectionProps) {
   const { field } = useController({
     control,
     name: 'images',
   });
+
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
   const [errors, setErrors] = useState<string>('');
   const maxReached = (field.value?.length ?? 0) >= 10;
+  const existingImages = watch('existingImages') ?? [];
+  const newFiles = watch('images') ?? [];
+
+  const filePreviews = useMemo(() => newFiles.map((file) => URL.createObjectURL(file)), [newFiles]);
+
+  useEffect(() => {
+    return () => {
+      filePreviews.forEach((url) => URL.revokeObjectURL(url));
+    };
+  }, [filePreviews]);
 
   const handleFiles = (files: FileList | null) => {
     if (!files) return;
 
     const incoming = Array.from(files);
-    const current = field.value || [];
-
-    if (current.length + incoming.length > 10) {
+    if (newFiles.length + existingImages.length + incoming.length > 10) {
       setErrors(`You can upload up to 10 images only.`);
       return;
     }
 
-    const validFiles: File[] = [];
-    let errorMessage = '';
+    const validFiles = incoming.filter((file) => file.size <= MAX_FILE_SIZE);
+    setErrors(validFiles.length < incoming.length ? 'Some files are too large.' : '');
 
-    incoming.forEach((file) => {
-      if (file.size > MAX_FILE_SIZE) {
-        errorMessage = `File ${file.name} is too large (max 2MB).`;
-      } else {
-        validFiles.push(file);
-      }
-    });
-
-    setErrors(errorMessage);
-
-    const updatedFiles = [...current, ...validFiles];
-    field.onChange(updatedFiles);
-  };
-
-  useEffect(() => {
-    if (!field.value) return;
-
-    const urls = field.value.map((file) => URL.createObjectURL(file));
-    setPreviewUrls(urls);
-
-    return () => {
-      urls.forEach((url) => URL.revokeObjectURL(url));
-    };
-  }, [field.value]);
-
-  const removeImage = (index: number) => {
-    const updated = (field.value ?? []).filter((_, i) => i !== index);
-    field.onChange(updated);
+    setValue('images', [...newFiles, ...validFiles]);
   };
 
   return (
@@ -137,35 +116,51 @@ export function UploadImagesSection({ control }: UploadImagesSectionProps) {
       {errors && <Text color="red.500">{errors}</Text>}
 
       {/* PREVIEW GRID */}
-      {previewUrls.length > 0 && (
-        <SimpleGrid columns={[2, 3, 4]} gap="1rem" mt="1.5rem">
-          {previewUrls.map((url, index) => (
-            <Box
-              key={index}
-              border="1px solid"
-              borderColor="gray.200"
-              borderRadius="10px"
-              overflow="hidden"
-              position="relative"
-              height="200px"
-            >
-              <Image src={url} alt={`Preview ${index}`} fill style={{ objectFit: 'cover' }} />
-              <CloseButton
-                position="absolute"
-                top="5px"
-                right="5px"
-                bg="white"
-                borderRadius="full"
-                size="sm"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  removeImage(index);
-                }}
-              />
-            </Box>
-          ))}
+      {
+        <SimpleGrid columns={[2, 3, 4]} gap="1rem">
+          {existingImages?.length > 0 &&
+            existingImages.map((img, index) => (
+              <Box key={img.id} position="relative" height="200px">
+                <Image src={img.url} alt="" fill style={{ objectFit: 'cover' }} />
+                <CloseButton
+                  position="absolute"
+                  top="5px"
+                  right="5px"
+                  bg="white"
+                  borderRadius="full"
+                  size="sm"
+                  onClick={() => {
+                    setRemovedImages((prev) => [...prev, img]);
+                    setValue(
+                      'existingImages',
+                      existingImages.filter((i) => i.id !== img.id)
+                    );
+                  }}
+                />
+              </Box>
+            ))}
+          {newFiles?.length > 0 &&
+            newFiles.map((file, index) => (
+              <Box key={index} position="relative" height="200px">
+                <Image src={URL.createObjectURL(file)} alt="" fill style={{ objectFit: 'cover' }} />
+                <CloseButton
+                  position="absolute"
+                  top="5px"
+                  right="5px"
+                  bg="white"
+                  borderRadius="full"
+                  size="sm"
+                  onClick={() =>
+                    setValue(
+                      'images',
+                      newFiles.filter((_, i) => i !== index)
+                    )
+                  }
+                />
+              </Box>
+            ))}
         </SimpleGrid>
-      )}
+      }
     </FormSection>
   );
 }

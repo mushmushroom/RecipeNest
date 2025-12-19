@@ -2,12 +2,13 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
-import { RecipePayload, RecipeFormValues, RecipeFull } from '@/lib/types/recipe';
+import { RecipeFormValues, RecipeFull } from '@/lib/types/recipe';
 import { AppPathProtected, BACKEND_URL } from '@/lib/constants';
 import { toaster } from '@/components/ui/toaster';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { mapRecipeToFormValues } from '@/lib/helpers/utils';
+import { useState } from 'react';
 
 const ingredientSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -30,12 +31,14 @@ const AddRecipeSchema = z.object({
   difficulty: z.enum(['EASY', 'MEDIUM', 'HARD']),
   categoryId: z.number().positive('Category is required'),
   cookingTime: cookingTimeSchema,
+  images: z.array(z.instanceof(File)).optional(),
+  existingImages: z.array(z.object({ id: z.number(), url: z.string() })).optional(),
 });
 
 export default function useRecipeForm(mode: 'create' | 'edit', initialRecipe?: RecipeFull) {
-  console.log(initialRecipe);
   const router = useRouter();
   const queryClient = useQueryClient();
+  const [removedImages, setRemovedImages] = useState<{ id: number; url: string }[]>([]);
   const {
     control,
     register,
@@ -65,8 +68,9 @@ export default function useRecipeForm(mode: 'create' | 'edit', initialRecipe?: R
   const { token } = useAuth(true);
 
   const mutation = useMutation({
-    mutationFn: async (recipe: RecipePayload) => {
+    mutationFn: async (formData: FormData) => {
       try {
+        console.log('formData', JSON.stringify(Array.from(formData.entries())));
         const res = await fetch(
           mode === 'create'
             ? `${BACKEND_URL}/recipe`
@@ -74,113 +78,66 @@ export default function useRecipeForm(mode: 'create' | 'edit', initialRecipe?: R
           {
             method: mode === 'create' ? 'POST' : 'PATCH',
             headers: {
-              'Content-Type': 'application/json',
               Authorization: `Bearer ${token}`,
             },
-            body: JSON.stringify(recipe),
+            body: formData,
           }
         );
 
-        // Network worked, but backend returned error
         const data = await res.json();
-        if (!res.ok) {
-          throw data;
-        }
-
+        if (!res.ok) throw data;
         return data;
       } catch (err) {
-        if (err instanceof Error) {
-          throw { message: err.message };
-        }
-
-        if (typeof err === 'object' && err !== null && 'message' in err) {
+        if (err instanceof Error) throw { message: err.message };
+        if (typeof err === 'object' && err !== null && 'message' in err)
           throw { message: (err as any).message };
-        }
-
         throw { message: 'Cannot connect to the server. Please try again later.' };
       }
     },
-    onSuccess: async (data) => {
-      // console.log(data)
-      const images = watch('images') ?? [];
-
-      try {
-        if (images.length > 0) {
-          const form = new FormData();
-          images.forEach((file) => form.append('files', file));
-          for (const entry of form.entries()) {
-            console.log(entry);
-          }
-          const uploadRes = await fetch(
-            `${BACKEND_URL}/image/upload?type=RECIPE&recipeId=${data.id}`,
-            {
-              method: 'POST',
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-              body: form,
-            }
-          );
-
-          if (!uploadRes.ok) {
-            throw new Error('Image upload failed');
-          }
-        }
-
-        // SUCCESS path
-        reset();
-        queryClient.invalidateQueries({ queryKey: ['my-recipes'] });
-        queryClient.invalidateQueries({ queryKey: ['all-recipes'] });
-
-        toaster.create({
-          title: 'Success!',
-          description: 'Recipe was saved successfully',
-          type: 'success',
-          duration: 5000,
-        });
-
-        setTimeout(() => {
-          router.push(AppPathProtected.MyRecipes);
-        }, 3000);
-      } catch (err) {
-        // IMAGE UPLOAD FAILED — delete recipe
-        await fetch(`${BACKEND_URL}/recipe/${data.id}`, {
-          method: 'DELETE',
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        setError('root', {
-          message: 'Failed to upload images — recipe was not saved.',
-        });
-      }
+    onSuccess: (data) => {
+      reset();
+      queryClient.invalidateQueries({ queryKey: ['my-recipes'] });
+      queryClient.invalidateQueries({ queryKey: ['all-recipes'] });
+      toaster.create({
+        title: 'Success!',
+        description: 'Recipe was saved successfully',
+        type: 'success',
+        duration: 5000,
+      });
+      router.push(AppPathProtected.MyRecipes);
     },
-
     onError: (error: any) => {
-      console.log(error);
       if (error?.message) {
-        setError('root', {
-          message: error.message,
-        });
+        setError('root', { message: error.message });
       }
     },
   });
 
   const onSubmit = async (data: RecipeFormValues) => {
-    console.log('form values', data);
-    console.log('errors before submit', errors);
+    const formData = new FormData();
+
+    // Append JSON fields as string
+    formData.append('title', data.title);
+    formData.append('difficulty', data.difficulty);
+    formData.append('categoryId', String(data.categoryId));
+
+    // Convert cookingTime to minutes
     const cookingTimeMinutes =
       data.cookingTime.unit === 'hr' ? data.cookingTime.amount * 60 : data.cookingTime.amount;
+    formData.append('cookingTime', String(cookingTimeMinutes));
 
-    mutation.mutate({
-      title: data.title,
-      ingredients: data.ingredients,
-      instructions: data.instructions,
-      difficulty: data.difficulty,
-      categoryId: data.categoryId,
-      cookingTime: cookingTimeMinutes,
-    });
+    // Append arrays as JSON strings
+    formData.append('ingredients', JSON.stringify(data.ingredients));
+    formData.append('instructions', JSON.stringify(data.instructions));
+
+    // Append new image files
+    const newFiles = (data.images ?? []).filter((i: any) => i instanceof File);
+    newFiles.forEach((file) => formData.append('files', file));
+
+    // Append removed image IDs
+    formData.append('removedImageIds', JSON.stringify(removedImages.map((i) => i.id)));
+    console.log(formData);
+    mutation.mutate(formData);
   };
 
   return {
@@ -192,5 +149,7 @@ export default function useRecipeForm(mode: 'create' | 'edit', initialRecipe?: R
     watch,
     setValue,
     control,
+    removedImages,
+    setRemovedImages,
   };
 }

@@ -3,7 +3,7 @@
 import { FormSection } from './FormSection';
 import { Button, ButtonGroup, Field, SimpleGrid, Stack, chakra, Text } from '@chakra-ui/react';
 import CustomFormField from '@/components/common/CustomFormField';
-import { AddRecipeFormValues, CategoryOption, DifficultyOption, TimeUnit } from '@/lib/types/recipe';
+import { RecipeFormValues, CategoryOption, DifficultyOption, TimeUnit } from '@/lib/types/recipe';
 import {
   FieldErrors,
   UseFormRegister,
@@ -19,11 +19,11 @@ interface RecipeInfoSectionProps {
     categories: CategoryOption[];
     difficulty: DifficultyOption[];
   };
-  clearErrors: UseFormClearErrors<AddRecipeFormValues>;
-  setValue: UseFormSetValue<AddRecipeFormValues>;
-  register: UseFormRegister<AddRecipeFormValues>;
-  watch: UseFormWatch<AddRecipeFormValues>;
-  errors: FieldErrors<AddRecipeFormValues>;
+  clearErrors: UseFormClearErrors<RecipeFormValues>;
+  setValue: UseFormSetValue<RecipeFormValues>;
+  register: UseFormRegister<RecipeFormValues>;
+  watch: UseFormWatch<RecipeFormValues>;
+  errors: FieldErrors<RecipeFormValues>;
 }
 
 export function RecipeInfoFormSection({

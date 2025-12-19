@@ -56,6 +56,7 @@ export const config = {
     '/verify',
     '/recipes',
     '/new-recipe',
+    '/edit/:path*',
     '/recipes/:path*',
     '/my-recipes/:path*',
     // '/my-recipes/new',

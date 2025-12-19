@@ -26,15 +26,6 @@ export type CategoryOption = {
   name: string;
 };
 
-export interface RecipePayload {
-  title: string;
-  ingredients: Ingredient[];
-  instructions: Instruction[];
-  difficulty: DifficultyOption;
-  categoryId: number;
-  cookingTime: number;
-  images?: File[];
-}
 
 export type IngredientField = {
   name: string;
@@ -54,6 +45,7 @@ export interface RecipeFormValues {
   categoryId: number;
   cookingTime: CookingTime;
   images?: File[];
+  existingImages?: { id: number; url: string }[];
 }
 
 export interface RecipeShort {

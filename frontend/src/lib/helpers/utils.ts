@@ -11,7 +11,10 @@ export function mapRecipeToFormValues(recipe: RecipeFull): RecipeFormValues {
     categoryId: recipe.categoryId,
     difficulty: recipe.difficulty,
     cookingTime: {
-      amount: recipe.cookingTime >= 60 ? Math.round((recipe.cookingTime / 60) * 100) / 100 : recipe.cookingTime,
+      amount:
+        recipe.cookingTime >= 60
+          ? Math.round((recipe.cookingTime / 60) * 100) / 100
+          : recipe.cookingTime,
       unit: recipe.cookingTime >= 60 ? 'hr' : 'min',
     },
 
@@ -27,6 +30,7 @@ export function mapRecipeToFormValues(recipe: RecipeFull): RecipeFormValues {
         description: i.description,
       })),
 
-    images: [],
+    images: [], 
+    existingImages: recipe.images,
   };
 }
