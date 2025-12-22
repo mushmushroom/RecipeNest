@@ -72,5 +72,6 @@ export default function useFavorites(token?: string) {
     isLoading: favoritesQuery.isLoading,
     isToggling: toggleMutation.isPending,
     isError: favoritesQuery.isError,
+    refetch: favoritesQuery.refetch,
   };
 }

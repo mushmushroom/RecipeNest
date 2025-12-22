@@ -1,5 +1,6 @@
 'use client';
 import PaginationContainer from '@/components/common/PaginationContainer';
+import ErrorMessage from '@/components/ErrorMessage';
 import RecipeList from '@/components/recipes/RecipeList';
 import { Toaster } from '@/components/ui/toaster';
 import { useMyRecipes } from '@/lib/hooks/recipes/useGetRecipes';
@@ -14,9 +15,9 @@ export default function MyRecipesPage() {
     setCurrentPage(1); // reset page when visiting this page
   }, [setCurrentPage]);
   console.log(currentPage);
-  const { data, isLoading } = useMyRecipes(currentPage, 6);
-  console.log(data);
+  const { data, isLoading, isError, refetch } = useMyRecipes(currentPage, 6);
   if (isLoading) return 'loading...';
+  if (isError) return <ErrorMessage message="Failed to load recipes." onRetry={refetch} />;
 
   return (
     <Stack gap="5rem">

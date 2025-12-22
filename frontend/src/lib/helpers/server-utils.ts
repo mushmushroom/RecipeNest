@@ -34,6 +34,7 @@ export async function getRecipeItem<RecipeFull>(id: string, token?: string) {
     cache: 'no-store',
   });
 
+  if (res.status === 404) return notFound();
   if (!res.ok) throw new Error('Failed to fetch recipe');
   return res.json() as Promise<RecipeFull>;
 }
