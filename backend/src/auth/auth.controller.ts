@@ -1,16 +1,22 @@
 import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
 import { CreateUserDto } from 'src/user/dto/user.dto';
-// import { UserService } from 'src/user/user.service';
-import { LoginDto, ResentOtpDto, VerifyOtpDto } from './dto/auth.dto';
+import {
+  ChangePasswordDto,
+  LoginDto,
+  ResentOtpDto,
+  VerifyOtpDto,
+} from './dto/auth.dto';
 import { AuthService } from './auth.service';
 import { RefreshJwtGuard } from './guards/refresh.guard';
 import { Throttle } from '@nestjs/throttler';
+import { UserService } from 'src/user/user.service';
+import { JwtGuard } from './guards/jwt.guard';
 
 @Controller('auth')
 export class AuthController {
   constructor(
-    // private userService: UserService,
     private authService: AuthService,
+    private userService: UserService,
   ) {}
 
   @Throttle({ default: { limit: 3, ttl: 60000 } })
@@ -40,5 +46,16 @@ export class AuthController {
   @Post('request-otp')
   async resendOtp(@Body() dto: ResentOtpDto) {
     return this.authService.requestOtp(dto);
+  }
+
+  @UseGuards(JwtGuard)
+  @Post('change-password')
+  async changePassword(@Req() req, @Body() dto: ChangePasswordDto) {
+    const userId = req.user.sub;
+    return this.userService.changePassword(
+      userId,
+      dto.oldPassword,
+      dto.newPassword,
+    );
   }
 }

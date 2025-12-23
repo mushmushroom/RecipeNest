@@ -23,3 +23,12 @@ export class ResentOtpDto {
   @IsEmail()
   email: string;
 }
+
+
+export class ChangePasswordDto {
+  @IsString()
+  oldPassword: string;
+  
+  @IsString()
+  newPassword: string;
+}

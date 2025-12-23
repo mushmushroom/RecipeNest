@@ -5,13 +5,12 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './dto/user.dto';
-import { hash } from 'bcrypt';
+import { compare, hash } from 'bcrypt';
 import { QueryPaginationDto } from 'src/common/pagination/query-pagination.dto';
 import {
   paginate,
   paginateOutput,
 } from 'src/common/pagination/pagination.utils';
-
 
 @Injectable()
 export class UserService {
@@ -78,5 +77,30 @@ export class UserService {
     return paginateOutput(users, total, query);
   }
 
-  
+  async changePassword(
+    userId: number,
+    oldPassword: string,
+    newPassword: string,
+  ) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const isValidPassword = await compare(oldPassword, user.password);
+
+    if (!isValidPassword) {
+      throw new ConflictException('Old password is incorrect');
+    }
+
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { password: await hash(newPassword, 10) },
+    });
+
+    return { message: 'Password changed successfully' };
+  }
 }
