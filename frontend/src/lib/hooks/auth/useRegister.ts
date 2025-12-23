@@ -3,10 +3,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
-import { AppPathPublic, BACKEND_URL } from '@/lib/constants';
+import { AppPathPublic, BACKEND_URL, PASSWORDREGEX } from '@/lib/constants';
 import { toaster } from '@/components/ui/toaster';
 
-const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/;
 
 const registerSchema = z
   .object({
@@ -15,7 +14,7 @@ const registerSchema = z
     password: z
       .string()
       .regex(
-        passwordRegex,
+        PASSWORDREGEX,
         'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'
       )
       .min(8, 'Password should contain at least 8 characters'),

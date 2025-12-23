@@ -1,6 +1,8 @@
 'use client';
 import { CustomButton } from '@/components/common/CustomButton';
 import CustomFormField from '@/components/common/CustomFormField';
+import ChangePasswordSection from '@/components/settings/ChangePasswordSection';
+import { Toaster } from '@/components/ui/toaster';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { Box, Flex, Heading, Separator, Stack, Text } from '@chakra-ui/react';
 import Image from 'next/image';
@@ -38,17 +40,7 @@ export default function SettingsPage() {
       <Separator borderColor="gray.400" />
 
       {/* Change password */}
-      <Stack gap="3rem" py="5rem">
-        <Heading as="h2" size="h3">
-          Change password
-        </Heading>
-        <Stack gap="2rem" as="form" maxW="56rem" width="100%" alignItems="center">
-          <CustomFormField label="Old password" id="oldPassword" required />
-          <CustomFormField label="New password" id="newPassword" required />
-          <CustomFormField label="Confirm new password" id="confirmNewPassword" required />
-          <CustomButton variant="secondary">Update</CustomButton>
-        </Stack>
-      </Stack>
+      <ChangePasswordSection />
 
       <Separator borderColor="gray.400" />
 
@@ -63,6 +55,8 @@ export default function SettingsPage() {
         </Text>
         <CustomButton variant="danger">Delete my account</CustomButton>
       </Stack>
+
+      <Toaster />
     </Box>
   );
 }
