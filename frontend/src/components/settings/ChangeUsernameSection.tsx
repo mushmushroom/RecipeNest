@@ -1,13 +1,13 @@
 import { Heading, Stack, Flex, Text } from '@chakra-ui/react';
 import CustomFormField from '../common/CustomFormField';
 import { CustomButton } from '../common/CustomButton';
-import useChangePassword from '@/lib/hooks/settings/useChangePassword';
+import useChangeUsername from '@/lib/hooks/settings/useChangeUsername';
 
 interface ChangeEmailSectionProps {
   username: string | undefined;
 }
 export default function ChangeUsernameSection({ username }: ChangeEmailSectionProps) {
-  // const { register, handleSubmit, errors, isSubmitting, changePassword } = useChangePassword();
+  const { register, handleSubmit, errors, isSubmitting, changeUsername } = useChangeUsername();
   return (
     <Stack gap="3rem" py="5rem">
       <Heading as="h2" size="h3">
@@ -23,20 +23,16 @@ export default function ChangeUsernameSection({ username }: ChangeEmailSectionPr
         maxW="56rem"
         width="100%"
         alignItems="center"
-        // onSubmit={handleSubmit(changePassword)}
+        onSubmit={handleSubmit(changeUsername)}
       >
         <CustomFormField
           label="New username"
           id="newUsername"
           required
-          // registration={register('newEmail', { required: true })}
-          // error={errors.newEmail}
+          registration={register('username', { required: true })}
+          error={errors.username}
         />
-        <CustomButton
-          variant="secondary"
-          // disabled={isSubmitting}
-          type="submit"
-        >
+        <CustomButton variant="secondary" disabled={isSubmitting} type="submit">
           Update
         </CustomButton>
       </Stack>

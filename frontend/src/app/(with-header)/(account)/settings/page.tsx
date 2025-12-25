@@ -10,7 +10,7 @@ import { Box, Flex, Heading, Separator, Stack, Text } from '@chakra-ui/react';
 import Image from 'next/image';
 
 export default function SettingsPage() {
-  const { userEmail, username } = useAuth(true);
+  const { currentUsername, currentEmail } = useAuth(true);
   return (
     <Box>
       <Heading as="h1" size="h2" textAlign="center">
@@ -24,12 +24,12 @@ export default function SettingsPage() {
 
       <Separator borderColor="gray.400" />
       {/* */}
-      <ChangeUsernameSection username={username} />
+      <ChangeUsernameSection username={currentUsername} />
 
       <Separator borderColor="gray.400" />
 
       {/* Change email */}
-      <ChangeEmailSection userEmail={userEmail} />
+      <ChangeEmailSection userEmail={currentEmail} />
 
       <Separator borderColor="gray.400" />
 

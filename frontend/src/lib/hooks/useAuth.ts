@@ -12,8 +12,8 @@ export function useAuth(requireAuth: boolean = false) {
   const sessionId =
     typeof rawId === 'number' ? rawId : typeof rawId === 'string' ? Number(rawId) : 0;
   
-  const userEmail = session?.user.email
-  const username = session?.user.username
+  const currentEmail = session?.user.email
+  const currentUsername = session?.user.username;
 
   const loading = status === 'loading';
   const hasId = rawId != null && String(rawId).length > 0 && !Number.isNaN(sessionId);
@@ -23,5 +23,5 @@ export function useAuth(requireAuth: boolean = false) {
     throw new Error('User is not authenticated');
   }
 
-  return { token, sessionId, isSessionReady, loading, userEmail, username };
+  return { token, sessionId, isSessionReady, loading, currentEmail, currentUsername };
 }
