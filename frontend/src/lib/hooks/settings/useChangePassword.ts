@@ -51,7 +51,11 @@ export default function useSettings() {
       });
       if (!response.ok) {
         const data = await response.json();
-        toaster.error(data.error || 'Failed to update the password');
+        toaster.create({
+          title: 'Error',
+          description: data.message || 'Something went wrong. Try again later.',
+          type: 'error',
+        });
         return;
       }
       reset();
