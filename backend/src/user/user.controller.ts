@@ -1,8 +1,18 @@
-import { Controller, Get, Param, Query, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Query,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { QueryPaginationDto } from 'src/common/pagination/query-pagination.dto';
 import { RecipeService } from 'src/recipe/recipe.service';
+import { UpdateMeDto } from './dto/user.dto';
 
 @Controller('user')
 export class UserController {
@@ -12,12 +22,25 @@ export class UserController {
   ) {}
 
   @UseGuards(JwtGuard)
+  @Get('me')
+  async getMyProfile(@Req() req) {
+    const userId = req.user.sub;
+    return this.userService.getMyProfile(userId);
+  }
+
+  @UseGuards(JwtGuard)
+  @Patch('me')
+  async updateMyProfile(@Req() req, @Body() dto: UpdateMeDto) {
+    const userId = req.user.sub;
+    return this.userService.updateMyProfile(userId, dto);
+  }
+
+  @UseGuards(JwtGuard)
   @Get('me/favorites')
   async getFavoriteRecipes(@Req() req) {
     const userId = req.user.sub;
     return this.recipeService.getFavoriteRecipes(userId);
   }
-
 
   // @Get()
   // async findAll(@Query() paginationQuery?: QueryPaginationDto) {

@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateUserDto } from './dto/user.dto';
+import { CreateUserDto, UpdateMeDto } from './dto/user.dto';
 import { compare, hash } from 'bcrypt';
 import { QueryPaginationDto } from 'src/common/pagination/query-pagination.dto';
 import {
@@ -46,6 +46,47 @@ export class UserService {
     return result;
   }
 
+  async getMyProfile(userId: number) {
+    const user = await this.findById(userId);
+
+    if (!user) throw new NotFoundException('User not found');
+    const { password, ...result } = user;
+
+    return result;
+  }
+
+  async updateMyProfile(userId: number, dto: UpdateMeDto) {
+    const user = await this.findById(userId);
+
+    if (!user) throw new NotFoundException('User not found');
+
+    // Check for email or username conflicts
+    if (dto.email && dto.email !== user.email) {
+      const emailExists = await this.prisma.user.findUnique({
+        where: { email: dto.email },
+      });
+      if (emailExists) {
+        throw new ConflictException('Email is already registered');
+      }
+    }
+
+    if (dto.username && dto.username !== user.username) {
+      const usernameExists = await this.prisma.user.findUnique({
+        where: { username: dto.username },
+      });
+      if (usernameExists) {
+        throw new ConflictException('Username is already taken');
+      }
+    }
+
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: dto,
+    });
+
+    return { message: 'Info was changed successfully' };
+  }
+
   async findByEmail(email: string) {
     return await this.prisma.user.findUnique({
       where: {
@@ -57,7 +98,7 @@ export class UserService {
   async findById(id: number) {
     const user = await this.prisma.user.findUnique({
       where: {
-        id: id,
+        id,
       },
     });
 
@@ -82,13 +123,7 @@ export class UserService {
     oldPassword: string,
     newPassword: string,
   ) {
-    const user = await this.prisma.user.findUnique({
-      where: { id: userId },
-    });
-
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
+    const user = await this.findById(userId);
 
     const isValidPassword = await compare(oldPassword, user.password);
 
