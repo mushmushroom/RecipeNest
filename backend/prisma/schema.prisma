@@ -32,7 +32,7 @@ model RefreshToken {
   id        Int      @id @default(autoincrement())
   token     String   @unique
   userId    Int
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   expiresAt DateTime
   used      Boolean  @default(false)
   createdAt DateTime @default(now())
@@ -43,7 +43,7 @@ model Otp {
   code      String
   type      OtpType
   userId    Int
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   used      Boolean  @default(false)
   expiresAt DateTime
   createdAt DateTime @default(now())
@@ -61,7 +61,7 @@ model Recipe {
   instructions Instruction[]
   ingredients  Ingredient[]
   cookingTime  Int
-  author       User          @relation("WrittenRecipes", fields: [authorId], references: [id])
+  author       User          @relation("WrittenRecipes", fields: [authorId], references: [id], onDelete: Cascade)
   authorId     Int
   favoritedBy  User[]        @relation("FavoriteRecipes")
   category     Category?     @relation(fields: [categoryId], references: [id])
@@ -76,7 +76,7 @@ model Ingredient {
   name     String
   amount   Float
   unit     String
-  recipe   Recipe @relation(fields: [recipeId], references: [id])
+  recipe   Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
   recipeId Int
 }
 
@@ -84,7 +84,7 @@ model Instruction {
   id          Int    @id @default(autoincrement())
   step        Int
   description String
-  recipe      Recipe @relation(fields: [recipeId], references: [id])
+  recipe      Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
   recipeId    Int
 }
 
@@ -106,8 +106,8 @@ model Image {
   url        String
   publicId   String   @unique
   createdAt  DateTime @default(now())
-  userAvatar User?    @relation(fields: [userId], references: [id])
+  userAvatar User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId     Int?
-  recipe     Recipe?  @relation(fields: [recipeId], references: [id])
+  recipe     Recipe?  @relation(fields: [recipeId], references: [id], onDelete: Cascade)
   recipeId   Int?
 }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CloudinaryResponse } from './cloudinary/cloudinary-response';
 import { v2 as cloudinary } from 'cloudinary';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -87,10 +87,32 @@ export class ImageService {
   }
 
   async deleteFile(publicId: string) {
-    await cloudinary.uploader.destroy(publicId);
-
-    return this.prisma.image.delete({
+    const image = await this.prisma.image.findUnique({
       where: { publicId },
     });
+
+    if (!image) {
+      throw new NotFoundException('Image not found');
+    }
+
+    try {
+      await cloudinary.uploader.destroy(publicId);
+    } catch (err) {
+      console.error('Cloudinary delete failed:', err);
+    }
+
+    await this.prisma.image.delete({
+      where: { publicId },
+    });
+
+    return { message: 'Image deleted successfully' };
+  }
+
+  async deleteFileFromCloudinary(publicId: string) {
+    try {
+      await cloudinary.uploader.destroy(publicId);
+    } catch (err) {
+      console.error('Cloudinary delete failed:', err);
+    }
   }
 }

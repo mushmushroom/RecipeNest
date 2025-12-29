@@ -183,7 +183,6 @@ export class RecipeService {
     files?: Express.Multer.File[],
     removedImageIds?: number[],
   ) {
-
     // Verify ownership
     const recipe = await this.prisma.recipe.findFirst({
       where: { id: recipeId, authorId: userId },
@@ -263,23 +262,28 @@ export class RecipeService {
   }
 
   async delete(recipeId: number, authorId: number) {
-    const recipe = await this.prisma.recipe.findUnique({
+    const recipe = await this.prisma.recipe.findFirst({
       where: { id: recipeId, authorId },
+      include: {
+        images: {
+          select: { publicId: true },
+        },
+      },
     });
     if (!recipe)
       return new NotFoundException(`Recipe with id ${recipeId} not found`);
 
-    await this.prisma.ingredient.deleteMany({
-      where: { recipeId },
-    });
-
-    await this.prisma.instruction.deleteMany({
-      where: { recipeId },
-    });
-
-    return this.prisma.recipe.delete({
+    await this.prisma.recipe.delete({
       where: { id: recipeId, authorId },
     });
+
+    await Promise.all(
+      recipe.images.map((img) => {
+        return this.imageService.deleteFile(img.publicId);
+      }),
+    );
+
+    return { message: 'Recipe deleted successfully' };
   }
 
   async findMyRecipes(userId: number, query: QueryPaginationDto = {}) {

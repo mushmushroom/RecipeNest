@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Post, Req, UseGuards } from '@nestjs/common';
 import { CreateUserDto } from 'src/user/dto/user.dto';
 import {
   ChangePasswordDto,
@@ -57,5 +57,12 @@ export class AuthController {
       dto.oldPassword,
       dto.newPassword,
     );
+  }
+
+  @UseGuards(JwtGuard)
+  @Delete('me')
+  async deleteMyProfile(@Req() req) {
+    const userId = req.user.sub;
+    return this.userService.deleteUser(userId);
   }
 }

@@ -11,10 +11,11 @@ import {
   paginate,
   paginateOutput,
 } from 'src/common/pagination/pagination.utils';
+import { ImageService } from 'src/image/image.service';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService, private imageService: ImageService) {}
 
   async create(createUserDto: CreateUserDto) {
     const existingUser = await this.prisma.user.findFirst({
@@ -137,5 +138,34 @@ export class UserService {
     });
 
     return { message: 'Password changed successfully' };
+  }
+
+  async deleteUser(userId: number) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!user) throw new NotFoundException('User not found');
+
+    const images = await this.prisma.image.findMany({
+      where: {
+        OR: [{ userId }, { recipe: { authorId: userId } }],
+      },
+      select: { publicId: true },
+    });
+
+    await this.prisma.user.delete({
+      where: { id: userId },
+    });
+
+    await Promise.all(
+      images.map((img) =>
+        this.imageService.deleteFileFromCloudinary(img.publicId),
+      ),
+    );
+
+    return { message: 'User deleted successfully' };
   }
 }
