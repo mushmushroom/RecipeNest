@@ -3,11 +3,11 @@ import { CustomButton } from '../common/CustomButton';
 import { FiTrash2 } from 'react-icons/fi';
 import useDeleteRecipe from '@/lib/hooks/recipes/useDeleteRecipe';
 
-interface DeleteDialogProps {
+interface DeleteRecipeDialogProps {
   recipeTitle: string;
   recipeId: number;
 }
-export default function DeleteDialog({ recipeId, recipeTitle }: DeleteDialogProps) {
+export default function DeleteRecipeDialog({ recipeId, recipeTitle }: DeleteRecipeDialogProps) {
   const { deleteRecipe } = useDeleteRecipe();
 
   return (

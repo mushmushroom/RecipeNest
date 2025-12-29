@@ -1,17 +1,22 @@
 'use client';
 import { CustomButton } from '@/components/common/CustomButton';
-import CustomFormField from '@/components/common/CustomFormField';
+import ErrorMessage from '@/components/ErrorMessage';
 import ChangeEmailSection from '@/components/settings/ChangeEmailSection';
 import ChangePasswordSection from '@/components/settings/ChangePasswordSection';
 import ChangeUsernameSection from '@/components/settings/ChangeUsernameSection';
 import DeleteAccountDialog from '@/components/settings/DeleteAccountDialog';
 import { Toaster } from '@/components/ui/toaster';
 import { useAuth } from '@/lib/hooks/useAuth';
+import { useProfileData } from '@/lib/hooks/useProfileQuery';
 import { Box, Flex, Heading, Separator, Stack, Text } from '@chakra-ui/react';
 import Image from 'next/image';
+import { use } from 'react';
 
 export default function SettingsPage() {
-  const { currentUsername, currentEmail } = useAuth(true);
+  const { data, isLoading, isError } = useProfileData();
+  if (isLoading) return 'Loading data..';
+  if (isError) return <ErrorMessage message='Profile data cannot be loaded' />;
+
   return (
     <Box>
       <Heading as="h1" size="h2" textAlign="center">
@@ -25,12 +30,12 @@ export default function SettingsPage() {
 
       <Separator borderColor="gray.400" />
       {/* */}
-      <ChangeUsernameSection username={currentUsername} />
+      <ChangeUsernameSection username={data?.username} />
 
       <Separator borderColor="gray.400" />
 
       {/* Change email */}
-      <ChangeEmailSection userEmail={currentEmail} />
+      <ChangeEmailSection userEmail={data?.email} />
 
       <Separator borderColor="gray.400" />
 
@@ -48,7 +53,7 @@ export default function SettingsPage() {
           If you delete your account, all your recipes and personal data will be permanently
           removed. This action can’t be undone, and your information will not be recoverable.
         </Text>
-       <DeleteAccountDialog />
+        <DeleteAccountDialog />
       </Stack>
 
       <Toaster />

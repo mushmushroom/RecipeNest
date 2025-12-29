@@ -5,6 +5,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { toaster } from '@/components/ui/toaster';
 import { BACKEND_URL, PASSWORDREGEX } from '@/lib/constants';
 import { useAuth } from '../useAuth';
+import { useQueryClient } from '@tanstack/react-query';
+import { useProfileData } from '../useProfileQuery';
 
 const changeEmailSchema = z.object({
   email: z.string().email('Invalid email address'),
@@ -13,6 +15,7 @@ const changeEmailSchema = z.object({
 type ChangeEmailInputs = z.infer<typeof changeEmailSchema>;
 
 export default function useSettings() {
+  const queryClient = useQueryClient();
   const {
     register,
     handleSubmit,
@@ -23,10 +26,11 @@ export default function useSettings() {
     mode: 'onChange',
   });
 
-  const { token, currentEmail } = useAuth(true);
+  const { token } = useAuth(true);
+  const { data } = useProfileData();
 
   async function changeEmail({ email }: ChangeEmailInputs) {
-    if (email === currentEmail) {
+    if (email === data?.email) {
       toaster.create({
         title: 'No changes',
         description: 'This is already your current email',
@@ -55,11 +59,13 @@ export default function useSettings() {
         return;
       }
       reset();
+
       toaster.create({
         title: 'Success',
         description: 'Email was updated successfully',
         type: 'success',
       });
+      queryClient.invalidateQueries({ queryKey: ['profileData'] });
     } catch (error) {
       console.log((error as Error).message);
       toaster.create({

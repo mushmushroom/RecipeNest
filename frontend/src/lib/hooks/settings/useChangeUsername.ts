@@ -5,6 +5,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { toaster } from '@/components/ui/toaster';
 import { BACKEND_URL } from '@/lib/constants';
 import { useAuth } from '../useAuth';
+import { useQueryClient } from '@tanstack/react-query';
+import { useProfileData } from '../useProfileQuery';
 
 const changeUsernameSchema = z.object({
   username: z.string().min(3, 'Username should contain at least 3 characters'),
@@ -13,6 +15,7 @@ const changeUsernameSchema = z.object({
 type ChangeUsernameInputs = z.infer<typeof changeUsernameSchema>;
 
 export default function useSettings() {
+  const queryClient = useQueryClient();
   const {
     register,
     handleSubmit,
@@ -23,10 +26,11 @@ export default function useSettings() {
     mode: 'onChange',
   });
 
-  const { token, currentUsername } = useAuth(true);
+  const { token } = useAuth(true);
+  const { data } = useProfileData();
 
   async function changeUsername({ username }: ChangeUsernameInputs) {
-    if (username === currentUsername) {
+    if (username === data?.username) {
       toaster.create({
         title: 'No changes',
         description: 'This is already your current username',
@@ -60,6 +64,7 @@ export default function useSettings() {
         description: 'Username was updated successfully',
         type: 'success',
       });
+      queryClient.invalidateQueries({ queryKey: ['profileData'] });
     } catch (error) {
       console.log((error as Error).message);
       toaster.create({

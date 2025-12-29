@@ -11,7 +11,7 @@ import CardFavoriteButton from './favorites/CardFavoriteButton';
 import { CustomButton } from '../common/CustomButton';
 import { FaEye } from 'react-icons/fa';
 import { MdEdit } from 'react-icons/md';
-import DeleteDialog from './DeleteDialog';
+import DeleteRecipeDialog from './DeleteRecipeDialog';
 
 const difficultyColors = {
   EASY: { bg: 'green.300', text: 'green.500' },
@@ -120,7 +120,7 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
               <MdEdit color="black" />
             </Link>
           </CustomButton>
-          <DeleteDialog recipeId={recipe.id} recipeTitle={recipe.title} />
+          <DeleteRecipeDialog recipeId={recipe.id} recipeTitle={recipe.title} />
         </Flex>
       )}
     </Box>
