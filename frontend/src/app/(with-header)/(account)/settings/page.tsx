@@ -4,6 +4,7 @@ import CustomFormField from '@/components/common/CustomFormField';
 import ChangeEmailSection from '@/components/settings/ChangeEmailSection';
 import ChangePasswordSection from '@/components/settings/ChangePasswordSection';
 import ChangeUsernameSection from '@/components/settings/ChangeUsernameSection';
+import DeleteAccountDialog from '@/components/settings/DeleteAccountDialog';
 import { Toaster } from '@/components/ui/toaster';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { Box, Flex, Heading, Separator, Stack, Text } from '@chakra-ui/react';
@@ -47,7 +48,7 @@ export default function SettingsPage() {
           If you delete your account, all your recipes and personal data will be permanently
           removed. This action can’t be undone, and your information will not be recoverable.
         </Text>
-        <CustomButton variant="danger">Delete my account</CustomButton>
+       <DeleteAccountDialog />
       </Stack>
 
       <Toaster />
