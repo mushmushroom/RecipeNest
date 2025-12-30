@@ -1,4 +1,4 @@
-import { PaginationData } from "./pagination";
+import { PaginationData } from './pagination';
 
 interface Ingredient {
   name: string;
@@ -25,7 +25,6 @@ export type CategoryOption = {
   id: number;
   name: string;
 };
-
 
 export type IngredientField = {
   name: string;
@@ -84,7 +83,6 @@ export interface RecipeFull extends RecipeShort {
   isFavorite?: boolean;
 }
 
-
 export interface MyRecipesResponse {
   data: RecipeShort[];
   meta: PaginationData;
@@ -99,3 +97,11 @@ export interface AllRecipesResponse {
 }
 
 export type RecipeFormMode = 'create' | 'edit';
+
+export type RecipePreview = Pick<
+  RecipeFormValues,
+  'title' | 'ingredients' | 'instructions' | 'cookingTime' | 'difficulty'
+> & {
+  images: (File | ImageData)[];
+};
+

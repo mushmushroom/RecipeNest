@@ -1,9 +1,9 @@
-import { Box, Flex, Heading, Text, Separator, Stack, List } from '@chakra-ui/react';
+import { Box, Flex, Heading, Text, Separator} from '@chakra-ui/react';
 import GlobalContainer from '../../GlobalContainer';
 import { CustomButton } from '../../common/CustomButton';
-import { FaBookmark, FaPrint, FaRegBookmark } from 'react-icons/fa';
+import {  FaPrint } from 'react-icons/fa';
 import RecipeImageSlider from './RecipeImageSlider';
-import { ImageData, RecipeFull } from '@/lib/types/recipe';
+import { RecipeFull, RecipePreview, UnitOption } from '@/lib/types/recipe';
 import Image from 'next/image';
 import RecipeInfoSingleSection from './RecipeInfoSingleSection';
 import IngredientsSingleSection from './IngredientsSingleSection';
@@ -19,16 +19,41 @@ function formatPublishedDate(date: string) {
   });
 }
 
+const isUnitOption = (value: string): value is UnitOption =>
+  ['g', 'kg', 'ml', 'l', 'pcs'].includes(value);
+
+type RecipeMode = 'view' | 'preview';
+
 interface SingleRecipeContainerProps {
-  recipe: RecipeFull;
-  session: Session | null;
+  recipe: RecipeFull | RecipePreview;
+  mode?: RecipeMode;
+  session?: Session | null;
 }
 
-export default function SingleRecipeContainer({ recipe, session }: SingleRecipeContainerProps) {
-  const date = formatPublishedDate(recipe.createdAt);
-  console.log(recipe);
+export default function SingleRecipeContainer({
+  recipe,
+  session,
+  mode = 'view',
+}: SingleRecipeContainerProps) {
+  const date =
+    'createdAt' in recipe
+      ? formatPublishedDate(recipe.createdAt)
+      : formatPublishedDate(new Date().toISOString());
 
-  const instructions = recipe.instructions.sort((a, b) => a.step - b.step);
+  const instructions = recipe.instructions.map((instruction, index) => ({
+    step: 'step' in instruction ? instruction.step : index + 1,
+    id: 'id' in instruction ? instruction.id : index,
+    description: instruction.description,
+  }));
+
+  const ingredients = recipe.ingredients.map((ingredient, index) => ({
+    id: 'id' in ingredient ? ingredient.id : index,
+    name: ingredient.name,
+    amount: ingredient.amount,
+    unit: isUnitOption(ingredient.unit) ? ingredient.unit : 'g',
+  }));
+  const images = recipe.images ?? [];
+
   return (
     <Box as="section" paddingTop="2rem" paddingBottom="4rem">
       <GlobalContainer>
@@ -49,26 +74,37 @@ export default function SingleRecipeContainer({ recipe, session }: SingleRecipeC
               marginBottom="3rem"
               direction={{ base: 'column', lg: 'row' }}
             >
-              <Text>
-                By{' '}
-                <Text as="span" fontStyle="italic" fontWeight="600">
-                  {recipe.author.username}
-                </Text>
-              </Text>
-              <Separator orientation="vertical" height="10" borderColor="gray.400" hideBelow="lg" />
+              {mode === 'view' && 'author' in recipe && (
+                <>
+                  <Text>
+                    By{' '}
+                    <Text as="span" fontStyle="italic" fontWeight="600">
+                      {recipe.author.username}
+                    </Text>
+                  </Text>
+                  <Separator
+                    orientation="vertical"
+                    height="10"
+                    borderColor="gray.400"
+                    hideBelow="lg"
+                  />
+                </>
+              )}
               <Text color="gray.400">Published on {date}</Text>
             </Flex>
             {/* Buttons */}
-            <Flex marginBottom="3rem" gap="2.5rem">
-              <SingleFavoriteButton
-                recipeId={recipe.id}
-                token={session?.backendTokens.accessToken}
-               />
-              <CustomButton variant="outline">
-                <FaPrint />
-                Print
-              </CustomButton>
-            </Flex>
+            {mode === 'view' && 'id' in recipe && (
+              <Flex marginBottom="3rem" gap="2.5rem">
+                <SingleFavoriteButton
+                  recipeId={recipe.id}
+                  token={session?.backendTokens.accessToken}
+                />
+                <CustomButton variant="outline">
+                  <FaPrint />
+                  Print
+                </CustomButton>
+              </Flex>
+            )}
             {/* Recipe general info */}
             <RecipeInfoSingleSection
               difficulty={recipe.difficulty}
@@ -77,12 +113,18 @@ export default function SingleRecipeContainer({ recipe, session }: SingleRecipeC
           </Box>
           {/* Slider or image placeholder */}
           <Box flex="1" maxW={{ base: '100%', md: '45%' }}>
-            {recipe.images.length > 1 ? (
-              <RecipeImageSlider images={recipe.images} />
-            ) : recipe.images.length === 1 ? (
+            {images.length > 1 ? (
+              <RecipeImageSlider
+                images={images.map((img, index) =>
+                  img instanceof File
+                    ? { id: index, url: URL.createObjectURL(img) }
+                    : { id: img.id, url: img.url }
+                )}
+              />
+            ) : images.length === 1 ? (
               <Box position="relative" width="100%" height={{ base: '300px', md: '340px' }}>
                 <Image
-                  src={recipe.images[0].url}
+                  src={images[0] instanceof File ? URL.createObjectURL(images[0]) : images[0].url}
                   alt="Recipe image"
                   fill
                   style={{ objectFit: 'cover' }}
@@ -103,7 +145,7 @@ export default function SingleRecipeContainer({ recipe, session }: SingleRecipeC
         </Flex>
         {/* Ingredients */}
         <Box marginBottom="5rem">
-          <IngredientsSingleSection ingredients={recipe.ingredients} />
+          <IngredientsSingleSection ingredients={ingredients} />
         </Box>
 
         {/* Cooking instructions */}
@@ -112,7 +154,13 @@ export default function SingleRecipeContainer({ recipe, session }: SingleRecipeC
         </Box>
 
         {/* That't it */}
-        <Text fontSize="3rem" fontWeight="600" textAlign="center" fontFamily="heading">
+        <Text
+          fontSize="3rem"
+          fontWeight="600"
+          textAlign="center"
+          fontFamily="heading"
+          lineHeight="1.2"
+        >
           That’s it! Enjoy your meal!
         </Text>
       </GlobalContainer>

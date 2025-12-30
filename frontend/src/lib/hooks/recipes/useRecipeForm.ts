@@ -43,7 +43,7 @@ export default function useRecipeForm(mode: 'create' | 'edit', initialRecipe?: R
     control,
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid },
     setValue,
     watch,
     setError,
@@ -151,5 +151,6 @@ export default function useRecipeForm(mode: 'create' | 'edit', initialRecipe?: R
     control,
     removedImages,
     setRemovedImages,
+    isValid
   };
 }

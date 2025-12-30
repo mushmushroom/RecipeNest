@@ -1,17 +1,20 @@
 import { formatMinutesToHours } from '@/lib/helpers/utils';
-import { DifficultyOption } from '@/lib/types/recipe';
+import { CookingTime, DifficultyOption } from '@/lib/types/recipe';
 import { Stack, Flex, Text } from '@chakra-ui/react';
 
 interface RecipeInfoSingleSectionProps {
   difficulty: DifficultyOption;
-  cookingTime: number;
+  cookingTime: number | CookingTime;
 }
 export default function RecipeInfoSingleSection({
   difficulty,
   cookingTime,
 }: RecipeInfoSingleSectionProps) {
   const difficultyData = difficulty.charAt(0).toUpperCase() + difficulty.slice(1).toLowerCase();
-  const cookingTimeData = formatMinutesToHours(cookingTime);
+  const cookingTimeData =
+    typeof cookingTime === 'object'
+      ? `${cookingTime.amount} ${cookingTime.unit}`
+      : formatMinutesToHours(cookingTime);
   return (
     <Stack
       gap="2rem"
@@ -25,16 +28,16 @@ export default function RecipeInfoSingleSection({
       width="fit-content"
     >
       <Flex>
-        <Text width="15rem" color="gray.500">
+        <Text width="15rem" color="gray.500" fontSize="1.8rem">
           Difficulty
         </Text>
-        <Text>{difficultyData}</Text>
+        <Text fontSize="1.8rem">{difficultyData}</Text>
       </Flex>
       <Flex>
-        <Text width="15rem" color="gray.500">
+        <Text width="15rem" color="gray.500" fontSize="1.8rem">
           Cooking time
         </Text>
-        <Text>{cookingTimeData}</Text>
+        <Text fontSize="1.8rem">{cookingTimeData}</Text>
       </Flex>
     </Stack>
   );

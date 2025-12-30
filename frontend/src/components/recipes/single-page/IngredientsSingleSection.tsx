@@ -1,5 +1,5 @@
-import { IngredientData } from "@/lib/types/recipe";
-import { Box, Heading, List } from "@chakra-ui/react";
+import { IngredientData } from '@/lib/types/recipe';
+import { Box, Heading, List } from '@chakra-ui/react';
 interface IngredientsSingleSectionProps {
   ingredients: IngredientData[];
 }
@@ -11,7 +11,13 @@ export default function IngredientsSingleSection({ ingredients }: IngredientsSin
       </Heading>
       <List.Root gap="2" variant="plain" align="center" paddingLeft="1rem">
         {ingredients.map((ingredient) => (
-          <List.Item alignItems="center" gap="1.5rem" key={ingredient.id}>
+          <List.Item
+            alignItems="center"
+            gap="1.5rem"
+            key={ingredient.id}
+            fontSize="1.8rem"
+            marginBottom="0.5rem"
+          >
             <List.Indicator
               flexShrink={0}
               display="flex"

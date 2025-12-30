@@ -6,9 +6,10 @@ import { InstructionsFormSection } from '@/components/recipe-form/InstructionsFo
 import { RecipeInfoFormSection } from '@/components/recipe-form/RecipeInfoFormSection';
 import { UploadImagesSection } from '@/components/recipe-form/UploadImagesSection';
 import { CustomButton } from '@/components/common/CustomButton';
-import { CategoryOption, DifficultyOption, RecipeFull } from '@/lib/types/recipe';
+import { CategoryOption, DifficultyOption, RecipeFull, RecipePreview } from '@/lib/types/recipe';
 import { Toaster } from '@/components/ui/toaster';
 import useRecipeForm from '@/lib/hooks/recipes/useRecipeForm';
+import PreviewDrawer from './PreviewDrawer';
 
 interface RecipeFormProps {
   mode: 'create' | 'edit';
@@ -29,7 +30,18 @@ export default function RecipeForm({ mode, options, initialRecipe }: RecipeFormP
     watch,
     control,
     setRemovedImages,
+    isValid
   } = useRecipeForm(mode, initialRecipe);
+
+  const previewRecipe: RecipePreview = {
+    title: watch('title'),
+    ingredients: watch('ingredients'),
+    instructions: watch('instructions'),
+    cookingTime: watch('cookingTime'),
+    difficulty: watch('difficulty'),
+    images: [...(watch('existingImages') ?? []), ...(watch('images') ?? [])],
+  };
+
   return (
     <Box minH="100vh" px="1rem">
       <Container maxW="960px" w="100%">
@@ -66,7 +78,6 @@ export default function RecipeForm({ mode, options, initialRecipe }: RecipeFormP
             control={control}
             watch={watch}
             setValue={setValue}
-            // removedImages={removedImages}
             setRemovedImages={setRemovedImages}
           />
           {errors.root?.message && (
@@ -75,7 +86,8 @@ export default function RecipeForm({ mode, options, initialRecipe }: RecipeFormP
             </Text>
           )}
           <Flex justifyContent="flex-end" gap="1.6rem" pt="1.6rem" flexWrap="wrap">
-            <CustomButton variant="outline">Preview</CustomButton>
+            {/* <CustomButton variant="outline">Preview</CustomButton> */}
+            {isValid && <PreviewDrawer recipe={previewRecipe} />}
             <CustomButton type="submit">
               {mode === 'edit' ? 'Save changes' : 'Add recipe'}
             </CustomButton>

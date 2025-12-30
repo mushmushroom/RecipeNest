@@ -7,6 +7,7 @@ export const headingRecipe = defineRecipe({
         fontSize: '4rem',
         color: 'black',
         fontWeight: '700',
+        lineHeight: '1.2',
         '& span': {
           color: 'brand.500',
         },
@@ -14,6 +15,7 @@ export const headingRecipe = defineRecipe({
       h2: {
         fontSize: '3rem',
         color: 'black',
+        lineHeight: '1.2',
         '& span': {
           color: 'brand.500',
         },
@@ -21,6 +23,7 @@ export const headingRecipe = defineRecipe({
       h3: {
         fontSize: '2.2rem',
         color: 'black',
+        lineHeight: '1.2',
         '& span': {
           color: 'brand.500',
         },
@@ -29,7 +32,7 @@ export const headingRecipe = defineRecipe({
         fontFamily: 'body',
         fontSize: '2.2rem',
         color: 'black',
-        lineHeight: '1.2'
+        lineHeight: '1.2',
       },
     },
   },
