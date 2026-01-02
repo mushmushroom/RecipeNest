@@ -36,12 +36,19 @@ export class RecipeController {
     return this.recipeService.findAll(query);
   }
 
+  @Get('featured')
+    getFeaturedRecipes() {
+    return this.recipeService.getFeaturedRecipes();
+  }
+
   @UseGuards(JwtGuard)
   @Get('my')
   async findMyRecipes(@Req() req, @Query() query?: QueryPaginationDto) {
     const userId = req.user.sub;
     return this.recipeService.findMyRecipes(userId, query);
   }
+
+  
 
   @UseGuards(JwtGuard)
   @Post('favorites/:id')

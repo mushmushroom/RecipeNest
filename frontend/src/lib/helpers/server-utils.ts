@@ -1,5 +1,11 @@
 import { BACKEND_URL } from '@/lib/constants';
-import { CategoryOption, DifficultyOption, FavoriteRecipesResponse } from '../types/recipe';
+import {
+  CategoryOption,
+  DifficultyOption,
+  FavoriteRecipesResponse,
+  FeaturedRecipesResponse,
+  RecipeShort,
+} from '../types/recipe';
 import { notFound } from 'next/navigation';
 
 // revalidate
@@ -89,6 +95,17 @@ export async function getRecipesPage<T>(query: Record<string, any>) {
   if (!res.ok) throw new Error(`Failed to fetch recipes`);
 
   return (await res.json()) as T;
+}
+
+// get featured
+export async function getFeaturedRecipes(): Promise<FeaturedRecipesResponse> {
+  const res = await fetch(`${BACKEND_URL}/recipe/featured`, { next: { revalidate: 3600 } });
+
+  if (!res.ok) {
+    return { data: [] };
+  }
+
+  return res.json();
 }
 
 // get favorites

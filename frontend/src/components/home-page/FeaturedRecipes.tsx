@@ -3,8 +3,13 @@ import RecipeCard from '../recipes/RecipeCard';
 import { CustomButton } from '../common/CustomButton';
 import Link from 'next/link';
 import { AppPathPublic } from '@/lib/constants';
+import { getFeaturedRecipes } from '@/lib/helpers/server-utils';
+import RecipeList from '../recipes/RecipeList';
 
-export default function FeaturedRecipes() {
+export default async function FeaturedRecipes() {
+  const featuredRecipes = await getFeaturedRecipes();
+
+  if (featuredRecipes.data.length <= 0) return null;
   return (
     <Box
       as="section"
@@ -19,20 +24,10 @@ export default function FeaturedRecipes() {
       <Heading size="h2" as="h2" textAlign="center">
         Featured recipes
       </Heading>
-      <Grid
-        templateColumns={{
-          base: '1fr',
-          sm: 'repeat(2, 1fr)',
-          lg: 'repeat(4, 1fr)',
-        }}
-        width="100%"
-        justifyContent="space-between"
-        gap="2rem"
-      >
-        {/* {[1, 2, 3, 4].map((i) => (
-          <RecipeCard key={i} difficulty="EASY" />
-        ))} */}
-      </Grid>
+      <RecipeList
+        recipes={featuredRecipes.data}
+        columns={{ base: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' }}
+      />
       <CustomButton asChild variant="secondary">
         <Link href={AppPathPublic.Recipes}>Browse all</Link>
       </CustomButton>

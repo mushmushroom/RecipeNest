@@ -364,4 +364,18 @@ export class RecipeService {
 
     return { message: `Recipe ${recipeId} was removed from favorites` };
   }
+
+  async getFeaturedRecipes() {
+    const recipes = await this.prisma.recipe.findMany({
+      where: {},
+      take: 4,
+      orderBy: {
+        createdAt: 'desc',
+      },
+      include: {
+        images: true,
+      },
+    });
+    return { data: recipes };
+  }
 }

@@ -20,6 +20,7 @@ export function useMyRecipes(currentPage: number, pageSize: number = 10) {
   });
 }
 
+
 // export function useFavoriteRecipes(currentPage: number, pageSize: number = 10) {
 //   console.log('Fetching favoriterecipes');
 //   const { token } = useAuth(true);

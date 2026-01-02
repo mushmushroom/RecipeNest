@@ -91,6 +91,10 @@ export interface FavoriteRecipesResponse {
   data: RecipeShort[];
 }
 
+export interface FeaturedRecipesResponse {
+  data: RecipeShort[];
+}
+
 export interface AllRecipesResponse {
   data: RecipeShort[];
   meta: PaginationData;
