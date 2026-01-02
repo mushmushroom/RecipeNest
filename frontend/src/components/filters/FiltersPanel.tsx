@@ -26,7 +26,7 @@ export default function FiltersPanel({ options }: FiltersPanelProps) {
   const [localFilters, setLocalFilters] = useState<FiltersState>(filters);
   console.log('filters on page', filters);
 
-  function handleCheckbox(key: keyof FiltersState, value: string) {
+  function handleCheckbox(key: Exclude<keyof FiltersState, 'search'>, value: string) {
     setLocalFilters((prev) => {
       const exists = prev[key].includes(value);
       return {
@@ -41,6 +41,16 @@ export default function FiltersPanel({ options }: FiltersPanelProps) {
   }
 
   function removeFilter(key: keyof FiltersState, value: string) {
+
+    if (key === 'search') {
+      setFilters((prev) => ({
+        ...prev,
+        search: '',
+      }));
+      return;
+    }
+
+
     const updated = {
       ...filters,
       [key]: filters[key].filter((v) => v !== value),

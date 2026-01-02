@@ -1,5 +1,5 @@
 export interface FiltersState {
-  // search: string[];
+  search: string;
   category: string[];
   difficulty: string[];
   cookingTime: string[];

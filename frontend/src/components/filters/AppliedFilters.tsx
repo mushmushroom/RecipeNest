@@ -16,12 +16,19 @@ export default function AppliedFilters({
   onRemove: (key: keyof FiltersState, value: string) => void;
 }) {
   const hasFilters =
-    filters.category.length || filters.difficulty.length || filters.cookingTime.length;
+    filters.category.length ||
+    filters.difficulty.length ||
+    filters.cookingTime.length ||
+    !!filters.search;
 
   if (!hasFilters) return null;
 
   return (
     <HStack wrap="wrap" gap="0.8rem" mb="1rem">
+      {filters.search && (
+        <FiltersBadge value={filters.search} onRemove={() => onRemove('search', filters.search)} />
+      )}
+
       {filters.category.map((value) => (
         <FiltersBadge value={value} onRemove={() => onRemove('category', value)} />
       ))}

@@ -12,7 +12,7 @@ export default function useFilters() {
       category: parseAsArrayOf(parseAsString, ',').withDefault([]),
       difficulty: parseAsArrayOf(parseAsString, ',').withDefault([]),
       cookingTime: parseAsArrayOf(parseAsString, ',').withDefault([]),
-      // search: parseAsString.withDefault(''),
+      search: parseAsString.withDefault(''),
     },
     {
       history: 'push',
@@ -53,7 +53,7 @@ export default function useFilters() {
     filters.category,
     filters.difficulty,
     filters.cookingTime,
-    // filters.search,
+    filters.search,
     setCurrentPage,
   ]);
 

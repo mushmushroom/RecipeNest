@@ -52,7 +52,7 @@ export function useAllRecipes({
     pageSize,
   };
 
-  // if (filters.search) query.search = filters.search;
+  if (filters.search) query.search = filters.search;
   if (categoryIds.length > 0) query.category = categoryIds;
   if (filters.difficulty.length > 0) query.difficulty = filters.difficulty;
   if (filters.cookingTime.length > 0) query.cookingTime = filters.cookingTime;

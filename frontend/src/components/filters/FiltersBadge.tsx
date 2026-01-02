@@ -8,7 +8,7 @@ interface FiltersBadgeProps {
 export default function FiltersBadge({ value, onRemove }: FiltersBadgeProps) {
   return (
     <Tag.Root
-      key={`cat-${value}`}
+      key={`filters-${value}`}
       variant="subtle"
       borderColor="brand.400"
       backgroundColor="white"
