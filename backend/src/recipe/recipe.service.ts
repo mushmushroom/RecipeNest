@@ -306,19 +306,48 @@ export class RecipeService {
     return paginateOutput(myRecipes, total, query);
   }
 
-  async getFavoriteRecipes(userId: number) {
-    const user = await this.prisma.user.findUnique({
-      where: { id: userId },
-      include: {
-        favoriteRecipes: {
-          include: {
-            images: true,
+  async getFavoriteRecipes(userId: number, query: QueryPaginationDto = {}) {
+    const user = this.userService.findById(userId);
+    if (!user) throw new NotFoundException('User does not exist');
+
+    // const user = await this.prisma.user.findUnique({
+    //   where: { id: userId },
+    //   include: {
+    //     favoriteRecipes: {
+    //       include: {
+    //         images: true,
+    //       },
+    //     },
+    //   },
+    // });
+
+    const [favoriteRecipes, total] = await Promise.all([
+      await this.prisma.recipe.findMany({
+        where: {
+          favoritedBy: {
+            some: {
+              id: userId,
+            },
           },
         },
-      },
-    });
+        ...paginate(query),
+        include: {
+          images: true,
+        },
+      }),
+      await this.prisma.recipe.count({
+        where: {
+          favoritedBy: {
+            some: {
+              id: userId,
+            },
+          },
+        },
+      }),
+    ]);
 
-    return { data: user?.favoriteRecipes || [] };
+    return paginateOutput(favoriteRecipes, total, query);
+
   }
 
   async addToFavorite(userId: number, recipeId: number) {

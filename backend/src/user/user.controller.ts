@@ -37,9 +37,9 @@ export class UserController {
 
   @UseGuards(JwtGuard)
   @Get('me/favorites')
-  async getFavoriteRecipes(@Req() req) {
+  async getFavoriteRecipes(@Req() req, @Query() query? : QueryPaginationDto) {
     const userId = req.user.sub;
-    return this.recipeService.getFavoriteRecipes(userId);
+    return this.recipeService.getFavoriteRecipes(userId, query);
   }
 
   // @Get()
