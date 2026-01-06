@@ -11,13 +11,23 @@ import { useEffect } from 'react';
 export default function MyRecipesPage() {
   const { currentPage, setCurrentPage, goToPage, nextPage, prevPage } = usePagination();
 
+  // reset page when visiting this page
   useEffect(() => {
-    setCurrentPage(1); // reset page when visiting this page
+    setCurrentPage(1);
   }, [setCurrentPage]);
-  console.log(currentPage);
+
   const { data, isLoading, isError, refetch } = useMyRecipes(currentPage, 6);
+
+  // reset to first page, if the recipe was on the last page and got deleted
+  useEffect(() => {
+    if (isError) {
+      setCurrentPage(1);
+    }
+  }, [isError, setCurrentPage]);
+
   if (isLoading) return 'loading...';
-  if (isError) return <ErrorMessage message="Failed to load recipes." onRetry={refetch} />;
+  if (isError && currentPage === 1)
+    return <ErrorMessage message="Failed to load recipes." onRetry={refetch} />;
 
   return (
     <Stack gap="5rem">

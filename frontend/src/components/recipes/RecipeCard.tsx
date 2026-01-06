@@ -68,6 +68,7 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
           </Box>
         )}
       </Box>
+      { /* Favorites Button */ }
       {pathname === AppPathProtected.Favorites && <CardFavoriteButton recipeId={recipe.id} />}
       <Box
         p="1.5rem"

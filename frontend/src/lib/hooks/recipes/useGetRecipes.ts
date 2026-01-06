@@ -17,20 +17,9 @@ export function useMyRecipes(currentPage: number, pageSize: number = 10) {
     queryFn: () => getRecipeItemAuth<MyRecipesResponse>('my', token, currentPage, pageSize),
     staleTime: 1000 * 60 * 5,
     gcTime: 1000 * 60 * 30,
+    retry: false,
   });
 }
-
-
-// export function useFavoriteRecipes(currentPage: number, pageSize: number = 10) {
-//   console.log('Fetching favoriterecipes');
-//   const { token } = useAuth(true);
-//   return useQuery({
-//     queryKey: ['my-recipes', currentPage],
-//     queryFn: () => getUserFavorites<FavoriteRecipesResponse>(token),
-//     staleTime: 1000 * 60 * 5,
-//     gcTime: 1000 * 60 * 30,
-//   });
-// }
 
 interface UseAllRecipesProps {
   currentPage: number;

@@ -1,16 +1,40 @@
 'use client';
+import PaginationContainer from '@/components/common/PaginationContainer';
 import ErrorMessage from '@/components/ErrorMessage';
 import RecipeList from '@/components/recipes/RecipeList';
 import { useAuth } from '@/lib/hooks/useAuth';
 import useFavorites from '@/lib/hooks/useFavorites';
+import { usePagination } from '@/lib/hooks/usePagination';
 import { Heading, Stack } from '@chakra-ui/react';
+import { useEffect } from 'react';
 
 export default function FavoritesPage() {
   const { token } = useAuth(true);
-  const { favorites, isLoading, isError, refetch } = useFavorites(token);
+  const { currentPage, setCurrentPage, goToPage, nextPage, prevPage } = usePagination();
+
+  const { favorites, favoritesPagination, isLoading, isError, refetch } = useFavorites(
+    token,
+    currentPage,
+    6
+  );
+
+  // reset page when visiting this page
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [setCurrentPage]);
+
+  // reset to first page, if the recipe was on the last page and got deleted
+  useEffect(() => {
+    if (isError) {
+      setCurrentPage(1);
+    }
+  }, [isError, setCurrentPage]);
+
   if (isLoading) return 'loading...';
 
-  if (isError) return <ErrorMessage message="Failed to load recipes." onRetry={refetch} />;
+  if (isError && currentPage === 1) {
+    return <ErrorMessage message="Failed to load recipes." onRetry={refetch} />;
+  }
 
   return (
     <Stack gap="5rem">
@@ -21,6 +45,16 @@ export default function FavoritesPage() {
         <RecipeList
           recipes={favorites}
           columns={{ base: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' }}
+        />
+      )}
+      {favoritesPagination && (
+        <PaginationContainer
+          pageSize={favoritesPagination.totalPerPage}
+          count={favoritesPagination.total}
+          currentPage={currentPage}
+          goToPage={goToPage}
+          nextPage={nextPage}
+          prevPage={prevPage}
         />
       )}
     </Stack>

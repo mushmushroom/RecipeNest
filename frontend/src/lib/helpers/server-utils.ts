@@ -109,17 +109,21 @@ export async function getFeaturedRecipes(): Promise<FeaturedRecipesResponse> {
 }
 
 // get favorites
-export async function getUserFavorites(token: string): Promise<FavoriteRecipesResponse> {
+export async function getUserFavorites(
+  token: string,
+  page = 1,
+  pageSize = 10,
+): Promise<FavoriteRecipesResponse> {
   if (!token) {
-    return { data: [] };
+    throw new Error('Token is required');
   }
 
-  const res = await fetch(`${BACKEND_URL}/user/me/favorites`, {
+  const res = await fetch(`${BACKEND_URL}/user/me/favorites?pageSize=${pageSize}&page=${page}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
 
   if (!res.ok) {
-    return { data: [] };
+    throw new Error('Failed to fetch favorite recipes');
   }
 
   return res.json();

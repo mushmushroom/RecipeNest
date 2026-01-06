@@ -89,6 +89,7 @@ export interface MyRecipesResponse {
 }
 export interface FavoriteRecipesResponse {
   data: RecipeShort[];
+  meta: PaginationData;
 }
 
 export interface FeaturedRecipesResponse {
