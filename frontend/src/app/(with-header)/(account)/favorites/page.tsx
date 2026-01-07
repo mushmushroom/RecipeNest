@@ -1,4 +1,5 @@
 'use client';
+import EmptyList from '@/components/common/EmptyList';
 import PaginationContainer from '@/components/common/PaginationContainer';
 import ErrorMessage from '@/components/ErrorMessage';
 import RecipeList from '@/components/recipes/RecipeList';
@@ -41,6 +42,9 @@ export default function FavoritesPage() {
       <Heading as="h1" size="h2" textAlign="center">
         Favorites
       </Heading>
+      {favorites.length === 0 && (
+        <EmptyList message="You have not added any recipes to favorites yet" />
+      )}
       {favorites && (
         <RecipeList
           recipes={favorites}

@@ -1,4 +1,5 @@
 'use client';
+import EmptyList from '@/components/common/EmptyList';
 import PaginationContainer from '@/components/common/PaginationContainer';
 import ErrorMessage from '@/components/ErrorMessage';
 import RecipeList from '@/components/recipes/RecipeList';
@@ -34,6 +35,7 @@ export default function MyRecipesPage() {
       <Heading as="h1" size="h2" textAlign="center">
         My recipes
       </Heading>
+      {data?.data.length === 0 && <EmptyList message="You have not added any recipes yet" />}
       {data && (
         <RecipeList
           recipes={data.data}

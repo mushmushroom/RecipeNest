@@ -6,6 +6,7 @@ import { usePagination } from '@/lib/hooks/usePagination';
 import { useEffect } from 'react';
 import { CategoryOption } from '@/lib/types/recipe';
 import ErrorMessage from '../ErrorMessage';
+import EmptyList from '../common/EmptyList';
 
 interface FiltersRecipeListProps {
   categoryOptions: CategoryOption[];
@@ -26,6 +27,7 @@ export default function FiltersRecipeList({ categoryOptions }: FiltersRecipeList
   if (isError) return <ErrorMessage message="Failed to load recipes." onRetry={refetch} />;
   return (
     <Stack gap="4rem">
+      {data?.data.length === 0 && <EmptyList message="No recipes match the criteria." />}
       {data && (
         <RecipeList
           recipes={data.data}
