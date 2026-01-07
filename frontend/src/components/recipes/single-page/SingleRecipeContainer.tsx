@@ -1,7 +1,8 @@
-import { Box, Flex, Heading, Text, Separator} from '@chakra-ui/react';
+'use client';
+import { Box, Flex, Heading, Text, Separator } from '@chakra-ui/react';
 import GlobalContainer from '../../GlobalContainer';
 import { CustomButton } from '../../common/CustomButton';
-import {  FaPrint } from 'react-icons/fa';
+import { FaPrint } from 'react-icons/fa';
 import RecipeImageSlider from './RecipeImageSlider';
 import { RecipeFull, RecipePreview, UnitOption } from '@/lib/types/recipe';
 import Image from 'next/image';
@@ -10,6 +11,9 @@ import IngredientsSingleSection from './IngredientsSingleSection';
 import InstructionsSingleSection from './InstructionsSingleSection';
 import { Session } from 'next-auth';
 import SingleFavoriteButton from './SingleFavoriteButton';
+import { useRef } from 'react';
+import RecipePrint from './RecipePrint';
+import { useReactToPrint } from 'react-to-print';
 
 function formatPublishedDate(date: string) {
   return new Date(date).toLocaleDateString('en-US', {
@@ -35,6 +39,9 @@ export default function SingleRecipeContainer({
   session,
   mode = 'view',
 }: SingleRecipeContainerProps) {
+  const contentRef = useRef<HTMLDivElement>(null);
+  const reactToPrintFn = useReactToPrint({ contentRef });
+
   const date =
     'createdAt' in recipe
       ? formatPublishedDate(recipe.createdAt)
@@ -99,7 +106,7 @@ export default function SingleRecipeContainer({
                   recipeId={recipe.id}
                   token={session?.backendTokens.accessToken}
                 />
-                <CustomButton variant="outline">
+                <CustomButton variant="outline" onClick={reactToPrintFn}>
                   <FaPrint />
                   Print
                 </CustomButton>
@@ -109,6 +116,21 @@ export default function SingleRecipeContainer({
             <RecipeInfoSingleSection
               difficulty={recipe.difficulty}
               cookingTime={recipe.cookingTime}
+            />
+          </Box>
+          {/* Recipe print version */}
+          <Box
+            ref={contentRef}
+            display="none"
+            _print={{
+              display: 'block',
+              position: 'static',
+            }}
+          >
+            <RecipePrint
+              title={recipe.title}
+              instructions={instructions}
+              ingredients={ingredients}
             />
           </Box>
           {/* Slider or image placeholder */}

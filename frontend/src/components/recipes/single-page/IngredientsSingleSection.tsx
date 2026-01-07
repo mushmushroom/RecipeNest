@@ -6,7 +6,7 @@ interface IngredientsSingleSectionProps {
 export default function IngredientsSingleSection({ ingredients }: IngredientsSingleSectionProps) {
   return (
     <>
-      <Heading size="h2" as="h2" marginBottom="1.5rem">
+      <Heading size="h2" as="h2" marginBottom="1.5rem" _print={{ marginBottom: '1rem' }}>
         Ingredients
       </Heading>
       <List.Root gap="2" variant="plain" align="center" paddingLeft="1rem">

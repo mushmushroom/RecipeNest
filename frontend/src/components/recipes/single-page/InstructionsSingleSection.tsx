@@ -9,7 +9,7 @@ export default function InstructionsSingleSection({
 }: InstructionsSingleSectionProps) {
   return (
     <>
-      <Heading size="h2" as="h2" marginBottom="1.5rem">
+      <Heading size="h2" as="h2" marginBottom="1.5rem" _print={{ marginBottom: '1rem' }}>
         Cooking instructions
       </Heading>
       <List.Root gap="2" variant="plain">
