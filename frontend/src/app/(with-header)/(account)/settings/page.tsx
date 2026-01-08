@@ -1,4 +1,5 @@
 'use client';
+import UserAvatarBox from '@/components/account/UserAvatarBox';
 import { CustomButton } from '@/components/common/CustomButton';
 import ErrorMessage from '@/components/ErrorMessage';
 import ChangeEmailSection from '@/components/settings/ChangeEmailSection';
@@ -10,12 +11,12 @@ import { useAuth } from '@/lib/hooks/useAuth';
 import { useProfileData } from '@/lib/hooks/useProfileQuery';
 import { Box, Flex, Heading, Separator, Stack, Text } from '@chakra-ui/react';
 import Image from 'next/image';
-import { use } from 'react';
 
 export default function SettingsPage() {
   const { data, isLoading, isError } = useProfileData();
+  console.log(data);
   if (isLoading) return 'Loading data..';
-  if (isError) return <ErrorMessage message='Profile data cannot be loaded' />;
+  if (isError) return <ErrorMessage message="Profile data cannot be loaded" />;
 
   return (
     <Box>
@@ -24,7 +25,7 @@ export default function SettingsPage() {
       </Heading>
       {/* Change avatar */}
       <Flex gap="3rem" alignItems="center" py="5rem">
-        <Image src="/user-avatar.jpg" width={137} height={137} alt="User avatar" />
+        <UserAvatarBox url={data?.avatar[0]?.url} />
         <CustomButton variant="outline">Select new avatar</CustomButton>
       </Flex>
 
