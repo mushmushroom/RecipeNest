@@ -1,4 +1,5 @@
 import { AppPathPublic } from '@/lib/constants';
+import { inputStyles } from '@/lib/sharedStyles';
 import { Input, InputGroup } from '@chakra-ui/react';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { FaSearch } from 'react-icons/fa';
@@ -30,14 +31,9 @@ export default function SearchInput() {
       <Input
         onChange={(e) => handleChange(e)}
         placeholder="Search for recipes, ingredients..."
-        bgColor="white"
-        borderRadius="10px"
         borderColor="transparent"
         variant="outline"
-        fontSize="1.8rem"
-        paddingY="1.2rem"
-        paddingX="2rem"
-        height="100%"
+        {...inputStyles}
         _placeholder={{ color: 'gray.400', fontSize: '1.8rem' }}
       />
     </InputGroup>

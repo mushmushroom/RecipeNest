@@ -5,15 +5,21 @@ import { Field, Stack, Textarea, Text, Flex } from '@chakra-ui/react';
 import { FiTrash2 } from 'react-icons/fi';
 import { CustomButton } from '@/components/common/CustomButton';
 import { useState } from 'react';
-import { Control, FieldErrors, useFieldArray, UseFormClearErrors, UseFormRegister } from 'react-hook-form';
-import { AddRecipeFormValues } from '@/lib/types/recipe';
-
+import {
+  Control,
+  FieldErrors,
+  useFieldArray,
+  UseFormClearErrors,
+  UseFormRegister,
+} from 'react-hook-form';
+import { RecipeFormValues } from '@/lib/types/recipe';
+import { inputStyles } from '@/lib/sharedStyles';
 
 interface InstructionsFormSectionProps {
-  clearErrors:UseFormClearErrors<AddRecipeFormValues>;
-    control: Control<AddRecipeFormValues>;
-    register: UseFormRegister<AddRecipeFormValues>;
-    errors:FieldErrors<AddRecipeFormValues>;
+  clearErrors: UseFormClearErrors<RecipeFormValues>;
+  control: Control<RecipeFormValues>;
+  register: UseFormRegister<RecipeFormValues>;
+  errors: FieldErrors<RecipeFormValues>;
 }
 export function InstructionsFormSection({
   clearErrors,
@@ -57,12 +63,8 @@ export function InstructionsFormSection({
           <Textarea
             placeholder="Add cooking instructions here"
             minH="120px"
-            fontSize="1.6rem"
-            p="1.2rem"
-            borderRadius="12px"
             borderColor="gray.600"
-            backgroundColor="white"
-            lineHeight="1.2"
+            {...inputStyles}
             _placeholder={{ color: 'gray.500' }}
             value={newInstruction}
             onChange={(event) => setNewInstruction(event.target.value)}
@@ -104,7 +106,7 @@ export function InstructionsFormSection({
                 gap="1rem"
                 width="100%"
               >
-                <Stack gap="0" flex="1" width="100%" >
+                <Stack gap="0" flex="1" width="100%">
                   <Text fontSize="1.6rem" fontWeight="600">
                     Step {index + 1}
                   </Text>

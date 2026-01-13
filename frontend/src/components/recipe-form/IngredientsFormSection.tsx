@@ -2,19 +2,26 @@
 
 import { FormSection } from './FormSection';
 import { Box, Field, Flex, Input, Stack, Text, chakra } from '@chakra-ui/react';
-import { Control, FieldErrors, useFieldArray, UseFormClearErrors, UseFormRegister } from 'react-hook-form';
+import {
+  Control,
+  FieldErrors,
+  useFieldArray,
+  UseFormClearErrors,
+  UseFormRegister,
+} from 'react-hook-form';
 import { FiTrash2 } from 'react-icons/fi';
 import { CustomButton } from '@/components/common/CustomButton';
 import { useState } from 'react';
-import { AddRecipeFormValues, UnitOption } from '@/lib/types/recipe';
+import { RecipeFormValues, UnitOption } from '@/lib/types/recipe';
+import { inputStyles } from '@/lib/sharedStyles';
 
 const unitOptions: UnitOption[] = ['g', 'kg', 'ml', 'l', 'cup', 'tbsp', 'tsp', 'pcs'];
 
 interface IngredientsFormSectionProps {
-  clearErrors:UseFormClearErrors<AddRecipeFormValues>;
-  control: Control<AddRecipeFormValues>;
-  register: UseFormRegister<AddRecipeFormValues>;
-  errors:FieldErrors<AddRecipeFormValues>;
+  clearErrors: UseFormClearErrors<RecipeFormValues>;
+  control: Control<RecipeFormValues>;
+  register: UseFormRegister<RecipeFormValues>;
+  errors: FieldErrors<RecipeFormValues>;
 }
 export function IngredientsFormSection({
   clearErrors,
@@ -88,12 +95,8 @@ export function IngredientsFormSection({
               value={newIngredient.name}
               onChange={(event) => handleChange('name', event.target.value)}
               borderColor="gray.600"
-              bgColor="white"
-              borderRadius="10px"
-              fontSize="1.8rem"
-              p="1.2rem"
-              height="100%"
               _placeholder={{ color: 'gray.400', fontSize: '1.8rem' }}
+              {...inputStyles}
             />
           </Field.Root>
 
@@ -102,7 +105,6 @@ export function IngredientsFormSection({
               Amount
             </Field.Label>
             <Input
-              height="100%"
               id="new-ingredient-amount"
               type="number"
               min="0"
@@ -111,10 +113,7 @@ export function IngredientsFormSection({
               value={newIngredient.amount}
               onChange={(event) => handleChange('amount', event.target.value)}
               borderColor="gray.600"
-              bgColor="white"
-              borderRadius="10px"
-              fontSize="1.8rem"
-              p="1.2rem"
+              {...inputStyles}
               _placeholder={{ color: 'gray.400', fontSize: '1.8rem' }}
             />
           </Field.Root>
@@ -127,11 +126,7 @@ export function IngredientsFormSection({
               id="new-ingredient-unit"
               borderWidth="1px"
               borderColor="gray.600"
-              bgColor="white"
-              borderRadius="10px"
-              fontSize="1.8rem"
-              p="1.2rem"
-              height="100%"
+              {...inputStyles}
               value={newIngredient.unit}
               onChange={(event) => handleChange('unit', event.target.value)}
             >

@@ -3,6 +3,7 @@
 import { Field, Input, InputProps } from '@chakra-ui/react';
 import { PasswordInput } from '../ui/password-input';
 import { FieldError, UseFormRegisterReturn } from 'react-hook-form';
+import { inputStyles } from '@/lib/sharedStyles';
 
 interface CustomFormFieldProps extends InputProps {
   label: string;
@@ -40,13 +41,10 @@ export default function CustomFormField({
       <InputComponent
         id={id}
         borderColor={error ? 'red' : 'gray.600'}
-        bgColor="white"
-        borderRadius="10px"
         variant="outline"
-        fontSize="1.8rem"
-        p="1.2rem"
-        height="100%"
+        
         {...registration}
+        {...inputStyles}
         _placeholder={{ color: 'gray.400', fontSize: '1.8rem' }}
         {...rest}
       />
