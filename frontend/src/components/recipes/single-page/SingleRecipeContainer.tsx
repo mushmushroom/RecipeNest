@@ -14,14 +14,9 @@ import SingleFavoriteButton from './SingleFavoriteButton';
 import { useRef } from 'react';
 import RecipePrint from './RecipePrint';
 import { useReactToPrint } from 'react-to-print';
+import { formatDate } from '@/lib/helpers/utils';
 
-function formatPublishedDate(date: string) {
-  return new Date(date).toLocaleDateString('en-US', {
-    month: 'long',
-    day: 'numeric',
-    year: 'numeric',
-  });
-}
+
 
 const isUnitOption = (value: string): value is UnitOption =>
   ['g', 'kg', 'ml', 'l', 'pcs'].includes(value);
@@ -43,9 +38,7 @@ export default function SingleRecipeContainer({
   const reactToPrintFn = useReactToPrint({ contentRef });
 
   const date =
-    'createdAt' in recipe
-      ? formatPublishedDate(recipe.createdAt)
-      : formatPublishedDate(new Date().toISOString());
+    'createdAt' in recipe ? formatDate(recipe.createdAt) : formatDate(new Date().toISOString());
 
   const instructions = recipe.instructions.map((instruction, index) => ({
     step: 'step' in instruction ? instruction.step : index + 1,

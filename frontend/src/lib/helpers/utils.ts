@@ -4,6 +4,14 @@ export function formatMinutesToHours(min: number) {
   return min / 60 > 1 ? `${Math.round(min / 60 * 100) / 100} h` : `${min} min`;
 }
 
+export function formatDate(date: string) {
+  return new Date(date).toLocaleDateString('en-US', {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+  });
+}
+
 
 export function mapRecipeToFormValues(recipe: RecipeFull): RecipeFormValues {
   return {
