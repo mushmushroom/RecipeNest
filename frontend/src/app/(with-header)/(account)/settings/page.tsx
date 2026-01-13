@@ -2,6 +2,7 @@
 import UserAvatarBox from '@/components/account/UserAvatarBox';
 import { CustomButton } from '@/components/common/CustomButton';
 import ErrorMessage from '@/components/ErrorMessage';
+import ChangeAvatarSection from '@/components/settings/ChangeAvatarSection';
 import ChangeEmailSection from '@/components/settings/ChangeEmailSection';
 import ChangePasswordSection from '@/components/settings/ChangePasswordSection';
 import ChangeUsernameSection from '@/components/settings/ChangeUsernameSection';
@@ -24,10 +25,7 @@ export default function SettingsPage() {
         Account settings
       </Heading>
       {/* Change avatar */}
-      <Flex gap="3rem" alignItems="center" py="5rem">
-        <UserAvatarBox url={data?.avatar[0]?.url} />
-        <CustomButton variant="outline">Select new avatar</CustomButton>
-      </Flex>
+      <ChangeAvatarSection url={data?.avatar[0]?.url} />
 
       <Separator borderColor="gray.400" />
       {/* */}

@@ -4,7 +4,6 @@ import {
   DifficultyOption,
   FavoriteRecipesResponse,
   FeaturedRecipesResponse,
-  RecipeShort,
 } from '../types/recipe';
 import { notFound } from 'next/navigation';
 

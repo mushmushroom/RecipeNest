@@ -4,6 +4,8 @@ export const buttonRecipe = defineRecipe({
   base: {
     display: 'flex',
     gap: '1rem',
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingX: '3rem',
     paddingY: '1rem',
     borderRadius: '10px',
