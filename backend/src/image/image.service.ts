@@ -115,4 +115,17 @@ export class ImageService {
       console.error('Cloudinary delete failed:', err);
     }
   }
+
+  async deleteAvatarByUserId(userId: number) {
+    const userImage = await this.prisma.image.findFirst({
+      where: { userId },
+    });
+    if (userImage) {
+      await this.deleteFile(userImage.publicId);
+    } else {
+      throw new NotFoundException('Avatar not found');
+    }
+
+    return { message: 'Avatar deleted successfully' };
+  }
 }

@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Patch,
   Post,
@@ -50,6 +51,13 @@ export class UserController {
   async updateMyAvatar(@Req() req, @UploadedFile() file: Express.Multer.File) {
     const userId = req.user.sub;
     return this.imageService.uploadFile(file, { type: 'AVATAR', userId });
+  }
+
+  @UseGuards(JwtGuard)
+  @Delete('me/avatar')
+  async deleteMyAvatar(@Req() req) {
+    const userId = req.user.sub;
+    return this.imageService.deleteAvatarByUserId(userId);
   }
 
   @UseGuards(JwtGuard)
