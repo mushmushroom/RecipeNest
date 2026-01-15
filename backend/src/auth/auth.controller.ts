@@ -59,10 +59,4 @@ export class AuthController {
     );
   }
 
-  @UseGuards(JwtGuard)
-  @Delete('me')
-  async deleteMyProfile(@Req() req) {
-    const userId = req.user.sub;
-    return this.userService.deleteUser(userId);
-  }
 }

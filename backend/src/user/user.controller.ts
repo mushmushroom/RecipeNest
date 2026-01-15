@@ -42,6 +42,13 @@ export class UserController {
   }
 
   @UseGuards(JwtGuard)
+  @Delete('me')
+  async deleteMyProfile(@Req() req) {
+    const userId = req.user.sub;
+    return this.userService.deleteUser(userId);
+  }
+
+  @UseGuards(JwtGuard)
   @Post('me/avatar')
   @UseInterceptors(
     FileInterceptor('file', {

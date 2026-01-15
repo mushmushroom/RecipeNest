@@ -9,7 +9,7 @@ export default function useDeleteAccount() {
 
   async function deleteAccount() {
     try {
-      const response = await fetch(`${BACKEND_URL}/auth/me`, {
+      const response = await fetch(`${BACKEND_URL}/user/me`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
