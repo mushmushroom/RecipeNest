@@ -4,6 +4,7 @@ import {
   ChangePasswordDto,
   LoginDto,
   ResentOtpDto,
+  ResetPasswordDto,
   VerifyOtpDto,
 } from './dto/auth.dto';
 import { AuthService } from './auth.service';
@@ -57,6 +58,16 @@ export class AuthController {
       dto.oldPassword,
       dto.newPassword,
     );
+  }
+
+  @Post('forgot-password')
+  async forgotPassword(@Body() forgotPasswordDto: ResentOtpDto) {
+    return this.authService.forgotPassword(forgotPasswordDto)
+  }
+
+  @Post('reset-password')
+  async resetPassword(@Body() dto: ResetPasswordDto) {
+    return this.authService.resetPassword(dto)
   }
 
 }

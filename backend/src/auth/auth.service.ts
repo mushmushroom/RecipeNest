@@ -1,16 +1,24 @@
 import {
   BadRequestException,
+  forwardRef,
+  Inject,
   Injectable,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { LoginDto, ResentOtpDto, VerifyOtpDto } from './dto/auth.dto';
+import {
+  LoginDto,
+  ResentOtpDto,
+  ResetPasswordDto,
+  VerifyOtpDto,
+} from './dto/auth.dto';
 import { UserService } from 'src/user/user.service';
 import { compare } from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from 'src/user/dto/user.dto';
 import { OtpService } from 'src/otp/otp.service';
+import * as bcrypt from 'bcrypt';
 
 const ACCESS_TOKEN_EXPIRE = 15 * 60 * 1000; // 15 minutes
 // const ACCESS_TOKEN_EXPIRE = 20 * 1000; // 20 seconds
@@ -22,6 +30,7 @@ export class AuthService {
     private prisma: PrismaService,
     private userService: UserService,
     private jwtService: JwtService,
+    @Inject(forwardRef(() => OtpService))
     private otpService: OtpService,
   ) {}
 
@@ -29,7 +38,7 @@ export class AuthService {
     try {
       // create user
       const user = await this.userService.create(createUserDto);
-      await this.otpService.generateOtp(user);
+      await this.otpService.generateSendToken(user);
 
       return {
         message:
@@ -190,12 +199,45 @@ export class AuthService {
       throw new NotFoundException('User not found');
     }
 
-    await this.otpService.generateOtp(user);
+    await this.otpService.generateSendToken(user);
 
     return {
       message: 'OTP sent successfully. Please check your email.',
     };
   }
 
-  
+  async forgotPassword(dto: ResentOtpDto) {
+    const { email } = dto;
+    const user = await this.userService.findByEmail(email);
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    await this.otpService.generateSendToken(user, 'RESET');
+    return { message: 'Reset link was sent to your email.' };
+  }
+
+  async resetPassword(dto: ResetPasswordDto) {
+    const userId = await this.otpService.validateResetToken(dto.token);
+
+    const user = await this.userService.findById(userId);
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const hashedNewPassword = await bcrypt.hash(dto.newPassword, 10)
+    await this.prisma.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        password: hashedNewPassword,
+      },
+    });
+
+    return { message: 'Password was reset successfully' };
+    
+  }
 }

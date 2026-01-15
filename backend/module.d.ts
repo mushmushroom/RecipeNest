@@ -3,9 +3,11 @@ declare namespace NodeJS {
     DATABASE_URL: string;
     JWT_SECRET_TOKEN: string;
     JWT_REFRESH_TOKEN: string;
+    JWT_RESET_TOKEN: string;
     EMAIL_PASS: string;
     EMAIL_USER: string;
     EMAIL_PORT: number;
     EMAIL_HOST: string;
+    RESET_PASSWORD_URL: string;
   }
 }
