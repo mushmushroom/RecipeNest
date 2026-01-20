@@ -1,20 +1,20 @@
 'use client';
-import { Center, Container, Flex, Heading, Stack, Text } from '@chakra-ui/react';
 import { CustomButton } from '@/components/common/CustomButton';
 import CustomFormField from '@/components/common/CustomFormField';
-import { AppPathPublic } from '@/lib/constants';
-import Link from 'next/link';
 import { Toaster } from '@/components/ui/toaster';
-import useLogin from '@/lib/hooks/auth/useLogin';
+import { AppPathPublic } from '@/lib/constants';
+import useForgot from '@/lib/hooks/auth/useForgot';
+import { Center, Container, Flex, Heading, Stack, Text } from '@chakra-ui/react';
+import Link from 'next/link';
 
-export default function SignInPage() {
-  const { handleSubmit, register, errors, onSubmit } = useLogin();
+export default function ForgotPasswordPage() {
+  const { handleSubmit, onSubmit, register, errors, cooldown, mutationForgot } = useForgot();
   return (
-    <Center minH="100vh" bgImage="url(/login-img.jpg)" bgRepeat="no-repeat" bgSize="cover">
+    <Center minH="100vh" bgImage="url(/reset-img.jpg)" bgRepeat="no-repeat" bgSize="cover">
       <Container maxW="678px" py="5.3rem" px={{ base: '1.5rem', md: '4.8rem' }} bgColor="white">
         <Stack gap="2.2rem" alignItems="center">
           <Heading as="h1" size="h1">
-            <Text as="span">Log in</Text> to your account
+            <Text as="span">Forgot</Text> password
           </Heading>
           <Stack
             as="form"
@@ -32,21 +32,17 @@ export default function SignInPage() {
               placeholder="johndoe@email.com"
               required
             />
-            <CustomFormField
-              registration={register('password', { required: true })}
-              error={errors.password}
-              label="Password"
-              id="password"
-              required
-              passwordField
-            />
             {errors.root && (
               <Text color="red.500" fontSize="1.6rem">
                 {errors.root.message}
               </Text>
             )}
-            <CustomButton variant="secondary" type="submit">
-              Log in
+            <CustomButton
+              variant="secondary"
+              type="submit"
+              disabled={cooldown > 0 || mutationForgot.isPending}
+            >
+              Send reset link
             </CustomButton>
           </Stack>
         </Stack>
@@ -58,15 +54,13 @@ export default function SignInPage() {
           marginTop="2.5rem"
         >
           <CustomButton variant="link" asChild color="brand.500">
-            <Link href={AppPathPublic.Register}>Create new account</Link>
+            <Link href={AppPathPublic.Login}>Go to login page</Link>
           </CustomButton>
-          <CustomButton variant="link" asChild color="green.500">
-            <Link href={AppPathPublic.ForgotPassword}>Forgot password</Link>
+          <CustomButton variant="link" asChild>
+            <Link href={AppPathPublic.Recipes}>Back to all recipes</Link>
           </CustomButton>
         </Flex>
-        <CustomButton variant="link" asChild>
-          <Link href={AppPathPublic.Recipes}>Back to all recipes</Link>
-        </CustomButton>
+
         <Toaster />
       </Container>
     </Center>

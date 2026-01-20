@@ -4,6 +4,7 @@ export enum AppPathPublic {
   Home = '/',
   Login = '/login',
   Register = '/register',
+  ForgotPassword = '/forgot-password',
   Verify = '/verify',
   Recipes = '/recipes',
 }
