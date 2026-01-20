@@ -227,17 +227,30 @@ export class AuthService {
       throw new NotFoundException('User not found');
     }
 
-    const hashedNewPassword = await bcrypt.hash(dto.newPassword, 10)
-    await this.prisma.user.update({
-      where: {
-        id: user.id,
-      },
-      data: {
-        password: hashedNewPassword,
-      },
+    const hashedNewPassword = await bcrypt.hash(dto.newPassword, 10);
+    await this.prisma.$transaction(async (tx) => {
+      await tx.otp.updateMany({
+        where: {
+          userId,
+          type: 'RESET',
+          used: false,
+          createdAt: { lte: new Date() },
+        },
+        data: {
+          used: true,
+        },
+      });
+
+      await tx.user.update({
+        where: {
+          id: user.id,
+        },
+        data: {
+          password: hashedNewPassword,
+        },
+      });
     });
 
     return { message: 'Password was reset successfully' };
-    
   }
 }
