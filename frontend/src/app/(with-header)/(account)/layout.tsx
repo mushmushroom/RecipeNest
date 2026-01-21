@@ -12,8 +12,6 @@ export default function RootLayout({
 }>) {
   return (
     <>
-      {/* <Header /> */}
-      {/* <Box as="main" paddingY="4rem"> */}
         <GlobalContainer>
           <UserHeader />
           <Box as="section">
@@ -31,7 +29,6 @@ export default function RootLayout({
             </Grid>
           </Box>
         </GlobalContainer>
-      {/* </Box> */}
     </>
   );
 }

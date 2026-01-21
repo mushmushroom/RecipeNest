@@ -3,7 +3,7 @@ import { useSession } from 'next-auth/react';
 /**
  * @param requireAuth - Boolean: Only use true if you must have an authenticated user.
  */
-export function useAuth(requireAuth: boolean = false) {
+export function useFetchAuth(requireAuth: boolean = false) {
   const { data: session, status } = useSession();
 
   const token = session?.backendTokens.accessToken ?? '';

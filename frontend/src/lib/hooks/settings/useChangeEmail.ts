@@ -4,7 +4,7 @@ import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toaster } from '@/components/ui/toaster';
 import { BACKEND_URL, PASSWORDREGEX } from '@/lib/constants';
-import { useAuth } from '../useAuth';
+import { useFetchAuth } from '../useFetchAuth';
 import { useQueryClient } from '@tanstack/react-query';
 import { useProfileData } from '../useProfileQuery';
 
@@ -26,7 +26,7 @@ export default function useSettings() {
     mode: 'onChange',
   });
 
-  const { token } = useAuth(true);
+  const { token } = useFetchAuth(true);
   const { data } = useProfileData();
 
   async function changeEmail({ email }: ChangeEmailInputs) {

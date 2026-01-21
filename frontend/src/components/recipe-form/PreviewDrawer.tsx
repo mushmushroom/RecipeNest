@@ -11,7 +11,6 @@ interface PreviewDrawerProps {
 
 export default function PreviewDrawer({ recipe }: PreviewDrawerProps) {
   const [isDrawerOpen, setDrawerOpen] = useState(false);
-  console.log(recipe);
 
   return (
     <Drawer.Root open={isDrawerOpen} onOpenChange={(e) => setDrawerOpen(e.open)} placement="start">

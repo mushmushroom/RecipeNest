@@ -4,7 +4,7 @@ import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toaster } from '@/components/ui/toaster';
 import { BACKEND_URL, PASSWORDREGEX } from '@/lib/constants';
-import { useAuth } from '../useAuth';
+import { useFetchAuth } from '../useFetchAuth';
 
 const changePasswordSchema = z
   .object({
@@ -13,7 +13,7 @@ const changePasswordSchema = z
       .string()
       .regex(
         PASSWORDREGEX,
-        'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'
+        'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character',
       )
       .min(8, 'Password should contain at least 8 characters'),
     confirmPassword: z.string(),
@@ -36,7 +36,7 @@ export default function useSettings() {
     mode: 'onChange',
   });
 
-  const { token } = useAuth(true);
+  const { token } = useFetchAuth(true);
 
   async function changePassword({ oldPassword, newPassword }: ChangePasswordInputs) {
     try {

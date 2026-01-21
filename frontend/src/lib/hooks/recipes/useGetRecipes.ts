@@ -1,6 +1,6 @@
 import { getMyRecipes, getAllRecipesPage, getUserFavorites } from '@/lib/helpers/server-utils';
 import { useQuery } from '@tanstack/react-query';
-import { useAuth } from '../useAuth';
+import { useFetchAuth } from '../useFetchAuth';
 import {
   AllRecipesResponse,
   CategoryOption,
@@ -10,11 +10,10 @@ import {
 import useFilters from '../useFilters';
 
 export function useMyRecipes(currentPage: number, pageSize: number = 10) {
-  console.log('Fetching my recipes');
-  const { token } = useAuth(true);
+  const { token } = useFetchAuth(true);
   return useQuery({
     queryKey: ['my-recipes', currentPage],
-    queryFn: () => getMyRecipes<MyRecipesResponse>( token, currentPage, pageSize),
+    queryFn: () => getMyRecipes<MyRecipesResponse>(token, currentPage, pageSize),
     staleTime: 1000 * 60 * 5,
     gcTime: 1000 * 60 * 30,
     retry: false,

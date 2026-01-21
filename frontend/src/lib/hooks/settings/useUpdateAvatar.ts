@@ -5,7 +5,6 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 async function updateAvatar(token: string, formData: FormData) {
   if (!token) throw new Error('No auth token provided');
   try {
-    console.log('formData', JSON.stringify(Array.from(formData.entries())));
     const res = await fetch(`${BACKEND_URL}/user/me/avatar`, {
       method: 'POST',
       headers: {

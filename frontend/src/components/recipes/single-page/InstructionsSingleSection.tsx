@@ -28,7 +28,6 @@ export default function InstructionsSingleSection({
               fontWeight="600"
               fontFamily="heading"
               lineHeight="1.2"
-              // minHeight="1lh"
               marginBottom="0.5rem"
             >
               Step {instruction.step}

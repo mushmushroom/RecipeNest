@@ -30,7 +30,6 @@ export default function DeleteAccountDialog() {
             <Dialog.ActionTrigger asChild>
               <CustomButton variant="outline">Cancel</CustomButton>
             </Dialog.ActionTrigger>
-            {/* <CustomButton variant="danger">Delete</CustomButton> */}
             <CustomButton variant="danger" onClick={deleteAccount}>
               Delete my account
             </CustomButton>

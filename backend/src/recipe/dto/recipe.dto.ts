@@ -107,7 +107,6 @@ export class RecipeQueryDto {
   search?: string;
 
   @IsOptional()
-  // @IsInt()
   @Min(1)
   category?: number | number[];
 

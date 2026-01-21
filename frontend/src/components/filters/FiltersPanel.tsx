@@ -24,7 +24,6 @@ interface FiltersPanelProps {
 export default function FiltersPanel({ options }: FiltersPanelProps) {
   const { filters, setFilters } = useFilters();
   const [localFilters, setLocalFilters] = useState<FiltersState>(filters);
-  console.log('filters on page', filters);
 
   function handleCheckbox(key: Exclude<keyof FiltersState, 'search'>, value: string) {
     setLocalFilters((prev) => {

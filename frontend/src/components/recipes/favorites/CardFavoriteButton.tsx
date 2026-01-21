@@ -3,13 +3,13 @@
 import { FaBookmark } from 'react-icons/fa';
 import { CustomButton } from '@/components/common/CustomButton';
 import useFavorites from '@/lib/hooks/useFavorites';
-import { useAuth } from '@/lib/hooks/useAuth';
+import { useFetchAuth } from '@/lib/hooks/useFetchAuth';
 
 interface CardFavoriteButtonProps {
   recipeId: number;
 }
 export default function CardFavoriteButton({ recipeId }: CardFavoriteButtonProps) {
-  const { token } = useAuth(true);
+  const { token } = useFetchAuth(true);
   const { toggleFavorite } = useFavorites(token);
 
   return (

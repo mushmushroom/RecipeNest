@@ -1,5 +1,4 @@
 'use client';
-// import { useSession } from 'next-auth/react';
 import { Box, Flex, useBreakpointValue, useMediaQuery } from '@chakra-ui/react';
 import GlobalContainer from '../GlobalContainer';
 import Image from 'next/image';

@@ -5,7 +5,6 @@ import { CustomButton } from './common/CustomButton';
 
 const SignInButton = () => {
   const { data: session, status } = useSession();
-  console.log({ status });
 
   if (status === 'loading') return;
 

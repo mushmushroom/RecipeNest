@@ -132,7 +132,6 @@ export default function useVerify() {
       }
     },
     onSuccess: () => {
-      // reset({ otp });
       toaster.create({
         title: 'OTP code was resent.',
         description: 'Please check your email.',

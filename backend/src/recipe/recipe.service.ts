@@ -310,17 +310,6 @@ export class RecipeService {
     const user = this.userService.findById(userId);
     if (!user) throw new NotFoundException('User does not exist');
 
-    // const user = await this.prisma.user.findUnique({
-    //   where: { id: userId },
-    //   include: {
-    //     favoriteRecipes: {
-    //       include: {
-    //         images: true,
-    //       },
-    //     },
-    //   },
-    // });
-
     const [favoriteRecipes, total] = await Promise.all([
       await this.prisma.recipe.findMany({
         where: {

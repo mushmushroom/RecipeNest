@@ -1,11 +1,11 @@
 'use client';
 import { toaster } from '@/components/ui/toaster';
 import { AppPathPublic, BACKEND_URL } from '@/lib/constants';
-import { useAuth } from '../useAuth';
+import { useFetchAuth } from '../useFetchAuth';
 import { signOut } from 'next-auth/react';
 
 export default function useDeleteAccount() {
-  const { token } = useAuth(true);
+  const { token } = useFetchAuth(true);
 
   async function deleteAccount() {
     try {

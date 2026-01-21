@@ -1,7 +1,3 @@
-// export { default } from 'next-auth/middleware';
-// export const config = {
-//   matcher: ['/dashboard/:path*'],
-// };
 
 import { NextRequest, NextResponse } from 'next/server';
 import { AppPathProtected, AppPathPublic } from './lib/constants';
@@ -59,8 +55,6 @@ export const config = {
     '/edit/:path*',
     '/recipes/:path*',
     '/my-recipes/:path*',
-    // '/my-recipes/new',
-    // '/my-recipes/edit',
     '/favorites',
     '/settings',
   ],

@@ -1,6 +1,4 @@
 'use client';
-import UserAvatarBox from '@/components/account/UserAvatarBox';
-import { CustomButton } from '@/components/common/CustomButton';
 import ErrorMessage from '@/components/ErrorMessage';
 import ChangeAvatarSection from '@/components/settings/ChangeAvatarSection';
 import ChangeEmailSection from '@/components/settings/ChangeEmailSection';
@@ -8,14 +6,11 @@ import ChangePasswordSection from '@/components/settings/ChangePasswordSection';
 import ChangeUsernameSection from '@/components/settings/ChangeUsernameSection';
 import DeleteAccountDialog from '@/components/settings/DeleteAccountDialog';
 import { Toaster } from '@/components/ui/toaster';
-import { useAuth } from '@/lib/hooks/useAuth';
 import { useProfileData } from '@/lib/hooks/useProfileQuery';
-import { Box, Flex, Heading, Separator, Stack, Text } from '@chakra-ui/react';
-import Image from 'next/image';
+import { Box, Heading, Separator, Stack, Text } from '@chakra-ui/react';
 
 export default function SettingsPage() {
   const { data, isLoading, isError } = useProfileData();
-  console.log(data);
   if (isLoading) return 'Loading data..';
   if (isError) return <ErrorMessage message="Profile data cannot be loaded" />;
 
@@ -28,7 +23,7 @@ export default function SettingsPage() {
       <ChangeAvatarSection url={data?.avatar[0]?.url} />
 
       <Separator borderColor="gray.400" />
-      {/* */}
+      {/* Change username */}
       <ChangeUsernameSection username={data?.username} />
 
       <Separator borderColor="gray.400" />

@@ -6,7 +6,7 @@ import { IoMenu } from 'react-icons/io5';
 import { FaRegWindowClose } from 'react-icons/fa';
 import { useState } from 'react';
 import { AppPathProtected, AppPathPublic } from '@/lib/constants';
-import { useAuth } from '@/lib/hooks/useAuth';
+import { useFetchAuth } from '@/lib/hooks/useFetchAuth';
 import LoginButton from './LoginButton';
 import { signOut } from 'next-auth/react';
 import { Session } from 'next-auth';
@@ -24,7 +24,6 @@ interface MobileMenuDrawerProps {
 }
 export default function MobileMenuDrawer({ session }: MobileMenuDrawerProps) {
   const [isDrawerOpen, setDrawerOpen] = useState(false);
-  // const { isSessionReady } = useAuth();
 
   return (
     <>
@@ -80,7 +79,7 @@ export default function MobileMenuDrawer({ session }: MobileMenuDrawerProps) {
                       >
                         {item.text}
                       </Link>
-                    )
+                    ),
                   )
                 ) : (
                   <Stack gap="4rem">

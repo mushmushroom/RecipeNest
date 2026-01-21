@@ -74,7 +74,6 @@ export interface ImageData {
 }
 
 export interface RecipeFull extends RecipeShort {
-  // category: CategoryOption;
   categoryId: number;
   ingredients: IngredientData[];
   instructions: InstructionData[];

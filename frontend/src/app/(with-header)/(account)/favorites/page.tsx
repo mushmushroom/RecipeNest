@@ -3,20 +3,20 @@ import EmptyList from '@/components/common/EmptyList';
 import PaginationContainer from '@/components/common/PaginationContainer';
 import ErrorMessage from '@/components/ErrorMessage';
 import RecipeList from '@/components/recipes/RecipeList';
-import { useAuth } from '@/lib/hooks/useAuth';
+import { useFetchAuth } from '@/lib/hooks/useFetchAuth';
 import useFavorites from '@/lib/hooks/useFavorites';
 import { usePagination } from '@/lib/hooks/usePagination';
 import { Heading, Stack } from '@chakra-ui/react';
 import { useEffect } from 'react';
 
 export default function FavoritesPage() {
-  const { token } = useAuth(true);
+  const { token } = useFetchAuth(true);
   const { currentPage, setCurrentPage, goToPage, nextPage, prevPage } = usePagination();
 
   const { favorites, favoritesPagination, isLoading, isError, refetch } = useFavorites(
     token,
     currentPage,
-    6
+    6,
   );
 
   // reset page when visiting this page

@@ -6,7 +6,7 @@ import { RecipeFormValues, RecipeFull } from '@/lib/types/recipe';
 import { AppPathProtected, BACKEND_URL } from '@/lib/constants';
 import { toaster } from '@/components/ui/toaster';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/lib/hooks/useAuth';
+import { useFetchAuth } from '@/lib/hooks/useFetchAuth';
 import { mapRecipeToFormValues } from '@/lib/helpers/utils';
 import { useState } from 'react';
 
@@ -65,12 +65,11 @@ export default function useRecipeForm(mode: 'create' | 'edit', initialRecipe?: R
         },
   });
 
-  const { token } = useAuth(true);
+  const { token } = useFetchAuth(true);
 
   const mutation = useMutation({
     mutationFn: async (formData: FormData) => {
       try {
-        console.log('formData', JSON.stringify(Array.from(formData.entries())));
         const res = await fetch(
           mode === 'create'
             ? `${BACKEND_URL}/recipe`
@@ -81,7 +80,7 @@ export default function useRecipeForm(mode: 'create' | 'edit', initialRecipe?: R
               Authorization: `Bearer ${token}`,
             },
             body: formData,
-          }
+          },
         );
 
         const data = await res.json();
@@ -136,7 +135,6 @@ export default function useRecipeForm(mode: 'create' | 'edit', initialRecipe?: R
 
     // Append removed image IDs
     formData.append('removedImageIds', JSON.stringify(removedImages.map((i) => i.id)));
-    console.log(formData);
     mutation.mutate(formData);
   };
 
@@ -151,6 +149,6 @@ export default function useRecipeForm(mode: 'create' | 'edit', initialRecipe?: R
     control,
     removedImages,
     setRemovedImages,
-    isValid
+    isValid,
   };
 }

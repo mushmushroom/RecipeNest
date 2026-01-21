@@ -110,52 +110,6 @@ export default function useReset() {
     });
   };
 
-  // const mutationRequest = useMutation({
-  //   mutationFn: async (reqData: requestPayload) => {
-  //     try {
-  //       const res = await fetch(`${BACKEND_URL}/auth/request-otp`, {
-  //         method: 'POST',
-  //         headers: { 'Content-Type': 'application/json' },
-  //         body: JSON.stringify(reqData),
-  //       });
-
-  //       // Network worked, but backend returned error
-  //       const data = await res.json();
-  //       if (!res.ok) {
-  //         throw data;
-  //       }
-
-  //       return data;
-  //     } catch (err: any) {
-  //       // Network error or backend down
-  //       throw {
-  //         message: err.message || 'Cannot connect to the server. Please try again later.',
-  //       };
-  //     }
-  //   },
-  //   onSuccess: () => {
-  //     reset();
-  //     toaster.create({
-  //       title: 'The password has been updated.',
-  //       description: 'You will now be redirected to the login page',
-  //       type: 'success',
-  //       duration: 5000,
-  //     });
-
-  //     setTimeout(() => {
-  //       router.push(AppPathPublic.Login);
-  //     }, 3000);
-  //   },
-
-  //   onError: (error: any) => {
-  //     if (error?.message) {
-  //       setError('root', {
-  //         message: error.message,
-  //       });
-  //     }
-  //   },
-  // });
-
   return {
     handleSubmit,
     onSubmit,

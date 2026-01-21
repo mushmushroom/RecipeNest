@@ -1,10 +1,10 @@
 import { deleteRecipe } from '@/lib/helpers/server-utils';
-import { useAuth } from '../useAuth';
+import { useFetchAuth } from '../useFetchAuth';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toaster } from '@/components/ui/toaster';
 
 export default function useDeleteRecipe() {
-  const { token } = useAuth(true);
+  const { token } = useFetchAuth(true);
   const queryClient = useQueryClient();
 
   const mutation = useMutation({

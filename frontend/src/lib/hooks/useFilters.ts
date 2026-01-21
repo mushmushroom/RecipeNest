@@ -19,33 +19,6 @@ export default function useFilters() {
     }
   );
 
-  useEffect(() => {
-    console.log('pathname changed:', pathname);
-    console.log('current URL params:', new URLSearchParams(window.location.search).toString());
-    console.log('nuqs filters:', filters);
-  }, [pathname, filters]);
-
-  // useEffect(() => {
-  //   const searchParams = new URLSearchParams(window.location.search);
-  //   const hasNoFilters =
-  //     !searchParams.has('category') &&
-  //     !searchParams.has('difficulty') &&
-  //     !searchParams.has('cookingTime');
-
-  //   if (
-  //     hasNoFilters &&
-  //     (filters.category.length > 0 ||
-  //       filters.difficulty.length > 0 ||
-  //       filters.cookingTime.length > 0)
-  //   ) {
-  //     setFilters({
-  //       category: [],
-  //       difficulty: [],
-  //       cookingTime: [],
-  //     });
-  //   }
-  // }, [pathname]);
-
   // reset to first page whenever filters change
   useEffect(() => {
     setCurrentPage(1);

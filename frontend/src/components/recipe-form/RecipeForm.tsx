@@ -86,7 +86,6 @@ export default function RecipeForm({ mode, options, initialRecipe }: RecipeFormP
             </Text>
           )}
           <Flex justifyContent="flex-end" gap="1.6rem" pt="1.6rem" flexWrap="wrap">
-            {/* <CustomButton variant="outline">Preview</CustomButton> */}
             {isValid && <PreviewDrawer recipe={previewRecipe} />}
             <CustomButton type="submit">
               {mode === 'edit' ? 'Save changes' : 'Add recipe'}

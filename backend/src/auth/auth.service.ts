@@ -21,7 +21,6 @@ import { OtpService } from 'src/otp/otp.service';
 import * as bcrypt from 'bcrypt';
 
 const ACCESS_TOKEN_EXPIRE = 15 * 60 * 1000; // 15 minutes
-// const ACCESS_TOKEN_EXPIRE = 20 * 1000; // 20 seconds
 const REFRESH_TOKEN_EXPIRE = 30 * 24 * 60 * 60 * 1000; // 30 days
 
 @Injectable()
@@ -113,8 +112,6 @@ export class AuthService {
 
     const accessToken = await this.createAccessToken(user);
     const newRefreshToken = await this.createRefreshToken(user);
-
-    console.log('new access token', accessToken);
 
     await this.prisma.refreshToken.update({
       where: { token: refreshToken },

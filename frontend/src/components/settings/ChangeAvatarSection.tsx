@@ -2,7 +2,7 @@ import { Flex, Input, Stack } from '@chakra-ui/react';
 import UserAvatarBox from '../account/UserAvatarBox';
 import { CustomButton } from '../common/CustomButton';
 import useUpdateAvatar from '@/lib/hooks/settings/useUpdateAvatar';
-import { useAuth } from '@/lib/hooks/useAuth';
+import { useFetchAuth } from '@/lib/hooks/useFetchAuth';
 import { useRef } from 'react';
 
 interface ChangeAvatarSectionProps {
@@ -10,7 +10,7 @@ interface ChangeAvatarSectionProps {
 }
 export default function ChangeAvatarSection({ url }: ChangeAvatarSectionProps) {
   const { updateAvatar, deleteAvatar, isLoading } = useUpdateAvatar();
-  const { token } = useAuth(true);
+  const { token } = useFetchAuth(true);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 

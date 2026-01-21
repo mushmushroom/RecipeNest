@@ -6,9 +6,4 @@ import { SendEmailDto } from './dto/email.dto';
 export class EmailController {
   constructor(private readonly emailService: EmailService) {}
 
-  // @Post('send')
-  // async sendMail(@Body() dto: SendEmailDto) {
-  //   await this.emailService.sendEmail(dto);
-  //   return { message: 'Email sent successfully' };
-  // }
 }

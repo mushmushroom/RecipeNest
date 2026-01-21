@@ -74,13 +74,4 @@ export class UserController {
     return this.recipeService.getFavoriteRecipes(userId, query);
   }
 
-  // @Get()
-  // async findAll(@Query() paginationQuery?: QueryPaginationDto) {
-  //   return this.userService.findAll(paginationQuery);
-  // }
-  // @UseGuards(JwtGuard)
-  // @Get(':id')
-  // async getUserProfile(@Param('id') id: number) {
-  //   return await this.userService.findById(id);
-  // }
 }

@@ -34,7 +34,6 @@ export class ImageController {
       type === 'AVATAR'
         ? { type, userId: Number(userId) }
         : { type, recipeId: Number(recipeId) };
-    console.log(files);
     return Promise.all(
       files.map((file) => this.imageService.uploadFile(file, params)),
     );

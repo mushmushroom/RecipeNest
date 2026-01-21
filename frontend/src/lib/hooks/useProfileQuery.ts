@@ -2,11 +2,11 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { BACKEND_URL } from '../constants';
-import { useAuth } from './useAuth';
+import { useFetchAuth } from './useFetchAuth';
 import { ProfileData } from '../types/profileData';
 
 export const getProfileData = async (token: string) => {
-  const res =  await fetch(`${BACKEND_URL}/user/me`, {
+  const res = await fetch(`${BACKEND_URL}/user/me`, {
     method: 'GET',
     headers: { Authorization: `Bearer ${token}` },
   });
@@ -20,7 +20,7 @@ Hook: Fetch profile data
 ================= */
 
 export function useProfileData() {
-  const { token } = useAuth();
+  const { token } = useFetchAuth();
   return useQuery<ProfileData>({
     queryKey: ['profileData'],
     queryFn: () => getProfileData(token),

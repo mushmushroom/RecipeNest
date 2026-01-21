@@ -90,7 +90,6 @@ const VisibilityTrigger = React.forwardRef<HTMLButtonElement, ButtonProps>(
         size="2xl"
         variant="ghost"
         height="calc(100% - {spacing.2})"
-        // height="100%"
         aria-label="Toggle password visibility"
         {...props}
       />
