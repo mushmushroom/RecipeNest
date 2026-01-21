@@ -25,7 +25,7 @@ export async function getOptions() {
   return { categories, difficulty };
 }
 
-// unified function
+// get recipe by ID
 export async function getRecipeItem<RecipeFull>(id: string, token?: string) {
   const headers: Record<string, string> = {};
 
@@ -44,26 +44,18 @@ export async function getRecipeItem<RecipeFull>(id: string, token?: string) {
   return res.json() as Promise<RecipeFull>;
 }
 
-// no cache, requires auth
-export async function getRecipeItemAuth<T>(item: string, token: string, page = 1, pageSize = 10) {
-  const res = await fetch(`${BACKEND_URL}/recipe/${item}?page=${page}&pageSize=${pageSize}`, {
+// get my recipes
+export async function getMyRecipes<T>(token: string, page = 1, pageSize = 10) {
+  if (!token) {
+    throw new Error('Token is required');
+  }
+  const res = await fetch(`${BACKEND_URL}/recipe/my?page=${page}&pageSize=${pageSize}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
   if (!res.ok) {
-    throw new Error(`Failed to fetch ${item}`);
-  }
-
-  return (await res.json()) as T;
-}
-
-// no cache, without auth
-export async function getRecipeItemNoAuth<T>(item: string | number = '') {
-  const res = await fetch(`${BACKEND_URL}/recipe/${item}`, {});
-  if (res.status === 404) return notFound();
-  if (!res.ok) {
-    throw new Error(`Failed to fetch ${item}`);
+    throw new Error(`Failed to fetch my recipes`);
   }
 
   return (await res.json()) as T;
@@ -86,7 +78,7 @@ function buildQueryString(query: Record<string, any>) {
 }
 
 // get recipes
-export async function getRecipesPage<T>(query: Record<string, any>) {
+export async function getAllRecipesPage<T>(query: Record<string, any>) {
   const queryString = buildQueryString(query);
 
   const res = await fetch(`${BACKEND_URL}/recipe?${queryString}`);

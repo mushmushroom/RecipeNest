@@ -1,4 +1,4 @@
-import { getRecipeItemAuth, getRecipesPage, getUserFavorites } from '@/lib/helpers/server-utils';
+import { getMyRecipes, getAllRecipesPage, getUserFavorites } from '@/lib/helpers/server-utils';
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '../useAuth';
 import {
@@ -14,7 +14,7 @@ export function useMyRecipes(currentPage: number, pageSize: number = 10) {
   const { token } = useAuth(true);
   return useQuery({
     queryKey: ['my-recipes', currentPage],
-    queryFn: () => getRecipeItemAuth<MyRecipesResponse>('my', token, currentPage, pageSize),
+    queryFn: () => getMyRecipes<MyRecipesResponse>( token, currentPage, pageSize),
     staleTime: 1000 * 60 * 5,
     gcTime: 1000 * 60 * 30,
     retry: false,
@@ -49,7 +49,7 @@ export function useAllRecipes({
 
   return useQuery({
     queryKey: ['all-recipes', currentPage, filters],
-    queryFn: () => getRecipesPage<AllRecipesResponse>(query),
+    queryFn: () => getAllRecipesPage<AllRecipesResponse>(query),
     staleTime: 1000 * 60 * 5,
     gcTime: 1000 * 60 * 30,
   });
