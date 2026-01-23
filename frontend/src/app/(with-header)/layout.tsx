@@ -1,7 +1,13 @@
 import Header from '@/components/header/Header';
 import { authOptions } from '@/lib/config/auth';
 import { Box } from '@chakra-ui/react';
+import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
+
+export const metadata: Metadata = {
+  title: 'RecipeNest',
+  description: 'All your favorite recipes in one place',
+};
 
 export default async function RootLayout({
   children,

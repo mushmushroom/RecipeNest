@@ -5,7 +5,6 @@ import { useMutation } from '@tanstack/react-query';
 import { AppPathPublic, BACKEND_URL, PASSWORDREGEX } from '@/lib/constants';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { toaster } from '@/components/ui/toaster';
-import { useEffect } from 'react';
 
 const resetSchema = z
   .object({

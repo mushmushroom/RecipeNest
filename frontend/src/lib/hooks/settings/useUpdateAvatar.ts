@@ -55,7 +55,14 @@ export default function useUpdateAvatar() {
         duration: 5000,
       });
     },
-    onError: (error) => console.error('Avatar update failed:', error),
+    onError: (error) => {
+      toaster.create({
+        title: 'Error!',
+        description: `Avatar update failed: ${error.message}`,
+        type: 'error',
+        duration: 5000,
+      });
+    },
   });
 
   const update = useMutation({
@@ -70,7 +77,14 @@ export default function useUpdateAvatar() {
         duration: 5000,
       });
     },
-    onError: (error) => console.error('Avatar update failed:', error),
+    onError: (error) => {
+      toaster.create({
+        title: 'Error!',
+        description: `Avatar removal failed: ${error.message}`,
+        type: 'error',
+        duration: 5000,
+      });
+    }
   });
 
   return {
