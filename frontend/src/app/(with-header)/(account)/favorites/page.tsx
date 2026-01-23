@@ -16,7 +16,7 @@ export default function FavoritesPage() {
   const { favorites, favoritesPagination, isLoading, isError, refetch } = useFavorites(
     token,
     currentPage,
-    6,
+    24,
   );
 
   // reset page when visiting this page

@@ -16,7 +16,7 @@ export default function FiltersRecipeList({ categoryOptions }: FiltersRecipeList
 
   const { data, isLoading, isError, refetch } = useAllRecipes({
     currentPage,
-    pageSize: 9,
+    pageSize: 24,
     categoriesOptions: categoryOptions,
   });
   useEffect(() => {

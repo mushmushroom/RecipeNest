@@ -17,7 +17,7 @@ export default function MyRecipesPage() {
     setCurrentPage(1);
   }, [setCurrentPage]);
 
-  const { data, isLoading, isError, refetch } = useMyRecipes(currentPage, 6);
+  const { data, isLoading, isError, refetch } = useMyRecipes(currentPage, 24);
 
   // reset to first page, if the recipe was on the last page and got deleted
   useEffect(() => {
