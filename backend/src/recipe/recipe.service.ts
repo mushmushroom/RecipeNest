@@ -78,7 +78,11 @@ export class RecipeService {
           ingredients: true,
           instructions: true,
           images: true,
-          author: true,
+          author: {
+            select: {
+              username: true,
+            },
+          },
         },
       }),
       await this.prisma.recipe.count({ where }),
@@ -94,7 +98,11 @@ export class RecipeService {
         ingredients: true,
         instructions: true,
         images: true,
-        author: true,
+        author: {
+          select: {
+            username: true,
+          },
+        },
         favoritedBy: userId
           ? {
               where: { id: userId },
@@ -336,7 +344,6 @@ export class RecipeService {
     ]);
 
     return paginateOutput(favoriteRecipes, total, query);
-
   }
 
   async addToFavorite(userId: number, recipeId: number) {

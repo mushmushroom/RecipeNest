@@ -12,12 +12,15 @@ import { ImageService } from './image.service';
 import type { UploadType } from './image.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
+import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 
 @Controller('image')
 export class ImageController {
   constructor(private readonly imageService: ImageService) {}
 
+  @ApiBearerAuth('jwt')
   @UseGuards(JwtGuard)
+  @ApiOperation({ summary: 'Upload up to 10 files' })
   @Post('upload')
   @UseInterceptors(
     FilesInterceptor('files', 10, {
@@ -39,7 +42,9 @@ export class ImageController {
     );
   }
 
+  @ApiBearerAuth('jwt')
   @UseGuards(JwtGuard)
+  @ApiOperation({ summary: 'Delete image' })
   @Delete(':publicId')
   async deleteFile(@Param('publicId') publicId: string) {
     return this.imageService.deleteFile(publicId);
