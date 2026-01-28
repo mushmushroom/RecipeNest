@@ -121,10 +121,10 @@ export default function RecipePageContainer({ options }: RecipePageContainerProp
               position="absolute"
               marginRight="40px"
             >
-              <Drawer.CloseTrigger asChild marginRight="20px" marginTop="10px">
+              <Drawer.CloseTrigger asChild marginRight="20px" marginTop="40px">
                 <FaRegWindowClose size="20px" />
               </Drawer.CloseTrigger>
-              <Drawer.Body paddingRight="40px">
+              <Drawer.Body paddingRight="40px" paddingTop="40px">
                 <FiltersPanel options={options} />
               </Drawer.Body>
             </Drawer.Content>

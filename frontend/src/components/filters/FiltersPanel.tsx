@@ -1,3 +1,4 @@
+'use client';
 import { Box, Separator } from '@chakra-ui/react';
 import FilterGroup from './FilterGroup';
 import { CategoryOption, DifficultyOption } from '@/lib/types/recipe';
@@ -5,7 +6,6 @@ import { CustomButton } from '../common/CustomButton';
 import { useState } from 'react';
 import useFilters from '@/lib/hooks/useFilters';
 import { CookingTimeOption, FiltersState } from '@/lib/types/filters';
-import { usePathname, useSearchParams } from 'next/navigation';
 import AppliedFilters from './AppliedFilters';
 
 const cookingTime = [
@@ -40,7 +40,6 @@ export default function FiltersPanel({ options }: FiltersPanelProps) {
   }
 
   function removeFilter(key: keyof FiltersState, value: string) {
-
     if (key === 'search') {
       setFilters((prev) => ({
         ...prev,
@@ -48,7 +47,6 @@ export default function FiltersPanel({ options }: FiltersPanelProps) {
       }));
       return;
     }
-
 
     const updated = {
       ...filters,
@@ -62,7 +60,7 @@ export default function FiltersPanel({ options }: FiltersPanelProps) {
   return (
     <Box minHeight="100vh">
       <AppliedFilters filters={filters} onRemove={removeFilter} />
-      
+
       <FilterGroup<CategoryOption>
         title="Category"
         options={options.categories}
