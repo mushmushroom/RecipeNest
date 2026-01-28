@@ -1,5 +1,5 @@
 import { FiltersState } from '@/lib/types/filters';
-import { HStack } from '@chakra-ui/react';
+import { HStack, Text } from '@chakra-ui/react';
 import FiltersBadge from './FiltersBadge';
 
 const cookingTimeLabelMap: Record<string, string> = {
@@ -21,7 +21,7 @@ export default function AppliedFilters({
     filters.cookingTime.length ||
     !!filters.search;
 
-  if (!hasFilters) return null;
+  if (!hasFilters) return <Text>No filters applied</Text>;
 
   return (
     <HStack wrap="wrap" gap="0.8rem" mb="1rem">
@@ -30,15 +30,24 @@ export default function AppliedFilters({
       )}
 
       {filters.category.map((value) => (
-        <FiltersBadge value={value} onRemove={() => onRemove('category', value)} />
+        <FiltersBadge
+          key={`filters-${value}`}
+          value={value}
+          onRemove={() => onRemove('category', value)}
+        />
       ))}
 
       {filters.difficulty.map((value) => (
-        <FiltersBadge value={value} onRemove={() => onRemove('difficulty', value)} />
+        <FiltersBadge
+          key={`filters-${value}`}
+          value={value}
+          onRemove={() => onRemove('difficulty', value)}
+        />
       ))}
 
       {filters.cookingTime.map((value) => (
         <FiltersBadge
+          key={`filters-${value}`}
           value={cookingTimeLabelMap[value]}
           onRemove={() => onRemove('cookingTime', value)}
         />
