@@ -1,3 +1,4 @@
+'use client';
 import { Tag } from '@chakra-ui/react';
 
 interface FiltersBadgeProps {
@@ -8,7 +9,7 @@ interface FiltersBadgeProps {
 export default function FiltersBadge({ value, onRemove }: FiltersBadgeProps) {
   return (
     <Tag.Root
-      key={`filters-${value}`}
+      
       variant="subtle"
       borderColor="brand.400"
       backgroundColor="white"
@@ -16,10 +17,7 @@ export default function FiltersBadge({ value, onRemove }: FiltersBadgeProps) {
     >
       <Tag.Label style={{ fontSize: '2rem', lineHeight: '2rem' }}>{value.toLowerCase()}</Tag.Label>
       <Tag.EndElement style={{ width: '15px', height: '15px' }}>
-        <Tag.CloseTrigger
-          style={{ cursor: 'pointer' }}
-          onClick={onRemove}
-        />
+        <Tag.CloseTrigger style={{ cursor: 'pointer' }} onClick={onRemove} />
       </Tag.EndElement>
     </Tag.Root>
   );
